@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "PsychoRemstered"
+rootProject.name = "PsychoRemastered"
 include(":app")
  

@@ -1,19 +1,20 @@
 package com.example.psychoremstered.therapist_registration
 
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -22,11 +23,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.util.lerp
 import com.example.psychoremstered.R
 import com.example.psychoremstered.therapist_registration.model.registrationPages
 import kotlinx.coroutines.launch
@@ -79,8 +79,8 @@ fun RegistrationUI(/*navController: NavController*/) {
             RegistrationScreen(
                 page = registrationPages[page],
                 pageOffset = (
-                        (pagerState.currentPage - page) + pagerState
-                            .currentPageOffsetFraction
+                        (pagerState.currentPage - page)
+                                + pagerState.currentPageOffsetFraction
                         ).absoluteValue
             )
 
@@ -92,6 +92,7 @@ fun RegistrationUI(/*navController: NavController*/) {
                 .height(60.dp)
                 .padding(start = 24.dp, top = 8.dp, end = 24.dp, bottom = 10.dp),
             shape = RoundedCornerShape(20.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color.Blue),
             onClick = {
                 coroutineScope.launch {
                     if (pagerState.currentPage != pagerState.pageCount - 1) {
