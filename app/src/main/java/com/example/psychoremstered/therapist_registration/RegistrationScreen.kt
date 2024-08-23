@@ -74,7 +74,7 @@ fun RegistrationScreen(page: RegistrationPage, pageOffset: Float) {
         Spacer(modifier = Modifier.height(20.dp))
         Text(text = page.description)
         Spacer(modifier = Modifier.height(10.dp))
-        if (page.stepNumber <= 3 && page.checkBoxes.isNotEmpty()) {
+        if (page.stepNumber <= 2 && page.checkBoxes.isNotEmpty()) {
             page.checkBoxes.forEach { (key, _) ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -90,7 +90,7 @@ fun RegistrationScreen(page: RegistrationPage, pageOffset: Float) {
                     Text(key)
                 }
             }
-        } else if (page.stepNumber == 4) {
+        } else if (page.stepNumber == 3) {
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -110,7 +110,7 @@ fun RegistrationScreen(page: RegistrationPage, pageOffset: Float) {
                 supportingText = { Text(text = "$symbolsCount/$descriptionSymbolsLimit") },
                 isError = isError
             )
-        } else if (page.stepNumber == 5) {
+        } else if (page.stepNumber == 4) {
             OutlinedTextField(
                 modifier = Modifier
                     .width(270.dp),
@@ -127,7 +127,6 @@ fun RegistrationScreen(page: RegistrationPage, pageOffset: Float) {
                     keyboardType = KeyboardType.Number
                 )
             )
-        } else if (page.stepNumber == 6) {
         }
     }
 }

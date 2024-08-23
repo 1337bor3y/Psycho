@@ -71,4 +71,7 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
+
+    // Image
+    implementation(libs.coil.compose)
 }
