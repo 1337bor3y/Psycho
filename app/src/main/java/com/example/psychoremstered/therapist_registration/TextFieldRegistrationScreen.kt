@@ -2,7 +2,6 @@ package com.example.psychoremstered.therapist_registration
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -11,16 +10,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -31,22 +27,17 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import com.example.psychoremstered.therapist_registration.model.RegistrationPage
+import com.example.psychoremstered.therapist_registration.model.TextFieldRegistrationPage
 
 @Composable
-fun RegistrationScreen(page: RegistrationPage, pageOffset: Float) {
+fun TextFieldRegistrationScreen(page: TextFieldRegistrationPage, pageOffset: Float) {
     val scrollState = rememberScrollState()
-    val checkedStates = remember {
-        mutableStateMapOf<String, Boolean>().apply {
-            putAll(page.checkBoxes)
-        }
-    }
-    var descriptionText by rememberSaveable {
-        mutableStateOf("")
+    var valueText by rememberSaveable {
+        mutableStateOf(page.text)
     }
     val descriptionSymbolsLimit = 1500
     var symbolsCount by rememberSaveable {
-        mutableStateOf("0")
+        mutableStateOf(page.text.length.toString())
     }
     var isError by rememberSaveable {
         mutableStateOf(false)
@@ -74,33 +65,18 @@ fun RegistrationScreen(page: RegistrationPage, pageOffset: Float) {
         Spacer(modifier = Modifier.height(20.dp))
         Text(text = page.description)
         Spacer(modifier = Modifier.height(10.dp))
-        if (page.stepNumber <= 2 && page.checkBoxes.isNotEmpty()) {
-            page.checkBoxes.forEach { (key, _) ->
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Checkbox(
-                        checked = checkedStates[key] ?: false,
-                        onCheckedChange = { isChecked ->
-                            page.checkBoxes[key] = isChecked
-                            checkedStates[key] = isChecked
-                        }
-                    )
-                    Text(key)
-                }
-            }
-        } else if (page.stepNumber == 3) {
+        if (page.stepNumber == 3) {
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(500.dp)
                     .padding(horizontal = 10.dp),
-                value = descriptionText,
+                value = valueText,
                 onValueChange = {
                     if (it.length <= descriptionSymbolsLimit) {
                         symbolsCount = it.length.toString()
-                        descriptionText = it
+                        valueText = it
+                        page.text = it
                         isError = false
                     } else {
                         isError = true
@@ -114,9 +90,10 @@ fun RegistrationScreen(page: RegistrationPage, pageOffset: Float) {
             OutlinedTextField(
                 modifier = Modifier
                     .width(270.dp),
-                value = descriptionText,
+                value = valueText,
                 onValueChange = {
-                    descriptionText = it
+                    valueText = it
+                    page.text = it
                 },
                 textStyle = LocalTextStyle.current.copy(
                     textAlign = TextAlign.End

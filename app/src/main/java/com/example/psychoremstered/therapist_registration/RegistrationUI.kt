@@ -31,8 +31,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.psychoremstered.R
+import com.example.psychoremstered.therapist_registration.model.CheckBoxesRegistrationPage
 import com.example.psychoremstered.therapist_registration.model.DegreeRegistrationPage
-import com.example.psychoremstered.therapist_registration.model.RegistrationPage
+import com.example.psychoremstered.therapist_registration.model.TextFieldRegistrationPage
 import com.example.psychoremstered.therapist_registration.model.registrationPages
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
@@ -86,9 +87,17 @@ fun RegistrationUI(/*navController: NavController*/) {
                 .weight(1f, false),
             verticalAlignment = Alignment.Top
         ) { page ->
-            if (page <= 4) {
-                RegistrationScreen(
-                    page = registrationPages[page] as RegistrationPage,
+            if (page <= 2) {
+                CheckBoxesRegistrationScreen(
+                    page = registrationPages[page] as CheckBoxesRegistrationPage,
+                    pageOffset = (
+                            (pagerState.currentPage - page)
+                                    + pagerState.currentPageOffsetFraction
+                            ).absoluteValue
+                )
+            } else if (page in 3..4) {
+                TextFieldRegistrationScreen(
+                    page = registrationPages[page] as TextFieldRegistrationPage,
                     pageOffset = (
                             (pagerState.currentPage - page)
                                     + pagerState.currentPageOffsetFraction

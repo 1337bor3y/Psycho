@@ -69,10 +69,10 @@ fun DegreeRegistrationScreen(
     }
     val symbolsLimit = 4
     var admissionSymbolsCount by rememberSaveable {
-        mutableStateOf("0")
+        mutableStateOf(page.admissionYear.length.toString())
     }
     var graduationSymbolsCount by rememberSaveable {
-        mutableStateOf("0")
+        mutableStateOf(page.graduationYear.length.toString())
     }
     var isErrorAdmission by rememberSaveable {
         mutableStateOf(false)
@@ -87,6 +87,7 @@ fun DegreeRegistrationScreen(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
             selectedImage = uri?.toString() ?: ""
+            page.documentImage = selectedImage
         }
     )
 
@@ -126,6 +127,7 @@ fun DegreeRegistrationScreen(
             value = universityText,
             onValueChange = {
                 universityText = it
+                page.university = it
             },
             label = { Text(text = context.getString(R.string.name_of_the_educational_institution)) },
         )
@@ -137,6 +139,7 @@ fun DegreeRegistrationScreen(
             value = specialityText,
             onValueChange = {
                 specialityText = it
+                page.speciality = it
             },
             label = { Text(text = context.getString(R.string.specialty)) },
         )
@@ -154,6 +157,7 @@ fun DegreeRegistrationScreen(
                     if (it.length <= symbolsLimit) {
                         admissionSymbolsCount = it.length.toString()
                         admissionText = it
+                        page.admissionYear = it
                         isErrorAdmission = false
                     } else {
                         isErrorAdmission = true
@@ -176,6 +180,7 @@ fun DegreeRegistrationScreen(
                     if (it.length <= symbolsLimit) {
                         graduationSymbolsCount = it.length.toString()
                         graduationText = it
+                        page.graduationYear = it
                         isErrorGraduation = false
                     } else {
                         isErrorGraduation = true
