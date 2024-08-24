@@ -1,4 +1,4 @@
-package com.example.psychoremstered.core.ui.theme
+package com.example.psychoremastered.core.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

@@ -1,36 +1,17 @@
-package com.example.psychoremstered.therapist_registration.model
+package com.example.psychoremastered.therapist_registration.model
 
-data class CheckBoxesRegistrationPage(
+data class RegistrationPage(
     val title: String,
     val description: String,
-    val checkBoxes: MutableMap<String, Boolean>,
-    val stepNumber: Int
-)
-
-data class TextFieldRegistrationPage(
-    val title: String,
-    val description: String,
-    var text: String,
-    val stepNumber: Int
-)
-
-data class DegreeRegistrationPage(
-    val title: String,
-    val documentNumber: Int,
-    val description: String,
-    var university: String,
-    var speciality: String,
-    var admissionYear: String,
-    var graduationYear: String,
-    var documentImage: String,
+    val checkBoxes: Map<String, Boolean>,
     val stepNumber: Int
 )
 
 val registrationPages = arrayListOf(
-    CheckBoxesRegistrationPage(
+    RegistrationPage(
         title = "Specialization",
         description = "Choose the most relevant specializations for you. You can choose several.",
-        checkBoxes = mutableMapOf(
+        checkBoxes = mapOf(
             "Psychologist" to false, "Psychotherapist" to false,
             "Psychiatrist" to false, "Sexologist" to false, "Psychoanalyst" to false,
             "Gestalt therapist" to false, "Nutritionist" to false, "Art therapy" to false,
@@ -38,10 +19,10 @@ val registrationPages = arrayListOf(
         ),
         stepNumber = 0
     ),
-    CheckBoxesRegistrationPage(
+    RegistrationPage(
         title = "Work fields",
         description = "Choose the most relevant work fields for you. You can choose several",
-        checkBoxes = mutableMapOf(
+        checkBoxes = mapOf(
             "Body therapy" to false,
             "Child-parent relations" to false,
             "Coaching" to false,
@@ -66,36 +47,31 @@ val registrationPages = arrayListOf(
         ),
         stepNumber = 1
     ),
-    CheckBoxesRegistrationPage(
+    RegistrationPage(
         title = "Language",
         description = "Choose languages you work in. You can choose several.",
-        checkBoxes = mutableMapOf(
+        checkBoxes = mapOf(
             "English" to false, "Ukrainian" to false, "Polish" to false,
             "German" to false, "Spanish" to false, "Portuguese" to false, "Russian" to false
         ),
         stepNumber = 2
     ),
-    TextFieldRegistrationPage(
+    RegistrationPage(
         title = "Description",
         description = "Add information about yourself. Tell your future clients what they should know about you and your ways of treatment. There are must be more than 500 symbols and less than 1500.",
-        text = "",
+        checkBoxes = mapOf(),
         stepNumber = 3
     ),
-    TextFieldRegistrationPage(
+    RegistrationPage(
         title = "Price",
         description = "Add estimated price for one session with you. You should indicate the price in dollars.",
-        text = "",
+        checkBoxes = mapOf(),
         stepNumber = 4
     ),
-    DegreeRegistrationPage(
+    RegistrationPage(
         title = "Degree",
-        documentNumber = 1,
         description = "On this page you can add 1 image of your document for each degree. Please, be sure that image has proper quality.",
-        university = "",
-        speciality = "",
-        admissionYear = "",
-        graduationYear = "",
-        documentImage = "",
+        checkBoxes = mapOf(),
         stepNumber = 5
     )
 )

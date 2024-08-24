@@ -1,4 +1,4 @@
-package com.example.psychoremstered.therapist_registration
+package com.example.psychoremastered.therapist_registration
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,17 +27,19 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import com.example.psychoremstered.therapist_registration.model.TextFieldRegistrationPage
+import com.example.psychoremastered.therapist_registration.model.RegistrationPage
 
 @Composable
-fun TextFieldRegistrationScreen(page: TextFieldRegistrationPage, pageOffset: Float) {
+fun TextFieldRegistrationScreen(
+    page: RegistrationPage,
+    pageOffset: Float,
+    state: RegistrationState,
+    onEvent: (RegistrationEvent) -> Unit
+) {
     val scrollState = rememberScrollState()
-    var valueText by rememberSaveable {
-        mutableStateOf(page.text)
-    }
     val descriptionSymbolsLimit = 1500
     var symbolsCount by rememberSaveable {
-        mutableStateOf(page.text.length.toString())
+        mutableStateOf(state.description.length.toString())
     }
     var isError by rememberSaveable {
         mutableStateOf(false)
@@ -71,12 +73,13 @@ fun TextFieldRegistrationScreen(page: TextFieldRegistrationPage, pageOffset: Flo
                     .fillMaxWidth()
                     .height(500.dp)
                     .padding(horizontal = 10.dp),
-                value = valueText,
+                value = state.description,
                 onValueChange = {
                     if (it.length <= descriptionSymbolsLimit) {
                         symbolsCount = it.length.toString()
-                        valueText = it
-                        page.text = it
+                        onEvent(
+                            RegistrationEvent.SetDescription(it)
+                        )
                         isError = false
                     } else {
                         isError = true
@@ -90,10 +93,11 @@ fun TextFieldRegistrationScreen(page: TextFieldRegistrationPage, pageOffset: Flo
             OutlinedTextField(
                 modifier = Modifier
                     .width(270.dp),
-                value = valueText,
+                value = state.price,
                 onValueChange = {
-                    valueText = it
-                    page.text = it
+                    onEvent(
+                        RegistrationEvent.SetPrice(it)
+                    )
                 },
                 textStyle = LocalTextStyle.current.copy(
                     textAlign = TextAlign.End

@@ -1,4 +1,4 @@
-package com.example.psychoremstered.therapist_registration
+package com.example.psychoremastered.therapist_registration
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,10 +21,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import com.example.psychoremstered.therapist_registration.model.CheckBoxesRegistrationPage
+import com.example.psychoremastered.therapist_registration.model.RegistrationPage
 
 @Composable
-fun CheckBoxesRegistrationScreen(page: CheckBoxesRegistrationPage, pageOffset: Float) {
+fun CheckBoxesRegistrationScreen(
+    page: RegistrationPage,
+    pageOffset: Float,
+    onEvent: (RegistrationEvent) -> Unit
+) {
     val scrollState = rememberScrollState()
     val checkedStates = remember {
         mutableStateMapOf<String, Boolean>().apply {
@@ -62,7 +66,13 @@ fun CheckBoxesRegistrationScreen(page: CheckBoxesRegistrationPage, pageOffset: F
                 Checkbox(
                     checked = checkedStates[key] ?: false,
                     onCheckedChange = { isChecked ->
-                        page.checkBoxes[key] = isChecked
+                        if (isChecked) {
+                            when (page.stepNumber) {
+                                0 -> { onEvent(RegistrationEvent.AddSpecialization(key)) }
+                                1 -> { onEvent(RegistrationEvent.AddWorkField(key)) }
+                                2 -> { onEvent(RegistrationEvent.AddLanguage(key)) }
+                            }
+                        }
                         checkedStates[key] = isChecked
                     }
                 )

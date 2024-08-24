@@ -1,4 +1,4 @@
-package com.example.psychoremstered.therapist_registration
+package com.example.psychoremastered.therapist_registration
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
@@ -30,17 +30,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.psychoremastered.therapist_registration.model.RegistrationPage
+import com.example.psychoremastered.therapist_registration.model.registrationPages
 import com.example.psychoremstered.R
-import com.example.psychoremstered.therapist_registration.model.CheckBoxesRegistrationPage
-import com.example.psychoremstered.therapist_registration.model.DegreeRegistrationPage
-import com.example.psychoremstered.therapist_registration.model.TextFieldRegistrationPage
-import com.example.psychoremstered.therapist_registration.model.registrationPages
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegistrationUI(/*navController: NavController*/) {
+fun RegistrationUI(
+    state: RegistrationState,
+    onEvent: (RegistrationEvent) -> Unit
+) {
     var pageCount by rememberSaveable {
         mutableIntStateOf(registrationPages.size)
     }
@@ -64,11 +65,8 @@ fun RegistrationUI(/*navController: NavController*/) {
                         if (pagerState.currentPage != 0) {
                             pagerState.animateScrollToPage(pagerState.currentPage - 1)
                         } else {
-                            Toast.makeText(
-                                context,
-                                "Navigate to welcome screen",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            Toast.makeText(context, "Navigate to welcome screen",
+                                Toast.LENGTH_SHORT).show()
                             // Navigation
                         }
                     }
@@ -89,7 +87,8 @@ fun RegistrationUI(/*navController: NavController*/) {
         ) { page ->
             if (page <= 2) {
                 CheckBoxesRegistrationScreen(
-                    page = registrationPages[page] as CheckBoxesRegistrationPage,
+                    page = registrationPages[page],
+                    onEvent = onEvent,
                     pageOffset = (
                             (pagerState.currentPage - page)
                                     + pagerState.currentPageOffsetFraction
@@ -97,7 +96,9 @@ fun RegistrationUI(/*navController: NavController*/) {
                 )
             } else if (page in 3..4) {
                 TextFieldRegistrationScreen(
-                    page = registrationPages[page] as TextFieldRegistrationPage,
+                    page = registrationPages[page],
+                    state = state,
+                    onEvent = onEvent,
                     pageOffset = (
                             (pagerState.currentPage - page)
                                     + pagerState.currentPageOffsetFraction
@@ -105,33 +106,37 @@ fun RegistrationUI(/*navController: NavController*/) {
                 )
             } else {
                 DegreeRegistrationScreen(
-                    page = registrationPages[page] as DegreeRegistrationPage,
+                    page = registrationPages[page],
                     pageOffset = (
                             (pagerState.currentPage - page)
                                     + pagerState.currentPageOffsetFraction
                             ).absoluteValue,
-                    addButtonOnClick = {
+                    state = state,
+                    onEvent = onEvent,
+                    addOnClick = {
                         coroutineScope.launch {
+                            onEvent(
+                                RegistrationEvent.AddDegree
+                            )
                             registrationPages.add(
-                                DegreeRegistrationPage(
+                                RegistrationPage(
                                     title = "Degree",
-                                    documentNumber = ++documentNumber,
                                     description = "On this page you can add 1 image of your document for each degree. Please, be sure that image has proper quality.",
-                                    university = "",
-                                    speciality = "",
-                                    admissionYear = "",
-                                    graduationYear = "",
-                                    documentImage = "",
-                                    stepNumber = ++pageCount
+                                    checkBoxes = mutableMapOf(),
+                                    stepNumber = pageCount++
                                 )
                             )
                             pagerState.animateScrollToPage(page + 1)
                         }
                     },
-                    removeButtonOnClick = {
+                    removeOnClick = {
                         coroutineScope.launch {
+                            if (state.degrees.size == pagerState.pageCount - 5) {
+                                onEvent(
+                                    RegistrationEvent.RemoveDegree
+                                )
+                            }
                             pagerState.animateScrollToPage(page - 1)
-                            registrationPages.removeAt(page)
                             --pageCount
                             --documentNumber
                         }
@@ -151,8 +156,13 @@ fun RegistrationUI(/*navController: NavController*/) {
                     if (pagerState.currentPage != pagerState.pageCount - 1) {
                         pagerState.animateScrollToPage(pagerState.currentPage + 1)
                     } else {
-                        Toast.makeText(context, "Navigate to therapist screen", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(context, "Navigate to therapist screen",
+                            Toast.LENGTH_SHORT).show()
+                        if (state.degrees.size < pagerState.pageCount - 5) {
+                            onEvent(
+                                RegistrationEvent.AddDegree
+                            )
+                        }
                         // Navigation
                     }
                 }

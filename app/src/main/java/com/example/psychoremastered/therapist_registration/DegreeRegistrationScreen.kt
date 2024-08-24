@@ -1,4 +1,4 @@
-package com.example.psychoremstered.therapist_registration
+package com.example.psychoremastered.therapist_registration
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -43,36 +43,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
 import coil.compose.rememberAsyncImagePainter
+import com.example.psychoremastered.therapist_registration.model.RegistrationPage
 import com.example.psychoremstered.R
-import com.example.psychoremstered.therapist_registration.model.DegreeRegistrationPage
 
 @Composable
 fun DegreeRegistrationScreen(
-    page: DegreeRegistrationPage,
+    page: RegistrationPage,
     pageOffset: Float,
-    addButtonOnClick: () -> Unit,
-    removeButtonOnClick: () -> Unit
+    state: RegistrationState,
+    onEvent: (RegistrationEvent) -> Unit,
+    addOnClick: () -> Unit,
+    removeOnClick: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
-    var universityText by rememberSaveable {
-        mutableStateOf(page.university)
-    }
-    var specialityText by rememberSaveable {
-        mutableStateOf(page.speciality)
-    }
-    var admissionText by rememberSaveable {
-        mutableStateOf(page.admissionYear)
-    }
-    var graduationText by rememberSaveable {
-        mutableStateOf(page.graduationYear)
-    }
     val symbolsLimit = 4
     var admissionSymbolsCount by rememberSaveable {
-        mutableStateOf(page.admissionYear.length.toString())
+        mutableStateOf(state.admissionYear.length.toString())
     }
     var graduationSymbolsCount by rememberSaveable {
-        mutableStateOf(page.graduationYear.length.toString())
+        mutableStateOf(state.graduationYear.length.toString())
     }
     var isErrorAdmission by rememberSaveable {
         mutableStateOf(false)
@@ -80,14 +70,28 @@ fun DegreeRegistrationScreen(
     var isErrorGraduation by rememberSaveable {
         mutableStateOf(false)
     }
+    var university by rememberSaveable {
+        mutableStateOf("")
+    }
+    var speciality by rememberSaveable {
+        mutableStateOf("")
+    }
+    var admissionYear by rememberSaveable {
+        mutableStateOf("")
+    }
+    var graduationYear by rememberSaveable {
+        mutableStateOf("")
+    }
     var selectedImage by rememberSaveable {
-        mutableStateOf(page.documentImage)
+        mutableStateOf("")
     }
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
             selectedImage = uri?.toString() ?: ""
-            page.documentImage = selectedImage
+            onEvent(
+                RegistrationEvent.SetDocumentImage(selectedImage)
+            )
         }
     )
 
@@ -115,7 +119,7 @@ fun DegreeRegistrationScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.Start),
-            text = "Document №${page.documentNumber}",
+            text = "Document №${page.stepNumber - 4}",
             fontSize = 20.sp
         )
         Text(text = page.description)
@@ -124,10 +128,12 @@ fun DegreeRegistrationScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 10.dp),
-            value = universityText,
+            value = university,
             onValueChange = {
-                universityText = it
-                page.university = it
+                university = it
+                onEvent(
+                    RegistrationEvent.SetUniversity(it)
+                )
             },
             label = { Text(text = context.getString(R.string.name_of_the_educational_institution)) },
         )
@@ -136,10 +142,12 @@ fun DegreeRegistrationScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 10.dp),
-            value = specialityText,
+            value = speciality,
             onValueChange = {
-                specialityText = it
-                page.speciality = it
+                speciality = it
+                onEvent(
+                    RegistrationEvent.SetSpeciality(it)
+                )
             },
             label = { Text(text = context.getString(R.string.specialty)) },
         )
@@ -152,12 +160,14 @@ fun DegreeRegistrationScreen(
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 10.dp),
-                value = admissionText,
+                value = admissionYear,
                 onValueChange = {
                     if (it.length <= symbolsLimit) {
                         admissionSymbolsCount = it.length.toString()
-                        admissionText = it
-                        page.admissionYear = it
+                        admissionYear = it
+                        onEvent(
+                            RegistrationEvent.SetAdmissionYear(it)
+                        )
                         isErrorAdmission = false
                     } else {
                         isErrorAdmission = true
@@ -175,12 +185,14 @@ fun DegreeRegistrationScreen(
                 modifier = Modifier
                     .weight(1f)
                     .padding(end = 10.dp),
-                value = graduationText,
+                value = graduationYear,
                 onValueChange = {
                     if (it.length <= symbolsLimit) {
                         graduationSymbolsCount = it.length.toString()
-                        graduationText = it
-                        page.graduationYear = it
+                        graduationYear = it
+                        onEvent(
+                            RegistrationEvent.SetGraduationYear(it)
+                        )
                         isErrorGraduation = false
                     } else {
                         isErrorGraduation = true
@@ -238,7 +250,7 @@ fun DegreeRegistrationScreen(
                 contentColor = Color.Blue,
                 containerColor = Color.White
             ),
-            onClick = { addButtonOnClick() }
+            onClick = { addOnClick() }
         ) {
             Text(text = context.getString(R.string.add_another_document), fontSize = 14.sp)
         }
@@ -253,7 +265,7 @@ fun DegreeRegistrationScreen(
                     contentColor = Color.Red,
                     containerColor = Color.White
                 ),
-                onClick = { removeButtonOnClick() }
+                onClick = { removeOnClick() }
             ) {
                 Text(text = context.getString(R.string.remove_this_document), fontSize = 14.sp)
             }

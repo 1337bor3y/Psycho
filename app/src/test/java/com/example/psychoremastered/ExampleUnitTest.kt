@@ -1,4 +1,4 @@
-package com.example.psychoremstered
+package com.example.psychoremastered
 
 import org.junit.Test
 
