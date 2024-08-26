@@ -30,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,31 +60,31 @@ fun DegreeRegistrationScreen(
     val scrollState = rememberScrollState()
     val context = LocalContext.current
     val symbolsLimit = 4
-    var admissionSymbolsCount by remember {
+    var admissionSymbolsCount by rememberSaveable(degree) {
         mutableStateOf(degree.admissionYear.length.toString())
     }
-    var graduationSymbolsCount by remember {
+    var graduationSymbolsCount by rememberSaveable(degree) {
         mutableStateOf(degree.graduationYear.length.toString())
     }
-    var isErrorAdmission by remember {
+    var isErrorAdmission by rememberSaveable(degree) {
         mutableStateOf(false)
     }
-    var isErrorGraduation by remember {
+    var isErrorGraduation by rememberSaveable(degree) {
         mutableStateOf(false)
     }
-    var university by remember {
+    var university by rememberSaveable(degree) {
         mutableStateOf(degree.university)
     }
-    var speciality by remember {
+    var speciality by rememberSaveable(degree) {
         mutableStateOf(degree.speciality)
     }
-    var admissionYear by remember {
+    var admissionYear by rememberSaveable(degree) {
         mutableStateOf(degree.admissionYear)
     }
-    var graduationYear by remember {
+    var graduationYear by rememberSaveable(degree) {
         mutableStateOf(degree.graduationYear)
     }
-    var selectedImage by remember {
+    var selectedImage by rememberSaveable(degree) {
         mutableStateOf(degree.documentImage)
     }
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
