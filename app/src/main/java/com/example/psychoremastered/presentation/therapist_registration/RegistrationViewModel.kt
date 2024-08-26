@@ -1,7 +1,7 @@
-package com.example.psychoremastered.therapist_registration
+package com.example.psychoremastered.presentation.therapist_registration
 
 import androidx.lifecycle.ViewModel
-import com.example.psychoremastered.therapist_registration.model.Degree
+import com.example.psychoremastered.presentation.therapist_registration.model.Degree
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -30,6 +30,20 @@ class RegistrationViewModel : ViewModel() {
 
             is RegistrationEvent.RemoveWorkField ->
                 _state.value.workFields.remove(event.workField)
+
+            is RegistrationEvent.SetDescription ->
+                _state.update {
+                    it.copy(
+                        description = event.description
+                    )
+                }
+
+            is RegistrationEvent.SetPrice ->
+                _state.update {
+                    it.copy(
+                        price = event.price
+                    )
+                }
 
             is RegistrationEvent.SetAdmissionYear ->
                 _state.update {
@@ -67,59 +81,53 @@ class RegistrationViewModel : ViewModel() {
                 }
 
             is RegistrationEvent.RemoveDegree ->
-                removeDegree()
+                removeDegree(event.id)
 
             is RegistrationEvent.AddDegree ->
-                addDegree()
-
-            is RegistrationEvent.SetDescription ->
-                _state.update {
-                    it.copy(
-                        description = event.description
-                    )
-                }
-
-            is RegistrationEvent.SetPrice ->
-                _state.update {
-                    it.copy(
-                        price = event.price
-                    )
-                }
+                addDegree(event.id)
 
             RegistrationEvent.SaveData -> TODO()
         }
     }
 
-    private fun removeDegree() {
-        _state.value.degrees.remove(
-            Degree(
-                university = _state.value.university,
-                speciality = _state.value.speciality,
-                admissionYear = _state.value.admissionYear,
-                graduationYear = _state.value.graduationYear,
-                documentImage = _state.value.documentImage,
-            )
-        )
+    private fun removeDegree(id: Int) {
+        _state.value.degrees.removeIf {
+            it.id == id
+        }
+        val prevDegree = _state.value.degrees[id - 1]
         _state.update {
             it.copy(
-                university = "",
-                speciality = "",
-                admissionYear = "",
-                graduationYear = "",
-                documentImage = ""
+                university = prevDegree.university,
+                speciality = prevDegree.speciality,
+                admissionYear = prevDegree.admissionYear,
+                graduationYear = prevDegree.graduationYear,
+                documentImage = prevDegree.documentImage
             )
         }
     }
 
-    private fun addDegree() {
-        _state.value.degrees.add(
-            Degree(
+    private fun addDegree(id: Int) {
+        val index = _state.value.degrees.indexOfFirst { it.id == id }
+        if (index != -1) {
+            _state.value.degrees[index] = Degree(
+                id = id,
                 university = _state.value.university,
                 speciality = _state.value.speciality,
                 admissionYear = _state.value.admissionYear,
                 graduationYear = _state.value.graduationYear,
-                documentImage = _state.value.documentImage,
+                documentImage = _state.value.documentImage
             )
-        )
+        } else {
+            _state.value.degrees.add(
+                Degree(
+                    id = id,
+                    university = _state.value.university,
+                    speciality = _state.value.speciality,
+                    admissionYear = _state.value.admissionYear,
+                    graduationYear = _state.value.graduationYear,
+                    documentImage = _state.value.documentImage
+                )
+            )
+        }
     }
 }

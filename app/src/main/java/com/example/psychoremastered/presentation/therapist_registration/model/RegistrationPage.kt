@@ -1,4 +1,4 @@
-package com.example.psychoremastered.therapist_registration.model
+package com.example.psychoremastered.presentation.therapist_registration.model
 
 data class RegistrationPage(
     val title: String,

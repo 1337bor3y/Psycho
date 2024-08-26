@@ -1,4 +1,4 @@
-package com.example.psychoremastered.therapist_registration
+package com.example.psychoremastered.presentation.therapist_registration
 
 sealed interface RegistrationEvent {
     data class AddSpecialization(val specialization: String) : RegistrationEvent
@@ -14,7 +14,7 @@ sealed interface RegistrationEvent {
     data class SetAdmissionYear(val admissionYear: String) : RegistrationEvent
     data class SetGraduationYear(val graduationYear: String) : RegistrationEvent
     data class SetDocumentImage(val documentImage: String) : RegistrationEvent
-    data object AddDegree : RegistrationEvent
-    data object RemoveDegree : RegistrationEvent
+    data class AddDegree(val id: Int) : RegistrationEvent
+    data class RemoveDegree(val id: Int) : RegistrationEvent
     data object SaveData : RegistrationEvent
 }

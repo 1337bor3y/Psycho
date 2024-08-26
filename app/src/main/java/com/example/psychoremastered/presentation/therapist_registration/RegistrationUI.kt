@@ -1,4 +1,4 @@
-package com.example.psychoremastered.therapist_registration
+package com.example.psychoremastered.presentation.therapist_registration
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
@@ -30,8 +30,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.psychoremastered.therapist_registration.model.RegistrationPage
-import com.example.psychoremastered.therapist_registration.model.registrationPages
+import com.example.psychoremastered.presentation.therapist_registration.model.Degree
+import com.example.psychoremastered.presentation.therapist_registration.model.RegistrationPage
+import com.example.psychoremastered.presentation.therapist_registration.model.registrationPages
 import com.example.psychoremstered.R
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
@@ -48,9 +49,6 @@ fun RegistrationUI(
     val pagerState = rememberPagerState(pageCount = { pageCount })
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
-    var documentNumber by rememberSaveable {
-        mutableIntStateOf(1)
-    }
 
     Column(
         modifier = Modifier
@@ -65,8 +63,10 @@ fun RegistrationUI(
                         if (pagerState.currentPage != 0) {
                             pagerState.animateScrollToPage(pagerState.currentPage - 1)
                         } else {
-                            Toast.makeText(context, "Navigate to welcome screen",
-                                Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context, "Navigate to welcome screen",
+                                Toast.LENGTH_SHORT
+                            ).show()
                             // Navigation
                         }
                     }
@@ -111,12 +111,23 @@ fun RegistrationUI(
                             (pagerState.currentPage - page)
                                     + pagerState.currentPageOffsetFraction
                             ).absoluteValue,
-                    state = state,
+                    degree = try {
+                        state.degrees[page - 5]
+                    } catch (e: IndexOutOfBoundsException) {
+                        Degree(
+                            id = Int.MIN_VALUE,
+                            university = "",
+                            speciality = "",
+                            admissionYear = "",
+                            graduationYear = "",
+                            documentImage = ""
+                        )
+                    },
                     onEvent = onEvent,
                     addOnClick = {
                         coroutineScope.launch {
                             onEvent(
-                                RegistrationEvent.AddDegree
+                                RegistrationEvent.AddDegree(page - 5)
                             )
                             registrationPages.add(
                                 RegistrationPage(
@@ -131,14 +142,11 @@ fun RegistrationUI(
                     },
                     removeOnClick = {
                         coroutineScope.launch {
-                            if (state.degrees.size == pagerState.pageCount - 5) {
-                                onEvent(
-                                    RegistrationEvent.RemoveDegree
-                                )
-                            }
+                            onEvent(
+                                RegistrationEvent.RemoveDegree(page - 5)
+                            )
                             pagerState.animateScrollToPage(page - 1)
                             --pageCount
-                            --documentNumber
                         }
                     }
                 )
@@ -156,13 +164,13 @@ fun RegistrationUI(
                     if (pagerState.currentPage != pagerState.pageCount - 1) {
                         pagerState.animateScrollToPage(pagerState.currentPage + 1)
                     } else {
-                        Toast.makeText(context, "Navigate to therapist screen",
-                            Toast.LENGTH_SHORT).show()
-                        if (state.degrees.size < pagerState.pageCount - 5) {
-                            onEvent(
-                                RegistrationEvent.AddDegree
-                            )
-                        }
+                        Toast.makeText(
+                            context, "Navigate to therapist screen",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        onEvent(
+                            RegistrationEvent.AddDegree(pagerState.currentPage - 5)
+                        )
                         // Navigation
                     }
                 }

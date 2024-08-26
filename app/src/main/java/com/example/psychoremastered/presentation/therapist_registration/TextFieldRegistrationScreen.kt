@@ -1,4 +1,4 @@
-package com.example.psychoremastered.therapist_registration
+package com.example.psychoremastered.presentation.therapist_registration
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,7 +27,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
-import com.example.psychoremastered.therapist_registration.model.RegistrationPage
+import com.example.psychoremastered.presentation.therapist_registration.model.RegistrationPage
 
 @Composable
 fun TextFieldRegistrationScreen(

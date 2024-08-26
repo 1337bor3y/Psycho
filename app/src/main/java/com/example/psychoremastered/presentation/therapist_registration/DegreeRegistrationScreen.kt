@@ -1,4 +1,4 @@
-package com.example.psychoremastered.therapist_registration
+package com.example.psychoremastered.presentation.therapist_registration
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -29,7 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,14 +43,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
 import coil.compose.rememberAsyncImagePainter
-import com.example.psychoremastered.therapist_registration.model.RegistrationPage
+import com.example.psychoremastered.presentation.therapist_registration.model.Degree
+import com.example.psychoremastered.presentation.therapist_registration.model.RegistrationPage
 import com.example.psychoremstered.R
 
 @Composable
 fun DegreeRegistrationScreen(
     page: RegistrationPage,
     pageOffset: Float,
-    state: RegistrationState,
+    degree: Degree,
     onEvent: (RegistrationEvent) -> Unit,
     addOnClick: () -> Unit,
     removeOnClick: () -> Unit
@@ -58,32 +59,32 @@ fun DegreeRegistrationScreen(
     val scrollState = rememberScrollState()
     val context = LocalContext.current
     val symbolsLimit = 4
-    var admissionSymbolsCount by rememberSaveable {
-        mutableStateOf(state.admissionYear.length.toString())
+    var admissionSymbolsCount by remember {
+        mutableStateOf(degree.admissionYear.length.toString())
     }
-    var graduationSymbolsCount by rememberSaveable {
-        mutableStateOf(state.graduationYear.length.toString())
+    var graduationSymbolsCount by remember {
+        mutableStateOf(degree.graduationYear.length.toString())
     }
-    var isErrorAdmission by rememberSaveable {
+    var isErrorAdmission by remember {
         mutableStateOf(false)
     }
-    var isErrorGraduation by rememberSaveable {
+    var isErrorGraduation by remember {
         mutableStateOf(false)
     }
-    var university by rememberSaveable {
-        mutableStateOf("")
+    var university by remember {
+        mutableStateOf(degree.university)
     }
-    var speciality by rememberSaveable {
-        mutableStateOf("")
+    var speciality by remember {
+        mutableStateOf(degree.speciality)
     }
-    var admissionYear by rememberSaveable {
-        mutableStateOf("")
+    var admissionYear by remember {
+        mutableStateOf(degree.admissionYear)
     }
-    var graduationYear by rememberSaveable {
-        mutableStateOf("")
+    var graduationYear by remember {
+        mutableStateOf(degree.graduationYear)
     }
-    var selectedImage by rememberSaveable {
-        mutableStateOf("")
+    var selectedImage by remember {
+        mutableStateOf(degree.documentImage)
     }
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),

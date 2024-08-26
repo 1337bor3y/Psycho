@@ -8,8 +8,8 @@ import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.example.psychoremastered.core.ui.theme.PsychoRemsteredTheme
-import com.example.psychoremastered.therapist_registration.RegistrationUI
-import com.example.psychoremastered.therapist_registration.RegistrationViewModel
+import com.example.psychoremastered.presentation.therapist_registration.RegistrationUI
+import com.example.psychoremastered.presentation.therapist_registration.RegistrationViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
