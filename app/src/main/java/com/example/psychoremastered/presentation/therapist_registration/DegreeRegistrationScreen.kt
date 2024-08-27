@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
 import coil.compose.rememberAsyncImagePainter
-import com.example.psychoremastered.presentation.therapist_registration.model.Degree
+import com.example.psychoremastered.domain.model.Degree
 import com.example.psychoremastered.presentation.therapist_registration.model.RegistrationPage
 import com.example.psychoremstered.R
 

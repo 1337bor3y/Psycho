@@ -1,6 +1,6 @@
-package com.example.psychoremastered.presentation.therapist_registration.model
+package com.example.psychoremastered.data.local.model
 
-data class Degree(
+data class DegreeEntity(
     val id: Int,
     val university: String,
     val speciality: String,

@@ -30,7 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.psychoremastered.presentation.therapist_registration.model.Degree
+import com.example.psychoremastered.domain.model.Degree
 import com.example.psychoremastered.presentation.therapist_registration.model.registrationPages
 import com.example.psychoremstered.R
 import kotlinx.coroutines.launch

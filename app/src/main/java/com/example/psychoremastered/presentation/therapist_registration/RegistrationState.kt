@@ -1,6 +1,6 @@
 package com.example.psychoremastered.presentation.therapist_registration
 
-import com.example.psychoremastered.presentation.therapist_registration.model.Degree
+import com.example.psychoremastered.domain.model.Degree
 
 data class RegistrationState(
     val specializations: MutableSet<String> = mutableSetOf(),

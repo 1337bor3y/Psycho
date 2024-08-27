@@ -1,7 +1,7 @@
 package com.example.psychoremastered.presentation.therapist_registration
 
 import androidx.lifecycle.ViewModel
-import com.example.psychoremastered.presentation.therapist_registration.model.Degree
+import com.example.psychoremastered.domain.model.Degree
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
