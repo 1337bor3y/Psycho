@@ -97,10 +97,6 @@ class RegistrationViewModel @Inject constructor(
         }
     }
 
-    private fun saveTherapistData() {
-        TODO("Not yet implemented")
-    }
-
     private fun removeDegree(id: Int) {
         _state.value.degrees.removeIf {
             it.id == id
@@ -140,5 +136,19 @@ class RegistrationViewModel @Inject constructor(
                 )
             )
         }
+    }
+
+    private fun saveTherapistData() {
+        val specializations: List<String> = _state.value.specializations.toList()
+        val workFields: List<String>  = _state.value.workFields.toList()
+        val languages: List<String> = _state.value.languages.toList()
+        val description = _state.value.description
+        val price = _state.value.price
+        val university = _state.value.university
+        val speciality = _state.value.speciality
+        val admissionYear = _state.value.admissionYear
+        val graduationYear = _state.value.graduationYear
+        val documentImage = _state.value.documentImage
+        val degrees = _state.value.degrees
     }
 }

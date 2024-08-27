@@ -85,4 +85,11 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
+
+    // Gson
+    implementation(libs.gson)
+
+    // Test
+    implementation(libs.core.ktx)
+    implementation(libs.androidx.junit.ktx)
 }
