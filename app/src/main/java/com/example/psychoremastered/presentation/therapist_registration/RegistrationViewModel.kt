@@ -2,11 +2,17 @@ package com.example.psychoremastered.presentation.therapist_registration
 
 import androidx.lifecycle.ViewModel
 import com.example.psychoremastered.domain.model.Degree
+import com.example.psychoremastered.domain.use_case.SaveTherapist
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import javax.inject.Inject
 
-class RegistrationViewModel : ViewModel() {
+@HiltViewModel
+class RegistrationViewModel @Inject constructor(
+    private val saveTherapist: SaveTherapist
+) : ViewModel() {
 
     private val _state = MutableStateFlow(RegistrationState())
     val state = _state.asStateFlow()
@@ -86,8 +92,13 @@ class RegistrationViewModel : ViewModel() {
             is RegistrationEvent.AddDegree ->
                 addDegree(event.id)
 
-            RegistrationEvent.SaveData -> TODO()
+            RegistrationEvent.SaveTherapistData ->
+                saveTherapistData()
         }
+    }
+
+    private fun saveTherapistData() {
+        TODO("Not yet implemented")
     }
 
     private fun removeDegree(id: Int) {

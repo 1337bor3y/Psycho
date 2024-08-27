@@ -10,7 +10,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.psychoremastered.core.ui.theme.PsychoRemsteredTheme
 import com.example.psychoremastered.presentation.therapist_registration.RegistrationUI
 import com.example.psychoremastered.presentation.therapist_registration.RegistrationViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
