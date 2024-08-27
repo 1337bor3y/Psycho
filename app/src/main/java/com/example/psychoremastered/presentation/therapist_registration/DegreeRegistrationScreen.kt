@@ -29,7 +29,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -121,7 +120,7 @@ fun DegreeRegistrationScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.Start),
-            text = "Document №${page.stepNumber - 4}",
+            text = "Document №${degree.id + 1}",
             fontSize = 20.sp
         )
         Text(text = page.description)
@@ -256,7 +255,7 @@ fun DegreeRegistrationScreen(
         ) {
             Text(text = context.getString(R.string.add_another_document), fontSize = 14.sp)
         }
-        if (page.stepNumber > 5) {
+        if (degree.id > 0) {
             OutlinedButton(
                 modifier = Modifier
                     .fillMaxWidth()

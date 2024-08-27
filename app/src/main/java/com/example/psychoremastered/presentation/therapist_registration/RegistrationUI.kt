@@ -31,7 +31,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.psychoremastered.presentation.therapist_registration.model.Degree
-import com.example.psychoremastered.presentation.therapist_registration.model.RegistrationPage
 import com.example.psychoremastered.presentation.therapist_registration.model.registrationPages
 import com.example.psychoremstered.R
 import kotlinx.coroutines.launch
@@ -106,7 +105,7 @@ fun RegistrationUI(
                 )
             } else {
                 DegreeRegistrationScreen(
-                    page = registrationPages[page],
+                    page = registrationPages[5],
                     pageOffset = (
                             (pagerState.currentPage - page)
                                     + pagerState.currentPageOffsetFraction
@@ -115,7 +114,7 @@ fun RegistrationUI(
                         state.degrees[page - 5]
                     } catch (e: IndexOutOfBoundsException) {
                         Degree(
-                            id = Int.MIN_VALUE,
+                            id = page - 5,
                             university = "",
                             speciality = "",
                             admissionYear = "",
@@ -129,14 +128,7 @@ fun RegistrationUI(
                             onEvent(
                                 RegistrationEvent.AddDegree(page - 5)
                             )
-                            registrationPages.add(
-                                RegistrationPage(
-                                    title = "Degree",
-                                    description = "On this page you can add 1 image of your document for each degree. Please, be sure that image has proper quality.",
-                                    checkBoxes = mutableMapOf(),
-                                    stepNumber = pageCount++
-                                )
-                            )
+                            pageCount++
                             pagerState.animateScrollToPage(page + 1)
                         }
                     },
