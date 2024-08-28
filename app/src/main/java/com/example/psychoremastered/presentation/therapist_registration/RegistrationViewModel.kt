@@ -1,12 +1,15 @@
 package com.example.psychoremastered.presentation.therapist_registration
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.psychoremastered.domain.model.Degree
+import com.example.psychoremastered.domain.model.Therapist
 import com.example.psychoremastered.domain.use_case.SaveTherapist
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -87,21 +90,21 @@ class RegistrationViewModel @Inject constructor(
                 }
 
             is RegistrationEvent.RemoveDegree ->
-                removeDegree(event.id)
+                removeDegree(event.degreeId)
 
             is RegistrationEvent.AddDegree ->
-                addDegree(event.id)
+                addDegree(event.degreeId)
 
-            RegistrationEvent.SaveTherapistData ->
-                saveTherapistData()
+            is RegistrationEvent.SaveTherapistData ->
+                saveTherapistData(event.therapistId)
         }
     }
 
-    private fun removeDegree(id: Int) {
+    private fun removeDegree(degreeId: Int) {
         _state.value.degrees.removeIf {
-            it.id == id
+            it.id == degreeId
         }
-        val prevDegree = _state.value.degrees[id - 1]
+        val prevDegree = state.value.degrees[degreeId - 1]
         _state.update {
             it.copy(
                 university = prevDegree.university,
@@ -113,42 +116,44 @@ class RegistrationViewModel @Inject constructor(
         }
     }
 
-    private fun addDegree(id: Int) {
-        val index = _state.value.degrees.indexOfFirst { it.id == id }
+    private fun addDegree(degreeId: Int) {
+        val index = state.value.degrees.indexOfFirst { it.id == degreeId }
         if (index != -1) {
-            _state.value.degrees[index] = Degree(
-                id = id,
-                university = _state.value.university,
-                speciality = _state.value.speciality,
-                admissionYear = _state.value.admissionYear,
-                graduationYear = _state.value.graduationYear,
-                documentImage = _state.value.documentImage
+            state.value.degrees[index] = Degree(
+                id = degreeId,
+                university = state.value.university,
+                speciality = state.value.speciality,
+                admissionYear = state.value.admissionYear,
+                graduationYear = state.value.graduationYear,
+                documentImage = state.value.documentImage
             )
         } else {
-            _state.value.degrees.add(
+            state.value.degrees.add(
                 Degree(
-                    id = id,
-                    university = _state.value.university,
-                    speciality = _state.value.speciality,
-                    admissionYear = _state.value.admissionYear,
-                    graduationYear = _state.value.graduationYear,
-                    documentImage = _state.value.documentImage
+                    id = degreeId,
+                    university = state.value.university,
+                    speciality = state.value.speciality,
+                    admissionYear = state.value.admissionYear,
+                    graduationYear = state.value.graduationYear,
+                    documentImage = state.value.documentImage
                 )
             )
         }
     }
 
-    private fun saveTherapistData() {
-        val specializations: List<String> = _state.value.specializations.toList()
-        val workFields: List<String>  = _state.value.workFields.toList()
-        val languages: List<String> = _state.value.languages.toList()
-        val description = _state.value.description
-        val price = _state.value.price
-        val university = _state.value.university
-        val speciality = _state.value.speciality
-        val admissionYear = _state.value.admissionYear
-        val graduationYear = _state.value.graduationYear
-        val documentImage = _state.value.documentImage
-        val degrees = _state.value.degrees
+    private fun saveTherapistData(therapistId: Int) {
+        viewModelScope.launch {
+            saveTherapist(
+                Therapist(
+                    id = therapistId,
+                    specializations = state.value.specializations.toList(),
+                    workFields = state.value.workFields.toList(),
+                    languages = state.value.specializations.toList(),
+                    description = state.value.description,
+                    price = state.value.price,
+                    degrees = state.value.degrees
+                )
+            )
+        }
     }
 }

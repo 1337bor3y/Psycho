@@ -39,7 +39,7 @@ class SaveTherapistTest {
     }
 
     @Test
-    fun upsertTherapist_TherapistInDatabase() = runBlocking {
+    fun insertTherapist_therapistInDatabase() = runBlocking {
         val expectedTherapist = Therapist(
             id = 0,
             specializations = listOf("specialization1", "specialization2", "specialization3"),
@@ -64,5 +64,37 @@ class SaveTherapistTest {
         val actualTherapist = therapistDao.getTherapist(0).toTherapist()
 
         assertEquals(expectedTherapist, actualTherapist)
+    }
+
+    @Test
+    fun updateTherapist_therapistIsUpdated() = runBlocking {
+        val existingTherapist = Therapist(
+            id = 0,
+            specializations = listOf("specialization1", "specialization2", "specialization3"),
+            workFields = listOf("workField1", "workField2", "workField3"),
+            languages = listOf("language1", "language2"),
+            description = "description",
+            price = "123",
+            degrees = listOf(
+                Degree(
+                    id = 0,
+                    university = "university",
+                    speciality = "speciality",
+                    admissionYear = "2016",
+                    graduationYear = "2022",
+                    documentImage = "documentImage"
+                )
+            )
+        )
+        therapistDao.upsertTherapist(existingTherapist.toTherapistEntity())
+
+        val updatedTherapist = existingTherapist.copy(
+            price = "3333"
+        )
+        therapistDao.upsertTherapist(updatedTherapist.toTherapistEntity())
+
+        val actualTherapist = therapistDao.getTherapist(0).toTherapist()
+
+        assertEquals(updatedTherapist, actualTherapist)
     }
 }

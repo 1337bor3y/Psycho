@@ -123,11 +123,8 @@ fun RegistrationUI(
                         )
                     },
                     onEvent = onEvent,
-                    addOnClick = {
+                    moveToNextPage = {
                         coroutineScope.launch {
-                            onEvent(
-                                RegistrationEvent.AddDegree(page - 5)
-                            )
                             pageCount++
                             pagerState.animateScrollToPage(page + 1)
                         }
@@ -156,14 +153,36 @@ fun RegistrationUI(
                     if (pagerState.currentPage != pagerState.pageCount - 1) {
                         pagerState.animateScrollToPage(pagerState.currentPage + 1)
                     } else {
-                        Toast.makeText(
-                            context, "Navigate to therapist screen",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        onEvent(
-                            RegistrationEvent.AddDegree(pagerState.currentPage - 5)
-                        )
-                        // Navigation
+                        if (state.specializations.size == 0) {
+                            Toast.makeText(context, "Fill in specializations!", Toast.LENGTH_SHORT)
+                                .show()
+                        } else if (state.workFields.size == 0) {
+                            Toast.makeText(context, "Fill in work fields!", Toast.LENGTH_SHORT)
+                                .show()
+                        } else if (state.languages.size == 0) {
+                            Toast.makeText(context, "Fill in languages!", Toast.LENGTH_SHORT)
+                                .show()
+                        } else if (state.description.isBlank()) {
+                            Toast.makeText(context, "Fill in description!", Toast.LENGTH_SHORT)
+                                .show()
+                        } else if (state.price.isBlank()) {
+                            Toast.makeText(context, "Fill in price!", Toast.LENGTH_SHORT)
+                                .show()
+                        } else if (state.degrees.size == 0) {
+                            Toast.makeText(
+                                context,
+                                "Add at least one degree!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            onEvent(
+                                RegistrationEvent.SaveTherapistData(111)
+                            )
+                            Toast.makeText(
+                                context, "Navigate to therapist screen", Toast.LENGTH_SHORT
+                            ).show()
+                            // Navigation
+                        }
                     }
                 }
             }

@@ -14,7 +14,7 @@ sealed interface RegistrationEvent {
     data class SetAdmissionYear(val admissionYear: String) : RegistrationEvent
     data class SetGraduationYear(val graduationYear: String) : RegistrationEvent
     data class SetDocumentImage(val documentImage: String) : RegistrationEvent
-    data class AddDegree(val id: Int) : RegistrationEvent
-    data class RemoveDegree(val id: Int) : RegistrationEvent
-    data object SaveTherapistData : RegistrationEvent
+    data class AddDegree(val degreeId: Int) : RegistrationEvent
+    data class RemoveDegree(val degreeId: Int) : RegistrationEvent
+    data class SaveTherapistData(val therapistId: Int) : RegistrationEvent
 }

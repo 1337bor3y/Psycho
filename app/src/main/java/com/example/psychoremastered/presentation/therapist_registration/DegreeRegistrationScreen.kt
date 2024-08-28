@@ -1,5 +1,6 @@
 package com.example.psychoremastered.presentation.therapist_registration
 
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -15,12 +16,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Done
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
@@ -53,7 +58,7 @@ fun DegreeRegistrationScreen(
     pageOffset: Float,
     degree: Degree,
     onEvent: (RegistrationEvent) -> Unit,
-    addOnClick: () -> Unit,
+    moveToNextPage: () -> Unit,
     removeOnClick: () -> Unit
 ) {
     val scrollState = rememberScrollState()
@@ -65,10 +70,19 @@ fun DegreeRegistrationScreen(
     var graduationSymbolsCount by rememberSaveable(degree) {
         mutableStateOf(degree.graduationYear.length.toString())
     }
+    var isErrorUniversity by rememberSaveable(degree) {
+        mutableStateOf(false)
+    }
+    var isErrorSeciality by rememberSaveable(degree) {
+        mutableStateOf(false)
+    }
     var isErrorAdmission by rememberSaveable(degree) {
         mutableStateOf(false)
     }
     var isErrorGraduation by rememberSaveable(degree) {
+        mutableStateOf(false)
+    }
+    var isErrorImage by rememberSaveable(degree) {
         mutableStateOf(false)
     }
     var university by rememberSaveable(degree) {
@@ -86,6 +100,9 @@ fun DegreeRegistrationScreen(
     var selectedImage by rememberSaveable(degree) {
         mutableStateOf(degree.documentImage)
     }
+    var isSaved by rememberSaveable {
+        mutableStateOf(false)
+    }
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
@@ -93,6 +110,8 @@ fun DegreeRegistrationScreen(
             onEvent(
                 RegistrationEvent.SetDocumentImage(selectedImage)
             )
+            isErrorImage = false
+            isSaved = false
         }
     )
 
@@ -135,8 +154,11 @@ fun DegreeRegistrationScreen(
                 onEvent(
                     RegistrationEvent.SetUniversity(it)
                 )
+                isErrorUniversity = false
+                isSaved = false
             },
             label = { Text(text = context.getString(R.string.name_of_the_educational_institution)) },
+            isError = isErrorUniversity
         )
         Spacer(modifier = Modifier.height(10.dp))
         OutlinedTextField(
@@ -149,8 +171,11 @@ fun DegreeRegistrationScreen(
                 onEvent(
                     RegistrationEvent.SetSpeciality(it)
                 )
+                isErrorSeciality = false
+                isSaved = false
             },
             label = { Text(text = context.getString(R.string.specialty)) },
+            isError = isErrorSeciality
         )
         Spacer(modifier = Modifier.height(10.dp))
         Row(
@@ -170,6 +195,7 @@ fun DegreeRegistrationScreen(
                             RegistrationEvent.SetAdmissionYear(it)
                         )
                         isErrorAdmission = false
+                        isSaved = false
                     } else {
                         isErrorAdmission = true
                     }
@@ -195,6 +221,7 @@ fun DegreeRegistrationScreen(
                             RegistrationEvent.SetGraduationYear(it)
                         )
                         isErrorGraduation = false
+                        isSaved = false
                     } else {
                         isErrorGraduation = true
                     }
@@ -213,7 +240,11 @@ fun DegreeRegistrationScreen(
                 .fillMaxWidth()
                 .height(370.dp)
                 .padding(horizontal = 10.dp),
-            border = BorderStroke(1.dp, Color.Black),
+            border = if (!isErrorImage) {
+                BorderStroke(1.dp, Color.Black)
+            } else {
+                BorderStroke(1.dp, Color.Red)
+            },
             onClick = {
                 singlePhotoPickerLauncher.launch(
                     PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
@@ -241,25 +272,91 @@ fun DegreeRegistrationScreen(
                 }
             }
         }
-        OutlinedButton(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 24.dp, top = 20.dp, end = 24.dp, bottom = 10.dp),
-            shape = RoundedCornerShape(16.dp),
-            border = BorderStroke(1.dp, Color.Blue),
-            colors = ButtonDefaults.buttonColors(
-                contentColor = Color.Blue,
-                containerColor = Color.White
-            ),
-            onClick = { addOnClick() }
+                .padding(start = 14.dp, top = 20.dp, end = 14.dp, bottom = 10.dp)
         ) {
-            Text(text = context.getString(R.string.add_another_document), fontSize = 14.sp)
+            OutlinedButton(
+                modifier = Modifier
+                    .weight(1f),
+                shape = RoundedCornerShape(16.dp),
+                border = BorderStroke(1.dp, Color.Green),
+                colors = if (isSaved) {
+                    ButtonDefaults.buttonColors(
+                        contentColor = Color.White,
+                        containerColor = Color.Green
+                    )
+                } else {
+                    ButtonDefaults.buttonColors(
+                        contentColor = Color.Green,
+                        containerColor = Color.White
+                    )
+                },
+                onClick = {
+                    isErrorUniversity = university.isBlank()
+                    isErrorSeciality = speciality.isBlank()
+                    isErrorAdmission = admissionYear.isBlank()
+                    isErrorGraduation = graduationYear.isBlank()
+                    isErrorImage = selectedImage.isBlank()
+                    if (!isErrorUniversity && !isErrorSeciality && !isErrorAdmission
+                        && !isErrorGraduation && !isErrorImage
+                    ) {
+                        onEvent(
+                            RegistrationEvent.AddDegree(degree.id)
+                        )
+                        isSaved = true
+                    } else {
+                        Toast.makeText(context, "Fill in degree!", Toast.LENGTH_SHORT).show()
+                        isSaved = false
+                    }
+                }) {
+                if (isSaved) {
+                    Icon(
+                        imageVector = Icons.Outlined.Done,
+                        contentDescription = "Saved",
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
+                Text(
+                    text = if (isSaved) {
+                        "Saved"
+                    } else {
+                        "Save"
+                    }, fontSize = 14.sp
+                )
+            }
+            Spacer(modifier = Modifier.width(8.dp))
+            OutlinedButton(
+                modifier = Modifier
+                    .weight(2f),
+                shape = RoundedCornerShape(16.dp),
+                border = BorderStroke(1.dp, Color.Blue),
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = Color.Blue,
+                    containerColor = Color.White
+                ),
+                onClick = {
+                    if (isSaved) {
+                        moveToNextPage()
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "Save before adding another degree!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            ) {
+                Text(text = context.getString(R.string.add_another_document), fontSize = 14.sp)
+            }
         }
         if (degree.id > 0) {
             OutlinedButton(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 24.dp, top = 0.dp, end = 24.dp, bottom = 10.dp),
+                    .padding(start = 14.dp, top = 0.dp, end = 14.dp, bottom = 10.dp),
                 shape = RoundedCornerShape(16.dp),
                 border = BorderStroke(1.dp, Color.Red),
                 colors = ButtonDefaults.buttonColors(
