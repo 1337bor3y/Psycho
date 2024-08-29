@@ -92,4 +92,7 @@ dependencies {
     // Test
     implementation(libs.core.ktx)
     implementation(libs.androidx.junit.ktx)
+
+    // Splash screen
+    implementation(libs.androidx.core.splashscreen)
 }
