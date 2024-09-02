@@ -13,9 +13,6 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="upsertTherapist_TherapistIsInDatabase()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="SaveTherapistTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
