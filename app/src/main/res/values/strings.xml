@@ -1,4 +1,6 @@
 <resources>
+    <string name="web_client_id">807655439365-972dr1r020ft0kurc8h47n8713gl4q75.apps.googleusercontent.com</string>
+    <string name="message_digest_algorithm">SHA-256</string>
     <string name="app_name">Psycho</string>
     <string name="choose_ask_text">Who are you?</string>
     <string name="client">Client</string>

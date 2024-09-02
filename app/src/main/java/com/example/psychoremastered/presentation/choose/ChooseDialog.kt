@@ -1,5 +1,6 @@
 package com.example.psychoremastered.presentation.choose
 
+import android.util.Log
 import android.view.Gravity
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
@@ -21,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -32,11 +34,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogWindowProvider
+import com.example.psychoremastered.presentation.choose.google_auth.GoogleAuthUiClient
 import com.example.psychoremstered.R
+import kotlinx.coroutines.launch
 
 @Composable
 fun ChooseDialog(onDismissRequest: () -> Unit) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
     Dialog(onDismissRequest = { onDismissRequest() }) {
         (LocalView.current.parent as DialogWindowProvider).apply {
             window.setGravity(Gravity.BOTTOM)
@@ -74,7 +80,10 @@ fun ChooseDialog(onDismissRequest: () -> Unit) {
                     containerColor = Color.White
                 ),
                 onClick = {
-                    Toast.makeText(context, "Google", Toast.LENGTH_SHORT).show()
+                    coroutineScope.launch {
+                        val user = GoogleAuthUiClient(context).signIn()
+                        Log.d("GoogleUser", user.toString())
+                    }
                 }
             ) {
                 Icon(

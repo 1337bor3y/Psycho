@@ -97,7 +97,11 @@ dependencies {
     // Splash screen
     implementation(libs.androidx.core.splashscreen)
 
-    // Firebase Google auth
+    // Google Credential Manager auth
+    implementation(libs.androidx.credentials)
+    implementation(libs.googleid)
+
+    // Firebase auth
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
     implementation(libs.play.services.auth)
