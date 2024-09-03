@@ -1,4 +1,4 @@
-package com.example.psychoremastered.presentation.choose
+package com.example.psychoremastered.presentation.auth.choose
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -15,6 +15,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -25,17 +26,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import com.example.psychoremastered.presentation.auth.AuthEvent
+import com.example.psychoremastered.presentation.auth.AuthState
 import com.example.psychoremstered.R
 
 @Composable
-fun ChooseScreen() {
+fun ChooseScreen(
+    state: AuthState,
+    onEvent: (AuthEvent) -> Unit
+) {
     val context = LocalContext.current
     var openChooseDialog by rememberSaveable {
         mutableStateOf(false)
     }
-
     if (openChooseDialog) {
-        ChooseDialog { openChooseDialog = false }
+        ChooseDialog(
+            onEvent = onEvent
+        ) { openChooseDialog = false }
+    }
+
+    LaunchedEffect(state.signInError) {
+        state.signInError?.let {
+            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+        }
     }
     Column(
         modifier = Modifier

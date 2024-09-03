@@ -7,10 +7,14 @@ import android.view.animation.OvershootInterpolator
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.runtime.getValue
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.psychoremastered.core.ui.theme.PsychoRemsteredTheme
-import com.example.psychoremastered.presentation.choose.ChooseScreen
+import com.example.psychoremastered.presentation.auth.AuthViewModel
+import com.example.psychoremastered.presentation.auth.choose.ChooseScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -46,7 +50,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PsychoRemsteredTheme {
-                ChooseScreen()
+                val authViewModel = hiltViewModel<AuthViewModel>()
+                val state by authViewModel.state.collectAsStateWithLifecycle()
+
+                ChooseScreen(
+                    state = state,
+                    onEvent = authViewModel::onEvent
+                )
             }
         }
     }

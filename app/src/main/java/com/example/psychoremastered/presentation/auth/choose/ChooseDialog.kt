@@ -1,6 +1,5 @@
-package com.example.psychoremastered.presentation.choose
+package com.example.psychoremastered.presentation.auth.choose
 
-import android.util.Log
 import android.view.Gravity
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
@@ -34,12 +33,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogWindowProvider
-import com.example.psychoremastered.presentation.choose.google_auth.GoogleAuthUiClient
+import com.example.psychoremastered.presentation.auth.AuthEvent
+import com.example.psychoremastered.presentation.auth.google_auth.GoogleAuthUiClient
 import com.example.psychoremstered.R
 import kotlinx.coroutines.launch
 
 @Composable
-fun ChooseDialog(onDismissRequest: () -> Unit) {
+fun ChooseDialog(
+    onEvent: (AuthEvent) -> Unit,
+    onDismissRequest: () -> Unit
+) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
@@ -81,8 +84,10 @@ fun ChooseDialog(onDismissRequest: () -> Unit) {
                 ),
                 onClick = {
                     coroutineScope.launch {
-                        val user = GoogleAuthUiClient(context).signIn()
-                        Log.d("GoogleUser", user.toString())
+                        val result = GoogleAuthUiClient(context).signIn()
+                        onEvent(
+                            AuthEvent.SignInWithGoogle(result)
+                        )
                     }
                 }
             ) {

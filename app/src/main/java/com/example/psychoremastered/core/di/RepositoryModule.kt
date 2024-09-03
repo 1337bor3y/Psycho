@@ -1,6 +1,8 @@
 package com.example.psychoremastered.core.di
 
+import com.example.psychoremastered.data.repository.FirebaseAuthRepository
 import com.example.psychoremastered.data.repository.TherapistRepositoryImpl
+import com.example.psychoremastered.domain.repository.AuthRepository
 import com.example.psychoremastered.domain.repository.TherapistRepository
 import dagger.Binds
 import dagger.Module
@@ -17,4 +19,10 @@ abstract class RepositoryModule {
     abstract fun provideTherapistRepository(
         therapistRepositoryImpl: TherapistRepositoryImpl
     ): TherapistRepository
+
+    @Binds
+    @Singleton
+    abstract fun provideAuthRepository(
+        firebaseAuthRepository: FirebaseAuthRepository
+    ): AuthRepository
 }

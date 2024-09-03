@@ -1,17 +1,12 @@
-package com.example.psychoremastered.presentation.choose.google_auth
+package com.example.psychoremastered.presentation.auth.google_auth
 
 import android.content.Context
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import com.example.psychoremastered.domain.model.SignInResult
-import com.example.psychoremastered.domain.model.UserData
 import com.example.psychoremstered.R
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
-import com.google.firebase.Firebase
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.auth
-import kotlinx.coroutines.tasks.await
 import java.security.MessageDigest
 import java.util.UUID
 
@@ -20,31 +15,20 @@ class GoogleAuthUiClient(
 ) {
     suspend fun signIn(): SignInResult {
         try {
-            val auth = Firebase.auth
             val credentialManager = CredentialManager.create(context)
-
             val result = credentialManager.getCredential(
                 request = getCredentialRequest(),
                 context = context,
             )
-
             val googleIdToken = GoogleIdTokenCredential.createFrom(result.credential.data)
-            val firebaseCredential = GoogleAuthProvider.getCredential(googleIdToken.idToken, null)
-            val user = auth.signInWithCredential(firebaseCredential).await().user
 
             return SignInResult(
-                data = user?.run {
-                    UserData(
-                        userId = uid,
-                        displayName = displayName,
-                        profilePictureUri = photoUrl.toString()
-                    )
-                },
+                idToken = googleIdToken.idToken,
                 errorMessage = null
             )
         } catch (e: Exception) {
             return SignInResult(
-                data = null,
+                idToken = null,
                 errorMessage = e.localizedMessage
             )
         }

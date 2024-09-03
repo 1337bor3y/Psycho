@@ -1,6 +1,6 @@
 package com.example.psychoremastered.domain.model
 
 data class SignInResult(
-    val data: UserData?,
+    val idToken: String?,
     val errorMessage: String?
 )
