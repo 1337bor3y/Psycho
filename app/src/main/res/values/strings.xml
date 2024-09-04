@@ -5,7 +5,7 @@
     <string name="choose_ask_text">Who are you?</string>
     <string name="client">Client</string>
     <string name="therapist">Therapist</string>
-    <string name="first_name">First Name</string>
+    <string name="first_name">First name</string>
     <string name="surname">Surname</string>
     <string name="email">E-mail</string>
     <string name="password">Password</string>
