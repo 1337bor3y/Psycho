@@ -15,6 +15,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.psychoremastered.core.ui.theme.PsychoRemsteredTheme
 import com.example.psychoremastered.presentation.auth.AuthViewModel
 import com.example.psychoremastered.presentation.auth.choose.ChooseScreen
+import com.example.psychoremastered.presentation.auth.password_auth.PasswordAuthUI
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -53,10 +54,7 @@ class MainActivity : ComponentActivity() {
                 val authViewModel = hiltViewModel<AuthViewModel>()
                 val state by authViewModel.state.collectAsStateWithLifecycle()
 
-                ChooseScreen(
-                    state = state,
-                    onEvent = authViewModel::onEvent
-                )
+                PasswordAuthUI()
             }
         }
     }
