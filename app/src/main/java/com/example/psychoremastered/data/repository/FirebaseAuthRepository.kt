@@ -18,6 +18,7 @@ class FirebaseAuthRepository @Inject constructor(): AuthRepository {
         return user?.run {
             User(
                 userId = uid,
+                email = email,
                 displayName = displayName,
                 profilePictureUri = photoUrl.toString()
             )
