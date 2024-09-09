@@ -3,7 +3,7 @@ package com.example.psychoremastered.presentation.auth.google_auth
 import android.content.Context
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
-import com.example.psychoremastered.domain.model.SignInResult
+import com.example.psychoremastered.domain.model.GoogleSignInResult
 import com.example.psychoremstered.R
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
@@ -13,7 +13,7 @@ import java.util.UUID
 class GoogleAuthUiClient(
     private val context: Context,
 ) {
-    suspend fun signIn(): SignInResult {
+    suspend fun signIn(): GoogleSignInResult {
         try {
             val credentialManager = CredentialManager.create(context)
             val result = credentialManager.getCredential(
@@ -22,12 +22,12 @@ class GoogleAuthUiClient(
             )
             val googleIdToken = GoogleIdTokenCredential.createFrom(result.credential.data)
 
-            return SignInResult(
+            return GoogleSignInResult(
                 idToken = googleIdToken.idToken,
                 errorMessage = null
             )
         } catch (e: Exception) {
-            return SignInResult(
+            return GoogleSignInResult(
                 idToken = null,
                 errorMessage = e.localizedMessage
             )

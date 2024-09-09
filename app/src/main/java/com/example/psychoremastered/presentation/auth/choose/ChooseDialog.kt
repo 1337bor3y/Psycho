@@ -86,7 +86,7 @@ fun ChooseDialog(
                     coroutineScope.launch {
                         val result = GoogleAuthUiClient(context).signIn()
                         onEvent(
-                            AuthEvent.SignInWithGoogle(result)
+                            AuthEvent.SignInWithGoogle(result = result)
                         )
                     }
                 }

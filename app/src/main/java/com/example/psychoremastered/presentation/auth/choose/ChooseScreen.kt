@@ -45,7 +45,7 @@ fun ChooseScreen(
         ) { openChooseDialog = false }
     }
 
-    LaunchedEffect(state.signInError) {
+    LaunchedEffect(key1 = state.signInError) {
         state.signInError?.let {
             Toast.makeText(context, it, Toast.LENGTH_LONG).show()
         }

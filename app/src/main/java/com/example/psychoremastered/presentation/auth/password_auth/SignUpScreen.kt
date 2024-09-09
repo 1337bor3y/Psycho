@@ -51,28 +51,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.example.psychoremastered.domain.use_case.SignInWithEmailAndPassword
+import com.example.psychoremastered.presentation.auth.AuthEvent
+import com.example.psychoremastered.presentation.auth.AuthState
 import com.example.psychoremstered.R
 
-@Preview(showBackground = true)
 @Composable
-fun SignUpScreen() {
+fun SignUpScreen(
+    state: AuthState,
+    onEvent: (AuthEvent) -> Unit
+) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
-    var firstName by rememberSaveable {
-        mutableStateOf("")
-    }
-    var surname by rememberSaveable {
-        mutableStateOf("")
-    }
-    var email by rememberSaveable {
-        mutableStateOf("")
-    }
-    var password by rememberSaveable {
-        mutableStateOf("")
-    }
-    var confirmPassword by rememberSaveable {
-        mutableStateOf("")
-    }
     var isErrorFirstName by rememberSaveable {
         mutableStateOf(false)
     }
@@ -106,9 +96,6 @@ fun SignUpScreen() {
     var isErrorImage by rememberSaveable {
         mutableStateOf(false)
     }
-    var selectedImage by rememberSaveable {
-        mutableStateOf("")
-    }
     var isPasswordVisible by rememberSaveable {
         mutableStateOf(false)
     }
@@ -118,7 +105,9 @@ fun SignUpScreen() {
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
-            selectedImage = uri?.toString() ?: ""
+            onEvent(
+                AuthEvent.SetProfileImage(uri?.toString() ?: "")
+            )
             isErrorImage = false
         }
     )
@@ -168,14 +157,14 @@ fun SignUpScreen() {
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = rememberAsyncImagePainter(model = selectedImage),
+                    painter = rememberAsyncImagePainter(model = state.profileImage),
                     contentDescription = "Document image",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .fillMaxSize()
                         .clip(RoundedCornerShape(8.dp))
                 )
-                if (selectedImage.isBlank()) {
+                if (state.profileImage.isBlank()) {
                     Icon(
                         modifier = Modifier
                             .fillMaxSize(),
@@ -191,9 +180,11 @@ fun SignUpScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(end = 10.dp),
-            value = firstName,
+            value = state.firstName,
             onValueChange = {
-                firstName = it
+                onEvent(
+                    AuthEvent.SetFirstName(it)
+                )
             },
             label = { Text(text = context.getString(R.string.first_name)) },
             isError = isErrorFirstName,
@@ -204,9 +195,11 @@ fun SignUpScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(end = 10.dp),
-            value = surname,
+            value = state.surname,
             onValueChange = {
-                surname = it
+                onEvent(
+                    AuthEvent.SetSurname(it)
+                )
             },
             label = { Text(text = context.getString(R.string.surname)) },
             isError = isErrorSurname,
@@ -216,9 +209,11 @@ fun SignUpScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(end = 10.dp),
-            value = email,
+            value = state.email,
             onValueChange = {
-                email = it
+                onEvent(
+                    AuthEvent.SetEmail(it)
+                )
             },
             label = { Text(text = context.getString(R.string.email)) },
             isError = isErrorEmail,
@@ -232,9 +227,11 @@ fun SignUpScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(end = 10.dp),
-            value = password,
+            value = state.password,
             onValueChange = {
-                password = it
+                onEvent(
+                    AuthEvent.SetPassword(it)
+                )
             },
             label = { Text(text = context.getString(R.string.password)) },
             isError = isErrorPassword,
@@ -260,9 +257,11 @@ fun SignUpScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(end = 10.dp),
-            value = confirmPassword,
+            value = state.confirmPassword,
             onValueChange = {
-                confirmPassword = it
+                onEvent(
+                    AuthEvent.SetConfirmPassword(it)
+                )
             },
             label = { Text(text = context.getString(R.string.confirm_password)) },
             isError = isErrorConfirmPassword,
@@ -286,9 +285,18 @@ fun SignUpScreen() {
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                // Validate
-                // Sign up
-                // Navigate
+                isErrorFirstName = state.firstName.isBlank()
+                isErrorSurname = state.surname.isBlank()
+                isErrorEmail = state.email.isBlank()
+                isErrorPassword = state.password.isBlank()
+                isErrorConfirmPassword = state.confirmPassword.isBlank()
+                isErrorImage = state.profileImage.isBlank()
+                if (!isErrorFirstName && !isErrorSurname && !isErrorEmail && !isErrorPassword &&
+                    !isErrorConfirmPassword && !isErrorImage) {
+                    onEvent(
+                        AuthEvent.CreateUserWithEmailAndPassword
+                    )
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()

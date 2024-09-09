@@ -2,19 +2,24 @@ package com.example.psychoremastered.presentation.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.psychoremastered.domain.model.User
 import com.example.psychoremastered.domain.use_case.SignInWithCredential
-import com.example.psychoremastered.domain.model.SignInResult
+import com.example.psychoremastered.domain.model.GoogleSignInResult
+import com.example.psychoremastered.domain.model.Resource
+import com.example.psychoremastered.domain.use_case.CreateUserWithEmailAndPassword
+import com.example.psychoremastered.domain.use_case.SignInWithEmailAndPassword
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val signInWithCredential: SignInWithCredential
+    private val signInWithCredential: SignInWithCredential,
+    private val signInWithEmailAndPassword: SignInWithEmailAndPassword,
+    private val createUserWithEmailAndPassword: CreateUserWithEmailAndPassword
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AuthState())
@@ -23,21 +28,140 @@ class AuthViewModel @Inject constructor(
     fun onEvent(event: AuthEvent) {
         when (event) {
             is AuthEvent.SignInWithGoogle -> signInWithGoogle(event.result)
-        }
-    }
 
-    private fun signInWithGoogle(result: SignInResult) {
-        viewModelScope.launch {
-            var user: User? = null
-            if (result.idToken != null) {
-                user = signInWithCredential(result.idToken)
-            }
-            _state.update {
+            AuthEvent.CreateUserWithEmailAndPassword -> createUserWithEmailAndPassword()
+
+            AuthEvent.SignInWithEmailAndPassword -> signInWithEmailAndPassword()
+
+            is AuthEvent.SetConfirmPassword -> _state.update {
                 it.copy(
-                    user = user,
-                    signInError = result.errorMessage
+                    confirmPassword = event.confirmPassword
+                )
+            }
+
+            is AuthEvent.SetEmail -> _state.update {
+                it.copy(
+                    email = event.email
+                )
+            }
+
+            is AuthEvent.SetFirstName -> _state.update {
+                it.copy(
+                    firstName = event.firstName
+                )
+            }
+
+            is AuthEvent.SetPassword -> _state.update {
+                it.copy(
+                    password = event.password
+                )
+            }
+
+            is AuthEvent.SetProfileImage -> _state.update {
+                it.copy(
+                    profileImage = event.profileImage
+                )
+            }
+
+            is AuthEvent.SetSurname -> _state.update {
+                it.copy(
+                    surname = event.surname
                 )
             }
         }
+    }
+
+    private fun signInWithGoogle(signInResult: GoogleSignInResult) {
+        signInResult.idToken?.let { token ->
+            signInWithCredential(token).onEach { result ->
+                when (result) {
+                    is Resource.Error -> _state.update {
+                        it.copy(
+                            signInError = result.errorMessage,
+                            isLoading = false
+                        )
+                    }
+
+                    is Resource.Loading -> _state.update {
+                        it.copy(
+                            signInError = null,
+                            isLoading = true
+                        )
+                    }
+
+                    is Resource.Success -> _state.update {
+                        it.copy(
+                            user = result.data,
+                            isLoading = false
+                        )
+                    }
+                }
+            }.launchIn(viewModelScope)
+        } ?: _state.update {
+            it.copy(
+                user = null,
+                signInError = signInResult.errorMessage
+            )
+        }
+    }
+
+    private fun createUserWithEmailAndPassword() {
+        createUserWithEmailAndPassword(
+            authEmail = state.value.email,
+            authPassword = state.value.password
+        ).onEach { result ->
+            when (result) {
+                is Resource.Error -> _state.update {
+                    it.copy(
+                        signInError = result.errorMessage,
+                        isLoading = false
+                    )
+                }
+
+                is Resource.Loading -> _state.update {
+                    it.copy(
+                        signInError = null,
+                        isLoading = true
+                    )
+                }
+
+                is Resource.Success -> _state.update {
+                    it.copy(
+                        user = result.data,
+                        isLoading = false
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun signInWithEmailAndPassword() {
+        signInWithEmailAndPassword(
+            authEmail = state.value.email,
+            authPassword = state.value.password
+        ).onEach { result ->
+            when (result) {
+                is Resource.Error -> _state.update {
+                    it.copy(
+                        signInError = result.errorMessage,
+                        isLoading = false
+                    )
+                }
+
+                is Resource.Loading -> _state.update {
+                    it.copy(
+                        signInError = null,
+                        isLoading = true
+                    )
+                }
+
+                is Resource.Success -> _state.update {
+                    it.copy(
+                        user = result.data,
+                        isLoading = false
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 }

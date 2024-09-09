@@ -54,7 +54,10 @@ class MainActivity : ComponentActivity() {
                 val authViewModel = hiltViewModel<AuthViewModel>()
                 val state by authViewModel.state.collectAsStateWithLifecycle()
 
-                PasswordAuthUI()
+                PasswordAuthUI(
+                    state = state,
+                    onEvent = authViewModel::onEvent
+                )
             }
         }
     }

@@ -8,12 +8,44 @@ import com.google.firebase.auth.auth
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class FirebaseAuthRepository @Inject constructor(): AuthRepository {
+class FirebaseAuthRepository @Inject constructor() : AuthRepository {
     private val auth = Firebase.auth
 
     override suspend fun signInWithCredential(idToken: String): User? {
         val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
         val user = auth.signInWithCredential(firebaseCredential).await().user
+
+        return user?.run {
+            User(
+                userId = uid,
+                email = email,
+                displayName = displayName,
+                profilePictureUri = photoUrl.toString()
+            )
+        }
+    }
+
+    override suspend fun createUserWithEmailAndPassword(
+        authEmail: String,
+        authPassword: String
+    ): User? {
+        val user = auth.createUserWithEmailAndPassword(authEmail, authPassword).await().user
+
+        return user?.run {
+            User(
+                userId = uid,
+                email = email,
+                displayName = displayName,
+                profilePictureUri = photoUrl.toString()
+            )
+        }
+    }
+
+    override suspend fun signInWithEmailAndPassword(
+        authEmail: String,
+        authPassword: String
+    ): User? {
+        val user = auth.signInWithEmailAndPassword(authEmail, authPassword).await().user
 
         return user?.run {
             User(

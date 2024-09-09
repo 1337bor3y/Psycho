@@ -1,5 +1,6 @@
 package com.example.psychoremastered.presentation.auth.password_auth
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -36,19 +38,17 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.psychoremastered.presentation.auth.AuthEvent
+import com.example.psychoremastered.presentation.auth.AuthState
 import com.example.psychoremstered.R
 
-@Preview(showBackground = true)
 @Composable
-fun LogInScreen() {
+fun LogInScreen(
+    state: AuthState,
+    onEvent: (AuthEvent) -> Unit
+) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
-    var email by rememberSaveable {
-        mutableStateOf("")
-    }
-    var password by rememberSaveable {
-        mutableStateOf("")
-    }
     var isErrorEmail by rememberSaveable {
         mutableStateOf(false)
     }
@@ -87,9 +87,11 @@ fun LogInScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(end = 10.dp),
-            value = email,
+            value = state.email,
             onValueChange = {
-                email = it
+                onEvent(
+                    AuthEvent.SetEmail(it)
+                )
             },
             label = { Text(text = context.getString(R.string.email)) },
             isError = isErrorEmail,
@@ -103,9 +105,11 @@ fun LogInScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(end = 10.dp),
-            value = password,
+            value = state.password,
             onValueChange = {
-                password = it
+                onEvent(
+                    AuthEvent.SetPassword(it)
+                )
             },
             label = { Text(text = context.getString(R.string.password)) },
             isError = isErrorPassword,
@@ -129,9 +133,13 @@ fun LogInScreen() {
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                // Validate
-                // Log in
-                // Navigate
+                isErrorEmail = state.email.isBlank()
+                isErrorPassword = state.password.isBlank()
+                if (!isErrorEmail && !isErrorPassword) {
+                    onEvent(
+                        AuthEvent.SignInWithEmailAndPassword
+                    )
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()
