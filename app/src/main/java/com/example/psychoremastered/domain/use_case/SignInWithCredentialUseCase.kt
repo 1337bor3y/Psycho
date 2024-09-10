@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class SignInWithCredential @Inject constructor(
+class SignInWithCredentialUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
     operator fun invoke(idToken: String): Flow<Resource<User>> = flow {

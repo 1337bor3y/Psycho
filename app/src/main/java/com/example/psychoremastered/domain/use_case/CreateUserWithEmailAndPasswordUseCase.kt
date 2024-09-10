@@ -7,14 +7,14 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class SignInWithEmailAndPassword @Inject constructor(
+class CreateUserWithEmailAndPasswordUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
     operator fun invoke(authEmail: String, authPassword: String): Flow<Resource<User>> =
         flow {
             try {
                 emit(Resource.Loading<User>())
-                val user = authRepository.signInWithEmailAndPassword(authEmail, authPassword)
+                val user = authRepository.createUserWithEmailAndPassword(authEmail, authPassword)
                 user?.let {
                     emit(Resource.Success<User>(it))
                 }

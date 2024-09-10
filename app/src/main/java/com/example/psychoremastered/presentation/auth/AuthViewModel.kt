@@ -2,11 +2,11 @@ package com.example.psychoremastered.presentation.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.psychoremastered.domain.use_case.SignInWithCredential
+import com.example.psychoremastered.domain.use_case.SignInWithCredentialUseCase
 import com.example.psychoremastered.domain.model.GoogleSignInResult
 import com.example.psychoremastered.domain.model.Resource
-import com.example.psychoremastered.domain.use_case.CreateUserWithEmailAndPassword
-import com.example.psychoremastered.domain.use_case.SignInWithEmailAndPassword
+import com.example.psychoremastered.domain.use_case.CreateUserWithEmailAndPasswordUseCase
+import com.example.psychoremastered.domain.use_case.SignInWithEmailAndPasswordUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,9 +17,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val signInWithCredential: SignInWithCredential,
-    private val signInWithEmailAndPassword: SignInWithEmailAndPassword,
-    private val createUserWithEmailAndPassword: CreateUserWithEmailAndPassword
+    private val signInWithCredentialUseCase: SignInWithCredentialUseCase,
+    private val signInWithEmailAndPasswordUseCase: SignInWithEmailAndPasswordUseCase,
+    private val createUserWithEmailAndPasswordUseCase: CreateUserWithEmailAndPasswordUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AuthState())
@@ -73,7 +73,7 @@ class AuthViewModel @Inject constructor(
 
     private fun signInWithGoogle(signInResult: GoogleSignInResult) {
         signInResult.idToken?.let { token ->
-            signInWithCredential(token).onEach { result ->
+            signInWithCredentialUseCase(token).onEach { result ->
                 when (result) {
                     is Resource.Error -> _state.update {
                         it.copy(
@@ -106,7 +106,7 @@ class AuthViewModel @Inject constructor(
     }
 
     private fun createUserWithEmailAndPassword() {
-        createUserWithEmailAndPassword(
+        createUserWithEmailAndPasswordUseCase(
             authEmail = state.value.email,
             authPassword = state.value.password
         ).onEach { result ->
@@ -136,7 +136,7 @@ class AuthViewModel @Inject constructor(
     }
 
     private fun signInWithEmailAndPassword() {
-        signInWithEmailAndPassword(
+        signInWithEmailAndPasswordUseCase(
             authEmail = state.value.email,
             authPassword = state.value.password
         ).onEach { result ->

@@ -4,7 +4,7 @@ import com.example.psychoremastered.domain.model.Therapist
 import com.example.psychoremastered.domain.repository.TherapistRepository
 import javax.inject.Inject
 
-class SaveTherapist @Inject constructor(
+class SaveTherapistUseCase @Inject constructor(
     private val therapistRepository: TherapistRepository
 ) {
     suspend operator fun invoke(therapist: Therapist) {

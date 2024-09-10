@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.psychoremastered.domain.model.Degree
 import com.example.psychoremastered.domain.model.Therapist
-import com.example.psychoremastered.domain.use_case.SaveTherapist
+import com.example.psychoremastered.domain.use_case.SaveTherapistUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegistrationViewModel @Inject constructor(
-    private val saveTherapist: SaveTherapist
+    private val saveTherapistUseCase: SaveTherapistUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(RegistrationState())
@@ -143,7 +143,7 @@ class RegistrationViewModel @Inject constructor(
 
     private fun saveTherapistData(therapistId: Int) {
         viewModelScope.launch {
-            saveTherapist(
+            saveTherapistUseCase(
                 Therapist(
                     id = therapistId,
                     specializations = state.value.specializations.toList(),
