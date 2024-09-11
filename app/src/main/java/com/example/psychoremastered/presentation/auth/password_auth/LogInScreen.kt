@@ -46,18 +46,6 @@ fun LogInScreen(
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
-    var isErrorEmail by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var isErrorPassword by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var emailError by rememberSaveable {
-        mutableStateOf("")
-    }
-    var passwordError by rememberSaveable {
-        mutableStateOf("")
-    }
     var isPasswordVisible by rememberSaveable {
         mutableStateOf(false)
     }
@@ -91,8 +79,8 @@ fun LogInScreen(
                 )
             },
             label = { Text(text = context.getString(R.string.email)) },
-            isError = isErrorEmail,
-            supportingText = { Text(text = emailError) },
+            isError = !state.isEmailValid,
+            supportingText = { Text(text = state.emailError) },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email
             )
@@ -109,8 +97,8 @@ fun LogInScreen(
                 )
             },
             label = { Text(text = context.getString(R.string.password)) },
-            isError = isErrorPassword,
-            supportingText = { Text(text = passwordError) },
+            isError = !state.isPasswordValid,
+            supportingText = { Text(text = state.passwordError) },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password
             ),
@@ -130,13 +118,9 @@ fun LogInScreen(
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                isErrorEmail = state.email.isBlank()
-                isErrorPassword = state.password.isBlank()
-                if (!isErrorEmail && !isErrorPassword) {
-                    onEvent(
-                        AuthEvent.SignInWithEmailAndPassword
-                    )
-                }
+                onEvent(
+                    AuthEvent.SignInWithEmailAndPassword
+                )
             },
             modifier = Modifier
                 .fillMaxWidth()

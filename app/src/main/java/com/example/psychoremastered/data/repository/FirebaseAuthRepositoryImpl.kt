@@ -8,7 +8,7 @@ import com.google.firebase.auth.auth
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class FirebaseAuthRepository @Inject constructor() : AuthRepository {
+class FirebaseAuthRepositoryImpl @Inject constructor() : AuthRepository {
     private val auth = Firebase.auth
 
     override suspend fun signInWithCredential(idToken: String): User? {

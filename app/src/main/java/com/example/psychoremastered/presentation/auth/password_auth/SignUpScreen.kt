@@ -61,39 +61,6 @@ fun SignUpScreen(
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
-    var isErrorFirstName by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var isErrorSurname by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var isErrorEmail by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var isErrorPassword by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var isErrorConfirmPassword by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var firstNameError by rememberSaveable {
-        mutableStateOf("")
-    }
-    var surnameError by rememberSaveable {
-        mutableStateOf("")
-    }
-    var emailError by rememberSaveable {
-        mutableStateOf("")
-    }
-    var passwordError by rememberSaveable {
-        mutableStateOf("")
-    }
-    var confirmPasswordError by rememberSaveable {
-        mutableStateOf("")
-    }
-    var isErrorImage by rememberSaveable {
-        mutableStateOf(false)
-    }
     var isPasswordVisible by rememberSaveable {
         mutableStateOf(false)
     }
@@ -104,9 +71,8 @@ fun SignUpScreen(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
             onEvent(
-                AuthEvent.SetProfileImage(uri?.toString() ?: "")
+                AuthEvent.SetProfileImage(uri?.toString() ?: state.profileImage)
             )
-            isErrorImage = false
         }
     )
 
@@ -129,13 +95,13 @@ fun SignUpScreen(
                     fontFamily = FontFamily.Serif
                 )
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         OutlinedCard(
             modifier = Modifier
                 .width(160.dp)
                 .height(140.dp)
                 .padding(horizontal = 10.dp),
-            border = if (!isErrorImage) {
+            border = if (state.isProfileImageValid) {
                 BorderStroke(1.dp, Color.Black)
             } else {
                 BorderStroke(1.dp, Color.Red)
@@ -173,7 +139,11 @@ fun SignUpScreen(
                 }
             }
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = state.profileImageError,
+            color = MaterialTheme.colorScheme.error,
+            fontSize = 14.sp
+        )
         OutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth()
@@ -185,8 +155,8 @@ fun SignUpScreen(
                 )
             },
             label = { Text(text = context.getString(R.string.first_name)) },
-            isError = isErrorFirstName,
-            supportingText = { Text(text = firstNameError) }
+            isError = !state.isFirstNameValid,
+            supportingText = { Text(text = state.firstNameError) }
         )
         Spacer(modifier = Modifier.height(2.dp))
         OutlinedTextField(
@@ -200,8 +170,8 @@ fun SignUpScreen(
                 )
             },
             label = { Text(text = context.getString(R.string.surname)) },
-            isError = isErrorSurname,
-            supportingText = { Text(text = surnameError) }
+            isError = !state.isSurnameValid,
+            supportingText = { Text(text = state.surnameError) }
         )
         OutlinedTextField(
             modifier = Modifier
@@ -214,8 +184,8 @@ fun SignUpScreen(
                 )
             },
             label = { Text(text = context.getString(R.string.email)) },
-            isError = isErrorEmail,
-            supportingText = { Text(text = emailError) },
+            isError = !state.isEmailValid,
+            supportingText = { Text(text = state.emailError) },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email
             )
@@ -232,8 +202,8 @@ fun SignUpScreen(
                 )
             },
             label = { Text(text = context.getString(R.string.password)) },
-            isError = isErrorPassword,
-            supportingText = { Text(text = passwordError) },
+            isError = !state.isPasswordValid,
+            supportingText = { Text(text = state.passwordError) },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password
             ),
@@ -262,8 +232,8 @@ fun SignUpScreen(
                 )
             },
             label = { Text(text = context.getString(R.string.confirm_password)) },
-            isError = isErrorConfirmPassword,
-            supportingText = { Text(text = confirmPasswordError) },
+            isError = !state.isConfirmPasswordValid,
+            supportingText = { Text(text = state.confirmPasswordError) },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password
             ),
@@ -283,19 +253,9 @@ fun SignUpScreen(
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                isErrorFirstName = state.firstName.isBlank()
-                isErrorSurname = state.surname.isBlank()
-                isErrorEmail = state.email.isBlank()
-                isErrorPassword = state.password.isBlank()
-                isErrorConfirmPassword = state.confirmPassword.isBlank()
-                        || state.password != state.confirmPassword
-                isErrorImage = state.profileImage.isBlank()
-                if (!isErrorFirstName && !isErrorSurname && !isErrorEmail && !isErrorPassword &&
-                    !isErrorConfirmPassword && !isErrorImage) {
-                    onEvent(
-                        AuthEvent.CreateUserWithEmailAndPassword
-                    )
-                }
+                onEvent(
+                    AuthEvent.CreateUserWithEmailAndPassword
+                )
             },
             modifier = Modifier
                 .fillMaxWidth()

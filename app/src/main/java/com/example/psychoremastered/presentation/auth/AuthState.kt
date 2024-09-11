@@ -12,4 +12,16 @@ data class AuthState(
     val password: String = "",
     val confirmPassword: String = "",
     val profileImage: String = "",
+    val isProfileImageValid: Boolean = true,
+    val profileImageError: String = "",
+    val isFirstNameValid: Boolean = true,
+    val firstNameError: String = "",
+    val isSurnameValid: Boolean = true,
+    val surnameError: String = "",
+    val isEmailValid: Boolean = true,
+    val emailError: String = "",
+    val isPasswordValid: Boolean = true,
+    val passwordError: String = "",
+    val isConfirmPasswordValid: Boolean = true,
+    val confirmPasswordError: String = ""
 )
