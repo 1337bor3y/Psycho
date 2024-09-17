@@ -1,7 +1,6 @@
 package com.example.psychoremastered.presentation.auth.choose
 
 import android.view.Gravity
-import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,6 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogWindowProvider
+import androidx.navigation.NavController
+import com.example.psychoremastered.core.ScreenRoutes
 import com.example.psychoremastered.presentation.auth.AuthEvent
 import com.example.psychoremastered.presentation.auth.google_auth.GoogleAuthUiClient
 import com.example.psychoremstered.R
@@ -41,7 +42,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun ChooseDialog(
     onEvent: (AuthEvent) -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
+    navController: NavController
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -86,8 +88,12 @@ fun ChooseDialog(
                     coroutineScope.launch {
                         val result = GoogleAuthUiClient(context).signIn()
                         onEvent(
-                            AuthEvent.SignInWithGoogle(result = result)
+                            AuthEvent.SignInWithGoogle(
+                                result = result,
+                                navController = navController
+                            )
                         )
+                        onDismissRequest()
                     }
                 }
             ) {
@@ -114,7 +120,10 @@ fun ChooseDialog(
                     containerColor = Color.Red
                 ),
                 onClick = {
-                    Toast.makeText(context, "Email", Toast.LENGTH_SHORT).show()
+                    navController.navigate(
+                        ScreenRoutes.PasswordAuthScreen
+                    )
+                    onDismissRequest()
                 }
             ) {
                 Icon(

@@ -2,6 +2,8 @@ package com.example.psychoremastered.presentation.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
+import com.example.psychoremastered.core.ScreenRoutes
 import com.example.psychoremastered.domain.model.GoogleSignInResult
 import com.example.psychoremastered.domain.model.Resource
 import com.example.psychoremastered.domain.use_case.CreateUserWithEmailAndPasswordUseCase
@@ -42,85 +44,107 @@ class AuthViewModel @Inject constructor(
 
     fun onEvent(event: AuthEvent) {
         when (event) {
-            is AuthEvent.SignInWithGoogle -> signInWithGoogle(event.result)
+            is AuthEvent.SignInWithGoogle -> signInWithGoogle(
+                event.result,
+                event.navController
+            )
 
-            AuthEvent.CreateUserWithEmailAndPassword -> createUserWithEmailAndPassword()
+            is AuthEvent.CreateUserWithEmailAndPassword -> createUserWithEmailAndPassword(
+                event.navController
+            )
 
-            AuthEvent.SignInWithEmailAndPassword -> signInWithEmailAndPassword()
+            is AuthEvent.SignInWithEmailAndPassword -> signInWithEmailAndPassword(
+                event.navController
+            )
 
             is AuthEvent.SetConfirmPassword -> _state.update {
                 it.copy(
-                    confirmPassword = event.confirmPassword
+                    confirmPassword = event.confirmPassword,
+                    confirmPasswordError = "",
+                    isConfirmPasswordValid = true
                 )
             }
 
             is AuthEvent.SetEmail -> _state.update {
                 it.copy(
-                    email = event.email
+                    email = event.email,
+                    emailError = "",
+                    isEmailValid = true
                 )
             }
 
             is AuthEvent.SetFirstName -> _state.update {
                 it.copy(
-                    firstName = event.firstName
+                    firstName = event.firstName,
+                    firstNameError = "",
+                    isFirstNameValid = true
                 )
             }
 
             is AuthEvent.SetPassword -> _state.update {
                 it.copy(
-                    password = event.password
+                    password = event.password,
+                    passwordError = "",
+                    isPasswordValid = true
                 )
             }
 
             is AuthEvent.SetProfileImage -> _state.update {
                 it.copy(
-                    profileImage = event.profileImage
+                    profileImage = event.profileImage,
+                    profileImageError = "",
+                    isProfileImageValid = true
                 )
             }
 
             is AuthEvent.SetSurname -> _state.update {
                 it.copy(
-                    surname = event.surname
+                    surname = event.surname,
+                    surnameError = "",
+                    isSurnameValid = true
                 )
             }
         }
     }
 
-    private fun signInWithGoogle(signInResult: GoogleSignInResult) {
+    private fun signInWithGoogle(signInResult: GoogleSignInResult, navController: NavController) {
         signInResult.idToken?.let { token ->
             signInWithCredentialUseCase(token).onEach { result ->
                 when (result) {
                     is Resource.Error -> _state.update {
                         it.copy(
-                            signInError = result.errorMessage,
+                            authError = result.errorMessage,
                             isLoading = false
                         )
                     }
 
                     is Resource.Loading -> _state.update {
                         it.copy(
-                            signInError = null,
+                            authError = null,
                             isLoading = true
                         )
                     }
 
-                    is Resource.Success -> _state.update {
-                        it.copy(
-                            user = result.data,
-                            isLoading = false
-                        )
+                    is Resource.Success -> {
+                        _state.update {
+                            it.copy(
+                                user = result.data,
+                                isLoading = false
+                            )
+                        }
+                        navController.navigate(ScreenRoutes.TherapistRegistrationScreen)
                     }
                 }
             }.launchIn(viewModelScope)
         } ?: _state.update {
             it.copy(
                 user = null,
-                signInError = signInResult.errorMessage
+                authError = signInResult.errorMessage
             )
         }
     }
 
-    private fun createUserWithEmailAndPassword() {
+    private fun createUserWithEmailAndPassword(navController: NavController) {
         viewModelScope.launch {
             validateSignUpData()
             if (state.value.isProfileImageValid && state.value.isFirstNameValid &&
@@ -134,30 +158,33 @@ class AuthViewModel @Inject constructor(
                     when (result) {
                         is Resource.Error -> _state.update {
                             it.copy(
-                                signInError = result.errorMessage,
+                                authError = result.errorMessage,
                                 isLoading = false
                             )
                         }
 
                         is Resource.Loading -> _state.update {
                             it.copy(
-                                signInError = null,
+                                authError = null,
                                 isLoading = true
                             )
                         }
 
-                        is Resource.Success -> _state.update {
-                            it.copy(
-                                user = result.data,
-                                isLoading = false
-                            )
+                        is Resource.Success -> {
+                            _state.update {
+                                it.copy(
+                                    user = result.data,
+                                    isLoading = false
+                                )
+                            }
+                            navController.navigate(ScreenRoutes.TherapistRegistrationScreen)
                         }
                     }
                 }.launchIn(viewModelScope)
         }
     }
 
-    private fun signInWithEmailAndPassword() {
+    private fun signInWithEmailAndPassword(navController: NavController) {
         viewModelScope.launch {
             validateSignInData()
             if (state.value.isEmailValid && state.value.isPasswordValid) {
@@ -168,23 +195,26 @@ class AuthViewModel @Inject constructor(
                     when (result) {
                         is Resource.Error -> _state.update {
                             it.copy(
-                                signInError = result.errorMessage,
+                                authError = result.errorMessage,
                                 isLoading = false
                             )
                         }
 
                         is Resource.Loading -> _state.update {
                             it.copy(
-                                signInError = null,
+                                authError = null,
                                 isLoading = true
                             )
                         }
 
-                        is Resource.Success -> _state.update {
-                            it.copy(
-                                user = result.data,
-                                isLoading = false
-                            )
+                        is Resource.Success -> {
+                            _state.update {
+                                it.copy(
+                                    user = result.data,
+                                    isLoading = false
+                                )
+                            }
+                            // Navigate
                         }
                     }
                 }.launchIn(viewModelScope)

@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.psychoremastered.presentation.auth.AuthEvent
 import com.example.psychoremastered.presentation.auth.AuthState
 import kotlinx.coroutines.launch
@@ -36,7 +37,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun PasswordAuthUI(
     state: AuthState,
-    onEvent: (AuthEvent) -> Unit
+    onEvent: (AuthEvent) -> Unit,
+    navController: NavController
 ) {
     val pageCount by rememberSaveable {
         mutableIntStateOf(2)
@@ -45,8 +47,8 @@ fun PasswordAuthUI(
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    LaunchedEffect(key1 = state.signInError) {
-        state.signInError?.let {
+    LaunchedEffect(key1 = state.authError) {
+        state.authError?.let {
             Toast.makeText(context, it, Toast.LENGTH_LONG).show()
         }
     }
@@ -63,7 +65,7 @@ fun PasswordAuthUI(
                         if (pagerState.currentPage != 0) {
                             pagerState.animateScrollToPage(pagerState.currentPage - 1)
                         } else {
-                            // Pop backstack
+                            navController.popBackStack()
                         }
                     }
                 }) {
@@ -86,12 +88,14 @@ fun PasswordAuthUI(
                 if (page == 0) {
                     LogInScreen(
                         state = state,
-                        onEvent = onEvent
+                        onEvent = onEvent,
+                        navController = navController
                     )
                 } else {
                     SignUpScreen(
                         state = state,
-                        onEvent = onEvent
+                        onEvent = onEvent,
+                        navController = navController
                     )
                 }
             }

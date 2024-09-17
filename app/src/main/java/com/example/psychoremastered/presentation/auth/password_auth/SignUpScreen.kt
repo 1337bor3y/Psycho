@@ -49,7 +49,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.example.psychoremastered.core.ScreenRoutes
 import com.example.psychoremastered.presentation.auth.AuthEvent
 import com.example.psychoremastered.presentation.auth.AuthState
 import com.example.psychoremstered.R
@@ -57,7 +59,8 @@ import com.example.psychoremstered.R
 @Composable
 fun SignUpScreen(
     state: AuthState,
-    onEvent: (AuthEvent) -> Unit
+    onEvent: (AuthEvent) -> Unit,
+    navController: NavController
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
@@ -254,7 +257,7 @@ fun SignUpScreen(
         Button(
             onClick = {
                 onEvent(
-                    AuthEvent.CreateUserWithEmailAndPassword
+                    AuthEvent.CreateUserWithEmailAndPassword(navController = navController)
                 )
             },
             modifier = Modifier

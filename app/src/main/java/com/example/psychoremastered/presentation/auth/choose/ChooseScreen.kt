@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.psychoremastered.presentation.auth.AuthEvent
 import com.example.psychoremastered.presentation.auth.AuthState
 import com.example.psychoremstered.R
@@ -33,7 +34,8 @@ import com.example.psychoremstered.R
 @Composable
 fun ChooseScreen(
     state: AuthState,
-    onEvent: (AuthEvent) -> Unit
+    onEvent: (AuthEvent) -> Unit,
+    navController: NavController
 ) {
     val context = LocalContext.current
     var openChooseDialog by rememberSaveable {
@@ -41,12 +43,14 @@ fun ChooseScreen(
     }
     if (openChooseDialog) {
         ChooseDialog(
-            onEvent = onEvent
-        ) { openChooseDialog = false }
+            onEvent = onEvent,
+            navController = navController,
+            onDismissRequest = { openChooseDialog = false }
+        )
     }
 
-    LaunchedEffect(key1 = state.signInError) {
-        state.signInError?.let {
+    LaunchedEffect(key1 = state.authError) {
+        state.authError?.let {
             Toast.makeText(context, it, Toast.LENGTH_LONG).show()
         }
     }

@@ -5,7 +5,7 @@ import com.example.psychoremastered.domain.model.User
 data class AuthState(
     val isLoading: Boolean = false,
     val user: User? = null,
-    val signInError: String? = null,
+    val authError: String? = null,
     val email: String = "",
     val firstName: String = "",
     val surname: String = "",

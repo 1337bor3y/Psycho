@@ -12,9 +12,15 @@ import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.psychoremastered.core.ui.theme.PsychoRemsteredTheme
 import com.example.psychoremastered.presentation.auth.AuthViewModel
+import com.example.psychoremastered.presentation.auth.choose.ChooseScreen
 import com.example.psychoremastered.presentation.auth.password_auth.PasswordAuthUI
+import com.example.psychoremastered.presentation.therapist_registration.RegistrationUI
+import com.example.psychoremastered.presentation.therapist_registration.RegistrationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -50,13 +56,39 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PsychoRemsteredTheme {
-                val authViewModel = hiltViewModel<AuthViewModel>()
-                val state by authViewModel.state.collectAsStateWithLifecycle()
-
-                PasswordAuthUI(
-                    state = state,
-                    onEvent = authViewModel::onEvent
-                )
+                val navController = rememberNavController()
+                NavHost(
+                    navController = navController,
+                    startDestination = ScreenRoutes.ChooseScreen
+                ) {
+                    composable<ScreenRoutes.ChooseScreen> {
+                        val authViewModel = hiltViewModel<AuthViewModel>()
+                        val authState by authViewModel.state.collectAsStateWithLifecycle()
+                        ChooseScreen(
+                            state = authState,
+                            onEvent = authViewModel::onEvent,
+                            navController = navController
+                        )
+                    }
+                    composable<ScreenRoutes.PasswordAuthScreen> {
+                        val authViewModel = hiltViewModel<AuthViewModel>()
+                        val authState by authViewModel.state.collectAsStateWithLifecycle()
+                        PasswordAuthUI(
+                            state = authState,
+                            onEvent = authViewModel::onEvent,
+                            navController = navController
+                        )
+                    }
+                    composable<ScreenRoutes.TherapistRegistrationScreen> {
+                        val regViewModel = hiltViewModel<RegistrationViewModel>()
+                        val regState by regViewModel.state.collectAsStateWithLifecycle()
+                        RegistrationUI(
+                            state = regState,
+                            onEvent = regViewModel::onEvent,
+                            navController = navController
+                        )
+                    }
+                }
             }
         }
     }

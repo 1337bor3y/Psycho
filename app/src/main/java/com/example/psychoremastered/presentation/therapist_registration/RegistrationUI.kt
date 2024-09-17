@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.psychoremastered.domain.model.Degree
 import com.example.psychoremastered.presentation.therapist_registration.model.registrationPages
 import com.example.psychoremstered.R
@@ -40,7 +41,8 @@ import kotlin.math.absoluteValue
 @Composable
 fun RegistrationUI(
     state: RegistrationState,
-    onEvent: (RegistrationEvent) -> Unit
+    onEvent: (RegistrationEvent) -> Unit,
+    navController: NavController
 ) {
     var pageCount by rememberSaveable {
         mutableIntStateOf(registrationPages.size)
@@ -62,11 +64,7 @@ fun RegistrationUI(
                         if (pagerState.currentPage != 0) {
                             pagerState.animateScrollToPage(pagerState.currentPage - 1)
                         } else {
-                            Toast.makeText(
-                                context, "Navigate to welcome screen",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            // Navigation
+                            navController.popBackStack()
                         }
                     }
                 }) {
@@ -178,9 +176,6 @@ fun RegistrationUI(
                             onEvent(
                                 RegistrationEvent.SaveTherapistData(111)
                             )
-                            Toast.makeText(
-                                context, "Navigate to therapist screen", Toast.LENGTH_SHORT
-                            ).show()
                             // Navigation
                         }
                     }

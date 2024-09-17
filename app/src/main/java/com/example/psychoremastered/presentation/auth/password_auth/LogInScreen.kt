@@ -35,6 +35,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.psychoremastered.presentation.auth.AuthEvent
 import com.example.psychoremastered.presentation.auth.AuthState
 import com.example.psychoremstered.R
@@ -42,7 +43,8 @@ import com.example.psychoremstered.R
 @Composable
 fun LogInScreen(
     state: AuthState,
-    onEvent: (AuthEvent) -> Unit
+    onEvent: (AuthEvent) -> Unit,
+    navController: NavController
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
@@ -119,7 +121,7 @@ fun LogInScreen(
         Button(
             onClick = {
                 onEvent(
-                    AuthEvent.SignInWithEmailAndPassword
+                    AuthEvent.SignInWithEmailAndPassword(navController = navController)
                 )
             },
             modifier = Modifier
