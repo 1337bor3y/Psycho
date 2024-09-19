@@ -19,7 +19,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class SaveTherapistUseCaseTest {
+class RoomDbTest {
     private lateinit var therapistDao: TherapistDao
     private lateinit var therapistDatabase: TherapistDatabase
 
@@ -41,12 +41,16 @@ class SaveTherapistUseCaseTest {
     @Test
     fun insertTherapist_therapistInDatabase() = runBlocking {
         val expectedTherapist = Therapist(
-            id = 0,
+            id = "111",
+            email = "@",
+            displayName = "name",
+            avatarUri = "uri",
             specializations = listOf("specialization1", "specialization2", "specialization3"),
             workFields = listOf("workField1", "workField2", "workField3"),
             languages = listOf("language1", "language2"),
             description = "description",
             price = "123",
+            hasDegree = true,
             degrees = listOf(
                 Degree(
                     id = 0,
@@ -61,7 +65,7 @@ class SaveTherapistUseCaseTest {
 
         therapistDao.upsertTherapist(expectedTherapist.toTherapistEntity())
 
-        val actualTherapist = therapistDao.getTherapist(0).toTherapist()
+        val actualTherapist = therapistDao.getTherapist("111").toTherapist()
 
         assertEquals(expectedTherapist, actualTherapist)
     }
@@ -69,12 +73,16 @@ class SaveTherapistUseCaseTest {
     @Test
     fun updateTherapist_therapistIsUpdated() = runBlocking {
         val existingTherapist = Therapist(
-            id = 0,
+            id = "111",
+            email = "@",
+            displayName = "name",
+            avatarUri = "uri",
             specializations = listOf("specialization1", "specialization2", "specialization3"),
             workFields = listOf("workField1", "workField2", "workField3"),
             languages = listOf("language1", "language2"),
             description = "description",
             price = "123",
+            hasDegree = true,
             degrees = listOf(
                 Degree(
                     id = 0,
@@ -93,7 +101,7 @@ class SaveTherapistUseCaseTest {
         )
         therapistDao.upsertTherapist(updatedTherapist.toTherapistEntity())
 
-        val actualTherapist = therapistDao.getTherapist(0).toTherapist()
+        val actualTherapist = therapistDao.getTherapist("111").toTherapist()
 
         assertEquals(updatedTherapist, actualTherapist)
     }

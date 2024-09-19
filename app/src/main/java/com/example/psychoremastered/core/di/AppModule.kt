@@ -5,6 +5,11 @@ import androidx.room.Room
 import com.example.psychoremastered.core.util.Constants
 import com.example.psychoremastered.data.local.TherapistDao
 import com.example.psychoremastered.data.local.TherapistDatabase
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.database
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,5 +35,17 @@ object AppModule {
     @Singleton
     fun provideTherapistDao(therapistDatabase: TherapistDatabase): TherapistDao {
         return therapistDatabase.therapistDao
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseAuthInstance(): FirebaseAuth {
+        return Firebase.auth
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseDatabaseInstance(): FirebaseDatabase {
+        return Firebase.database
     }
 }

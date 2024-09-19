@@ -1,20 +1,16 @@
 package com.example.psychoremastered.presentation.therapist_registration
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.psychoremastered.domain.model.Degree
-import com.example.psychoremastered.domain.model.Therapist
-import com.example.psychoremastered.domain.use_case.SaveTherapistUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RegistrationViewModel @Inject constructor(
-    private val saveTherapistUseCase: SaveTherapistUseCase
+
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(RegistrationState())
@@ -95,8 +91,8 @@ class RegistrationViewModel @Inject constructor(
             is RegistrationEvent.AddDegree ->
                 addDegree(event.degreeId)
 
-            is RegistrationEvent.SaveTherapistData ->
-                saveTherapistData(event.therapistId)
+            RegistrationEvent.SaveTherapistData ->
+                saveTherapistData()
         }
     }
 
@@ -141,19 +137,5 @@ class RegistrationViewModel @Inject constructor(
         }
     }
 
-    private fun saveTherapistData(therapistId: Int) {
-        viewModelScope.launch {
-            saveTherapistUseCase(
-                Therapist(
-                    id = therapistId,
-                    specializations = state.value.specializations.toList(),
-                    workFields = state.value.workFields.toList(),
-                    languages = state.value.specializations.toList(),
-                    description = state.value.description,
-                    price = state.value.price,
-                    degrees = state.value.degrees
-                )
-            )
-        }
-    }
+    private fun saveTherapistData() {}
 }

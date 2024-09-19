@@ -1,22 +1,21 @@
-package com.example.psychoremastered.data.repository
+package com.example.psychoremastered.data.auth
 
-import com.example.psychoremastered.domain.model.User
-import com.example.psychoremastered.domain.repository.AuthRepository
-import com.google.firebase.Firebase
+import com.example.psychoremastered.data.auth.model.AuthUser
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.auth
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
-class FirebaseAuthRepositoryImpl @Inject constructor() : AuthRepository {
-    private val auth = Firebase.auth
+class AuthFirebaseSource @Inject constructor(
+    private val auth: FirebaseAuth
+): AuthApi {
 
-    override suspend fun signInWithCredential(idToken: String): User? {
+    override suspend fun signInWithCredential(idToken: String): AuthUser? {
         val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
         val user = auth.signInWithCredential(firebaseCredential).await().user
 
         return user?.run {
-            User(
+            AuthUser(
                 userId = uid,
                 email = email,
                 displayName = displayName,
@@ -28,11 +27,11 @@ class FirebaseAuthRepositoryImpl @Inject constructor() : AuthRepository {
     override suspend fun createUserWithEmailAndPassword(
         authEmail: String,
         authPassword: String
-    ): User? {
+    ): AuthUser? {
         val user = auth.createUserWithEmailAndPassword(authEmail, authPassword).await().user
 
         return user?.run {
-            User(
+            AuthUser(
                 userId = uid,
                 email = email,
                 displayName = displayName,
@@ -44,11 +43,11 @@ class FirebaseAuthRepositoryImpl @Inject constructor() : AuthRepository {
     override suspend fun signInWithEmailAndPassword(
         authEmail: String,
         authPassword: String
-    ): User? {
+    ): AuthUser? {
         val user = auth.signInWithEmailAndPassword(authEmail, authPassword).await().user
 
         return user?.run {
-            User(
+            AuthUser(
                 userId = uid,
                 email = email,
                 displayName = displayName,

@@ -1,7 +1,7 @@
 package com.example.psychoremastered.data.local.type_converter
 
 import androidx.room.TypeConverter
-import com.example.psychoremastered.data.local.model.DegreeEntity
+import com.example.psychoremastered.data.local.entity.DegreeEntity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 

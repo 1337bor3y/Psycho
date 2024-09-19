@@ -1,6 +1,6 @@
-package com.example.psychoremastered.domain.model
+package com.example.psychoremastered.data.remote.dto
 
-data class Therapist(
+data class TherapistDto(
     val id: String,
     val avatarUri: String,
     val email: String,
@@ -11,5 +11,5 @@ data class Therapist(
     val description: String,
     val price: String,
     val hasDegree: Boolean,
-    val degrees: List<Degree>
+    val degrees: List<DegreeDto>
 )

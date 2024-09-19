@@ -1,20 +1,24 @@
 package com.example.psychoremastered.data.mappers
 
-import com.example.psychoremastered.data.local.model.DegreeEntity
-import com.example.psychoremastered.data.local.model.TherapistEntity
+import com.example.psychoremastered.data.remote.dto.DegreeDto
+import com.example.psychoremastered.data.remote.dto.TherapistDto
 import com.example.psychoremastered.domain.model.Degree
 import com.example.psychoremastered.domain.model.Therapist
 
-fun Therapist.toTherapistEntity(): TherapistEntity {
-    return TherapistEntity(
+fun Therapist.toTherapistDto(): TherapistDto {
+    return TherapistDto(
         id = id,
+        avatarUri = avatarUri,
+        email = email,
+        displayName = displayName,
         specializations = specializations,
         workFields = workFields,
         languages = languages,
         description = description,
         price = price,
+        hasDegree = hasDegree,
         degrees = degrees.map {
-            DegreeEntity(
+            DegreeDto(
                 id = it.id,
                 university = it.university,
                 speciality = it.speciality,
@@ -26,14 +30,18 @@ fun Therapist.toTherapistEntity(): TherapistEntity {
     )
 }
 
-fun TherapistEntity.toTherapist(): Therapist {
+fun TherapistDto.toTherapist(): Therapist {
     return Therapist(
         id = id,
+        avatarUri = avatarUri,
+        email = email,
+        displayName = displayName,
         specializations = specializations,
         workFields = workFields,
         languages = languages,
         description = description,
         price = price,
+        hasDegree = hasDegree,
         degrees = degrees.map {
             Degree(
                 id = it.id,
