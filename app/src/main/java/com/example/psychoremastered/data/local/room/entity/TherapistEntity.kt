@@ -1,4 +1,4 @@
-package com.example.psychoremastered.data.local.entity
+package com.example.psychoremastered.data.local.room.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

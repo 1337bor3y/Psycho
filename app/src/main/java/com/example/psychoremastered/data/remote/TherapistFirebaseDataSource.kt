@@ -1,5 +1,6 @@
 package com.example.psychoremastered.data.remote
 
+import com.example.psychoremastered.core.util.Constants
 import com.example.psychoremastered.data.remote.dto.TherapistDto
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -13,7 +14,7 @@ import javax.inject.Inject
 class TherapistFirebaseDataSource @Inject constructor(
     db: FirebaseDatabase
 ): TherapistApi {
-    private val reference = db.getReference("therapists")
+    private val reference = db.getReference(Constants.FIREBASE_DB_THERAPIST_PATH)
 
     override suspend fun saveTherapist(therapist: TherapistDto): Boolean {
         return reference.child(therapist.id).setValue(therapist).isSuccessful

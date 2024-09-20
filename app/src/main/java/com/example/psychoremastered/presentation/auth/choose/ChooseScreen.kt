@@ -89,6 +89,9 @@ fun ChooseScreen(
                 ),
                 shape = RoundedCornerShape(16.dp),
                 onClick = {
+                    onEvent(
+                        AuthEvent.ChooseClient
+                    )
                     openChooseDialog = true
                 }) {
                 Text(
@@ -111,6 +114,9 @@ fun ChooseScreen(
                 ),
                 shape = RoundedCornerShape(16.dp),
                 onClick = {
+                    onEvent(
+                        AuthEvent.ChooseTherapist
+                    )
                     openChooseDialog = true
                 }) {
                 Text(

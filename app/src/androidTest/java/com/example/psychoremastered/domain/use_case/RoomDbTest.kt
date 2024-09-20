@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.example.psychoremastered.data.local.TherapistDao
-import com.example.psychoremastered.data.local.TherapistDatabase
+import com.example.psychoremastered.data.local.room.TherapistDao
+import com.example.psychoremastered.data.local.room.TherapistDatabase
 import com.example.psychoremastered.data.mappers.toTherapist
 import com.example.psychoremastered.data.mappers.toTherapistEntity
 import com.example.psychoremastered.domain.model.Degree

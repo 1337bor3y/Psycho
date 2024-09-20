@@ -1,4 +1,4 @@
-package com.example.psychoremastered.data.local.entity
+package com.example.psychoremastered.data.local.room.entity
 
 data class DegreeEntity(
     val id: Int,

@@ -1,9 +1,9 @@
-package com.example.psychoremastered.data.local
+package com.example.psychoremastered.data.local.room
 
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
-import com.example.psychoremastered.data.local.entity.TherapistEntity
+import com.example.psychoremastered.data.local.room.entity.TherapistEntity
 
 @Dao
 interface TherapistDao {

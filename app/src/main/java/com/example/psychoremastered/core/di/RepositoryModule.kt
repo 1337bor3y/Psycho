@@ -10,12 +10,14 @@ import com.example.psychoremastered.data.remote.TherapistApi
 import com.example.psychoremastered.data.remote.TherapistFirebaseDataSource
 import com.example.psychoremastered.data.repository.AuthRepositoryImpl
 import com.example.psychoremastered.data.repository.ClientRepositoryImpl
+import com.example.psychoremastered.data.repository.PreferenceRepositoryImpl
 import com.example.psychoremastered.data.repository.TherapistRepositoryImpl
 import com.example.psychoremastered.data.repository.ValidationRepositoryImpl
 import com.example.psychoremastered.data.validation.EmailPatterValidator
 import com.example.psychoremastered.data.validation.PatternValidator
 import com.example.psychoremastered.domain.repository.AuthRepository
 import com.example.psychoremastered.domain.repository.ClientRepository
+import com.example.psychoremastered.domain.repository.PreferenceRepository
 import com.example.psychoremastered.domain.repository.TherapistRepository
 import com.example.psychoremastered.domain.repository.ValidationRepository
 import dagger.Binds
@@ -82,4 +84,10 @@ abstract class RepositoryModule {
     abstract fun provideTherapistRepository(
         therapistRepositoryImpl: TherapistRepositoryImpl
     ): TherapistRepository
+
+    @Binds
+    @Singleton
+    abstract fun providePreferenceRepository(
+        preferenceRepositoryImpl: PreferenceRepositoryImpl
+    ): PreferenceRepository
 }

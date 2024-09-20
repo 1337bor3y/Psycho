@@ -16,4 +16,6 @@ sealed interface AuthEvent {
     data class SetPassword(val password: String) : AuthEvent
     data class SetConfirmPassword(val confirmPassword: String) : AuthEvent
     data class SetProfileImage(val profileImage: String) : AuthEvent
+    data object ChooseClient: AuthEvent
+    data object ChooseTherapist: AuthEvent
 }

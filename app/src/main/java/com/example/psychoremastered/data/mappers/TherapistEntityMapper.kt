@@ -1,7 +1,7 @@
 package com.example.psychoremastered.data.mappers
 
-import com.example.psychoremastered.data.local.entity.DegreeEntity
-import com.example.psychoremastered.data.local.entity.TherapistEntity
+import com.example.psychoremastered.data.local.room.entity.DegreeEntity
+import com.example.psychoremastered.data.local.room.entity.TherapistEntity
 import com.example.psychoremastered.domain.model.Degree
 import com.example.psychoremastered.domain.model.Therapist
 

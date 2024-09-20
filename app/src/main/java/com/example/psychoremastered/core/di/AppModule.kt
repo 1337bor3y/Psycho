@@ -1,10 +1,13 @@
 package com.example.psychoremastered.core.di
 
+import android.app.Application
 import android.content.Context
 import androidx.room.Room
 import com.example.psychoremastered.core.util.Constants
-import com.example.psychoremastered.data.local.TherapistDao
-import com.example.psychoremastered.data.local.TherapistDatabase
+import com.example.psychoremastered.data.local.preference.DataStoreManager
+import com.example.psychoremastered.data.local.preference.PreferenceManager
+import com.example.psychoremastered.data.local.room.TherapistDao
+import com.example.psychoremastered.data.local.room.TherapistDatabase
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -55,5 +58,11 @@ object AppModule {
     @Singleton
     fun provideFirebaseStorageInstance(): FirebaseStorage {
         return Firebase.storage
+    }
+
+    @Provides
+    @Singleton
+    fun providePreferenceManager(application: Application): PreferenceManager {
+        return DataStoreManager(application)
     }
 }

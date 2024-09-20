@@ -4,10 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.psychoremastered.core.ScreenRoutes
+import com.example.psychoremastered.core.util.Constants
 import com.example.psychoremastered.domain.model.Client
 import com.example.psychoremastered.domain.model.GoogleSignInResult
 import com.example.psychoremastered.domain.model.Resource
 import com.example.psychoremastered.domain.use_case.CreateUserWithEmailAndPasswordUseCase
+import com.example.psychoremastered.domain.use_case.PutStringPreferenceUseCase
 import com.example.psychoremastered.domain.use_case.SaveClientUseCase
 import com.example.psychoremastered.domain.use_case.SignInWithCredentialUseCase
 import com.example.psychoremastered.domain.use_case.SignInWithEmailAndPasswordUseCase
@@ -39,7 +41,8 @@ class AuthViewModel @Inject constructor(
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
     private val validateConfirmPasswordUseCase: ValidateConfirmPasswordUseCase,
-    private val saveClientUseCase: SaveClientUseCase
+    private val saveClientUseCase: SaveClientUseCase,
+    private val putStringPreferenceUseCase: PutStringPreferenceUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AuthState())
@@ -107,6 +110,10 @@ class AuthViewModel @Inject constructor(
                     isSurnameValid = true
                 )
             }
+
+            AuthEvent.ChooseClient -> saveRoleDataStore(Constants.DATA_STORE_VALUE_CLIENT)
+
+            AuthEvent.ChooseTherapist -> saveRoleDataStore(Constants.DATA_STORE_VALUE_THERAPIST)
         }
     }
 
@@ -298,6 +305,12 @@ class AuthViewModel @Inject constructor(
                 passwordError = validatePasswordUseCase(state.value.password)
                     .last().errorMessage ?: ""
             )
+        }
+    }
+
+    private fun saveRoleDataStore(role: String) {
+        viewModelScope.launch {
+            putStringPreferenceUseCase(Constants.DATA_STORE_KEY_ROLE, role)
         }
     }
 }

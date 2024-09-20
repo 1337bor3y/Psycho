@@ -1,21 +1,20 @@
-package com.example.psychoremastered.data.local.type_converter
+package com.example.psychoremastered.data.local.room.type_converter
 
 import androidx.room.TypeConverter
-import com.example.psychoremastered.data.local.entity.DegreeEntity
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-object DegreeListConverter {
+object StringListConverter {
 
     @TypeConverter
-    fun fromDegreeList(value: List<DegreeEntity>): String {
+    fun fromStringList(value: List<String>): String {
         return Gson().toJson(value)
     }
 
     @TypeConverter
-    fun toDegreeList(value: String): List<DegreeEntity> {
+    fun toStringList(value: String): List<String> {
         return try {
-            Gson().fromJson<List<DegreeEntity>>(value)
+            Gson().fromJson<List<String>>(value)
         } catch (e: Exception) {
             arrayListOf()
         }
