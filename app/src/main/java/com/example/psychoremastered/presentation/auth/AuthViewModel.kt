@@ -4,9 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.psychoremastered.core.ScreenRoutes
+import com.example.psychoremastered.domain.model.Client
 import com.example.psychoremastered.domain.model.GoogleSignInResult
 import com.example.psychoremastered.domain.model.Resource
 import com.example.psychoremastered.domain.use_case.CreateUserWithEmailAndPasswordUseCase
+import com.example.psychoremastered.domain.use_case.SaveClientUseCase
 import com.example.psychoremastered.domain.use_case.SignInWithCredentialUseCase
 import com.example.psychoremastered.domain.use_case.SignInWithEmailAndPasswordUseCase
 import com.example.psychoremastered.domain.use_case.ValidateConfirmPasswordUseCase
@@ -37,6 +39,7 @@ class AuthViewModel @Inject constructor(
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val validatePasswordUseCase: ValidatePasswordUseCase,
     private val validateConfirmPasswordUseCase: ValidateConfirmPasswordUseCase,
+    private val saveClientUseCase: SaveClientUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AuthState())
@@ -126,6 +129,18 @@ class AuthViewModel @Inject constructor(
                     }
 
                     is Resource.Success -> {
+                        result.data?.run {
+                            if (isNewUser) {
+                                saveClientUseCase(
+                                    Client(
+                                        id = userId,
+                                        displayName = displayName ?: "",
+                                        email = email ?: "",
+                                        avatarUri = profilePictureUri ?: ""
+                                    )
+                                )
+                            }
+                        }
                         _state.update {
                             it.copy(
                                 user = result.data,
@@ -171,6 +186,19 @@ class AuthViewModel @Inject constructor(
                         }
 
                         is Resource.Success -> {
+                            result.data?.run {
+                                if (isNewUser) {
+                                    saveClientUseCase(
+                                        Client(
+                                            id = userId,
+                                            displayName = _state.value.firstName
+                                                    + " " + _state.value.surname,
+                                            email = email ?: "",
+                                            avatarUri = _state.value.profileImage
+                                        )
+                                    )
+                                }
+                            }
                             _state.update {
                                 it.copy(
                                     user = result.data,

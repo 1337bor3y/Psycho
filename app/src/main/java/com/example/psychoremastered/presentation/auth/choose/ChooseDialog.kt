@@ -1,6 +1,7 @@
 package com.example.psychoremastered.presentation.auth.choose
 
 import android.view.Gravity
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -86,7 +87,8 @@ fun ChooseDialog(
                 ),
                 onClick = {
                     coroutineScope.launch {
-                        val result = GoogleAuthUiClient(context).signIn()
+                        val result = GoogleAuthUiClient(context as ComponentActivity)
+                            .signIn()
                         onEvent(
                             AuthEvent.SignInWithGoogle(
                                 result = result,

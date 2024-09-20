@@ -12,11 +12,11 @@ class AuthFirebaseSource @Inject constructor(
 
     override suspend fun signInWithCredential(idToken: String): AuthUser? {
         val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
-        val user = auth.signInWithCredential(firebaseCredential).await().user
-
-        return user?.run {
+        val auth = auth.signInWithCredential(firebaseCredential).await()
+        return auth.user?.run {
             AuthUser(
                 userId = uid,
+                isNewUser = auth.additionalUserInfo?.isNewUser ?: false,
                 email = email,
                 displayName = displayName,
                 profilePictureUri = photoUrl.toString()
@@ -33,6 +33,7 @@ class AuthFirebaseSource @Inject constructor(
         return user?.run {
             AuthUser(
                 userId = uid,
+                isNewUser = true,
                 email = email,
                 displayName = displayName,
                 profilePictureUri = photoUrl.toString()
@@ -49,6 +50,7 @@ class AuthFirebaseSource @Inject constructor(
         return user?.run {
             AuthUser(
                 userId = uid,
+                isNewUser = false,
                 email = email,
                 displayName = displayName,
                 profilePictureUri = photoUrl.toString()

@@ -4,6 +4,8 @@ import com.example.psychoremastered.data.auth.AuthApi
 import com.example.psychoremastered.data.auth.AuthFirebaseSource
 import com.example.psychoremastered.data.remote.ClientApi
 import com.example.psychoremastered.data.remote.ClientFirebaseDataSource
+import com.example.psychoremastered.data.remote.ImageStorageApi
+import com.example.psychoremastered.data.remote.ImageStorageFirebase
 import com.example.psychoremastered.data.remote.TherapistApi
 import com.example.psychoremastered.data.remote.TherapistFirebaseDataSource
 import com.example.psychoremastered.data.repository.AuthRepositoryImpl
@@ -49,6 +51,12 @@ abstract class RepositoryModule {
     abstract fun provideTherapistApi(
         therapistFirebaseDataSource: TherapistFirebaseDataSource
     ): TherapistApi
+
+    @Binds
+    @Singleton
+    abstract fun provideStorageApi(
+        imageStorageFirebase: ImageStorageFirebase
+    ): ImageStorageApi
 
     @Binds
     @Singleton

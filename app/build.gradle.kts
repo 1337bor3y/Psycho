@@ -64,7 +64,6 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.firebase.database.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -104,10 +103,15 @@ dependencies {
     implementation(libs.androidx.credentials)
     implementation(libs.googleid)
 
-    // Firebase auth
+    // Firebase
     implementation(platform(libs.firebase.bom))
+    // Auth
     implementation(libs.firebase.auth)
     implementation(libs.play.services.auth)
+    // Database
+    implementation(libs.firebase.database.ktx)
+    // Storage
+    implementation(libs.firebase.storage)
 
     // Icons
     implementation(libs.androidx.material.icons.extended)
