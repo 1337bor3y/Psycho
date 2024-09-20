@@ -10,6 +10,8 @@ import com.example.psychoremastered.data.repository.AuthRepositoryImpl
 import com.example.psychoremastered.data.repository.ClientRepositoryImpl
 import com.example.psychoremastered.data.repository.TherapistRepositoryImpl
 import com.example.psychoremastered.data.repository.ValidationRepositoryImpl
+import com.example.psychoremastered.data.validation.EmailPatterValidator
+import com.example.psychoremastered.data.validation.PatternValidator
 import com.example.psychoremastered.domain.repository.AuthRepository
 import com.example.psychoremastered.domain.repository.ClientRepository
 import com.example.psychoremastered.domain.repository.TherapistRepository
@@ -23,6 +25,12 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
+
+    @Binds
+    @Singleton
+    abstract fun provideEmailPatternValidator(
+        emailPatterValidator: EmailPatterValidator
+    ): PatternValidator
 
     @Binds
     @Singleton

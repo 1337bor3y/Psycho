@@ -1,10 +1,12 @@
 package com.example.psychoremastered.data.repository
 
+import com.example.psychoremastered.data.mappers.toClient
 import com.example.psychoremastered.data.mappers.toClientDto
 import com.example.psychoremastered.data.remote.ClientApi
 import com.example.psychoremastered.domain.model.Client
 import com.example.psychoremastered.domain.repository.ClientRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class ClientRepositoryImpl @Inject constructor(
@@ -20,6 +22,8 @@ class ClientRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getClient(clientId: String): Flow<Client> {
-        TODO("Not yet implemented")
+        return clientApi.getClient(clientId).map {
+            it.toClient()
+        }
     }
 }

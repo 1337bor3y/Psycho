@@ -2,6 +2,7 @@ package com.example.psychoremastered.data.repository
 
 import com.example.psychoremastered.core.util.Constants
 import com.example.psychoremastered.data.validation.EmailPatterValidator
+import com.example.psychoremastered.data.validation.PatternValidator
 import com.example.psychoremastered.domain.model.Resource
 import com.example.psychoremastered.domain.repository.ValidationRepository
 import kotlinx.coroutines.flow.Flow
@@ -9,7 +10,7 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class ValidationRepositoryImpl @Inject constructor(
-    private val emailPatterValidator: EmailPatterValidator
+    private val patterValidator: PatternValidator
 ) : ValidationRepository {
 
     override fun validateProfileImage(profileImage: String): Flow<Resource<Boolean>> = flow {
@@ -43,7 +44,7 @@ class ValidationRepositoryImpl @Inject constructor(
         if (email.isBlank()) {
             emit(Resource.Success<Boolean>(false))
             emit(Resource.Error<Boolean>("Email can't be blank"))
-        } else if (!emailPatterValidator.matches(email)) {
+        } else if (!patterValidator.matches(email)) {
             emit(Resource.Success<Boolean>(false))
             emit(Resource.Error<Boolean>("Invalid email pattern"))
         } else {

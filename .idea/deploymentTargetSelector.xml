@@ -13,13 +13,13 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="SaveTherapistTest">
+      <SelectionState runConfigName="SaveTherapistUseCaseTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="updateTherapist_TherapistIsUpdated()">
+      <SelectionState runConfigName="SaveTherapistRoomDbTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="updateTherapist_therapistIsUpdated()">
+      <SelectionState runConfigName="RoomDbTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
