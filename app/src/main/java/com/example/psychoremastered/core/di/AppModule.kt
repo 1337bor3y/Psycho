@@ -32,7 +32,7 @@ object AppModule {
         return Room.databaseBuilder(
             context = context,
             klass = TherapistDatabase::class.java,
-            name = Constants.THERAPIST_DB_NAME
+            name = Constants.ROOM_THERAPIST_DB_NAME
         ).build()
     }
 

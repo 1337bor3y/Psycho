@@ -4,12 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.psychoremastered.core.ScreenRoutes
-import com.example.psychoremastered.core.util.Constants
 import com.example.psychoremastered.domain.model.Client
 import com.example.psychoremastered.domain.model.GoogleSignInResult
 import com.example.psychoremastered.domain.model.Resource
 import com.example.psychoremastered.domain.use_case.CreateUserWithEmailAndPasswordUseCase
-import com.example.psychoremastered.domain.use_case.PutStringPreferenceUseCase
+import com.example.psychoremastered.domain.use_case.PutIsClientPreferenceUseCase
 import com.example.psychoremastered.domain.use_case.SaveClientUseCase
 import com.example.psychoremastered.domain.use_case.SignInWithCredentialUseCase
 import com.example.psychoremastered.domain.use_case.SignInWithEmailAndPasswordUseCase
@@ -42,7 +41,7 @@ class AuthViewModel @Inject constructor(
     private val validatePasswordUseCase: ValidatePasswordUseCase,
     private val validateConfirmPasswordUseCase: ValidateConfirmPasswordUseCase,
     private val saveClientUseCase: SaveClientUseCase,
-    private val putStringPreferenceUseCase: PutStringPreferenceUseCase
+    private val putIsClientPreferenceUseCase: PutIsClientPreferenceUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AuthState())
@@ -111,9 +110,9 @@ class AuthViewModel @Inject constructor(
                 )
             }
 
-            AuthEvent.ChooseClient -> saveRoleDataStore(Constants.DATA_STORE_VALUE_CLIENT)
+            AuthEvent.ChooseClient -> putIsClientPreference(isClient = true)
 
-            AuthEvent.ChooseTherapist -> saveRoleDataStore(Constants.DATA_STORE_VALUE_THERAPIST)
+            AuthEvent.ChooseTherapist -> putIsClientPreference(isClient = false)
         }
     }
 
@@ -308,9 +307,14 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    private fun saveRoleDataStore(role: String) {
+    private fun putIsClientPreference(isClient: Boolean) {
         viewModelScope.launch {
-            putStringPreferenceUseCase(Constants.DATA_STORE_KEY_ROLE, role)
+            _state.update {
+                it.copy(
+                    isClient = isClient
+                )
+            }
+            putIsClientPreferenceUseCase(value = isClient)
         }
     }
 }

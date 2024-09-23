@@ -8,14 +8,14 @@ class PreferenceRepositoryImpl @Inject constructor(
     private val preferenceManager: PreferenceManager
 ) : PreferenceRepository {
 
-    override suspend fun putString(key: String, value: String) {
-        preferenceManager.putString(
+    override suspend fun putBoolean(key: String, value: Boolean) {
+        preferenceManager.putBoolean(
             key = key,
             value = value
         )
     }
 
-    override suspend fun getString(key: String): String? {
-       return preferenceManager.getString(key)
+    override suspend fun getBoolean(key: String): Boolean? {
+       return preferenceManager.getBoolean(key)
     }
 }

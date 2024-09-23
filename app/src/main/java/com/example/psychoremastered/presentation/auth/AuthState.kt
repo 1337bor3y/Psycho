@@ -23,5 +23,6 @@ data class AuthState(
     val isPasswordValid: Boolean = true,
     val passwordError: String = "",
     val isConfirmPasswordValid: Boolean = true,
-    val confirmPasswordError: String = ""
+    val confirmPasswordError: String = "",
+    val isClient: Boolean = true
 )
