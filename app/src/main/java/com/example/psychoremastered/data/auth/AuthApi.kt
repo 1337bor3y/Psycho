@@ -15,4 +15,6 @@ interface AuthApi {
         authEmail: String,
         authPassword: String
     ): AuthUser?
+
+    suspend fun getCurrentUser(): AuthUser?
 }

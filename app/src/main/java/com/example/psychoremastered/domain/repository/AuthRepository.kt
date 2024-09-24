@@ -9,4 +9,6 @@ interface AuthRepository {
     suspend fun createUserWithEmailAndPassword(authEmail: String, authPassword: String): User?
 
     suspend fun signInWithEmailAndPassword(authEmail: String, authPassword: String): User?
+
+    suspend fun getCurrentUser(): User?
 }

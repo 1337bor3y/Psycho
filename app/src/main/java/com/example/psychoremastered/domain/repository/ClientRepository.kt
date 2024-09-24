@@ -9,5 +9,5 @@ interface ClientRepository {
 
     suspend fun removeClient(client: Client): Boolean
 
-    suspend fun getClient(clientId: String): Flow<Client>
+    fun getClient(clientId: String): Flow<Client?>
 }

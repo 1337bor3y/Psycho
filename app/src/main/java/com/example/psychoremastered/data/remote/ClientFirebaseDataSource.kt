@@ -6,6 +6,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.getValue
 import com.google.firebase.database.snapshots
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.lastOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import javax.inject.Inject
 
@@ -22,8 +24,8 @@ class ClientFirebaseDataSource @Inject constructor(
         return reference.child(client.id).removeValue().isSuccessful
     }
 
-    override suspend fun getClient(clientId: String): Flow<ClientDto> {
-        return reference.child(clientId).snapshots.mapNotNull {
+    override fun getClient(clientId: String): Flow<ClientDto?> {
+        return reference.child(clientId).snapshots.map {
             it.getValue<ClientDto>()
         }
     }

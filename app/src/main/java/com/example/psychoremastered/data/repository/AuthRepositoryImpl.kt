@@ -27,4 +27,8 @@ class AuthRepositoryImpl @Inject constructor(
     ): User? {
         return authApi.signInWithEmailAndPassword(authEmail, authPassword)?.toUser()
     }
+
+    override suspend fun getCurrentUser(): User? {
+        return authApi.getCurrentUser()?.toUser()
+    }
 }

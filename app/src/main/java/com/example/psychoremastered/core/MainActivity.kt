@@ -57,13 +57,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             PsychoRemsteredTheme {
                 val navController = rememberNavController()
+                val authViewModel = hiltViewModel<AuthViewModel>()
+                val authState by authViewModel.state.collectAsStateWithLifecycle()
                 NavHost(
                     navController = navController,
                     startDestination = ScreenRoutes.ChooseScreen
                 ) {
                     composable<ScreenRoutes.ChooseScreen> {
-                        val authViewModel = hiltViewModel<AuthViewModel>()
-                        val authState by authViewModel.state.collectAsStateWithLifecycle()
                         ChooseScreen(
                             state = authState,
                             onEvent = authViewModel::onEvent,
@@ -71,8 +71,6 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable<ScreenRoutes.PasswordAuthScreen> {
-                        val authViewModel = hiltViewModel<AuthViewModel>()
-                        val authState by authViewModel.state.collectAsStateWithLifecycle()
                         PasswordAuthUI(
                             state = authState,
                             onEvent = authViewModel::onEvent,

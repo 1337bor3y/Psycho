@@ -9,5 +9,5 @@ interface ClientApi {
 
     suspend fun removeClient(client: ClientDto): Boolean
 
-    suspend fun getClient(clientId: String): Flow<ClientDto>
+    fun getClient(clientId: String): Flow<ClientDto?>
 }

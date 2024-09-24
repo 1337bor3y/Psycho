@@ -2,7 +2,6 @@ package com.example.psychoremastered.data.remote
 
 import com.example.psychoremastered.core.util.Constants
 import com.example.psychoremastered.data.remote.dto.TherapistDto
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.getValue
 import com.google.firebase.database.snapshots
@@ -24,8 +23,8 @@ class TherapistFirebaseDataSource @Inject constructor(
         return reference.child(therapist.id).removeValue().isSuccessful
     }
 
-    override fun getTherapist(therapistId: String): Flow<TherapistDto> {
-        return reference.child(therapistId).snapshots.mapNotNull {
+    override fun getTherapist(therapistId: String): Flow<TherapistDto?> {
+        return reference.child(therapistId).snapshots.map {
             it.getValue<TherapistDto>()
         }
     }

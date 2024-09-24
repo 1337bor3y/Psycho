@@ -19,10 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,14 +37,15 @@ fun ChooseScreen(
     navController: NavController
 ) {
     val context = LocalContext.current
-    var openChooseDialog by rememberSaveable {
-        mutableStateOf(false)
-    }
-    if (openChooseDialog) {
+    if (state.isChooseDialogOpened) {
         ChooseDialog(
             onEvent = onEvent,
             navController = navController,
-            onDismissRequest = { openChooseDialog = false }
+            onDismissRequest = {
+                onEvent(
+                    AuthEvent.OpenChooseDialog(false)
+                )
+            }
         )
     }
 
@@ -92,7 +89,9 @@ fun ChooseScreen(
                     onEvent(
                         AuthEvent.ChooseClient
                     )
-                    openChooseDialog = true
+                    onEvent(
+                        AuthEvent.IsCurrentUserSignedIn(navController)
+                    )
                 }) {
                 Text(
                     text = context.getString(R.string.client),
@@ -117,7 +116,9 @@ fun ChooseScreen(
                     onEvent(
                         AuthEvent.ChooseTherapist
                     )
-                    openChooseDialog = true
+                    onEvent(
+                        AuthEvent.IsCurrentUserSignedIn(navController)
+                    )
                 }) {
                 Text(
                     text = context.getString(R.string.therapist),

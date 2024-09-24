@@ -9,7 +9,7 @@ interface TherapistRepository {
 
     suspend fun removeTherapist(therapist: Therapist): Boolean
 
-    fun getTherapist(therapistId: String): Flow<Therapist>
+    fun getTherapist(therapistId: String): Flow<Therapist?>
 
     fun getAllTherapists(): Flow<List<Therapist>>
 }

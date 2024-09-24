@@ -9,7 +9,7 @@ interface TherapistApi {
 
     suspend fun removeTherapist(therapist: TherapistDto): Boolean
 
-    fun getTherapist(therapistId: String): Flow<TherapistDto>
+    fun getTherapist(therapistId: String): Flow<TherapistDto?>
 
     fun getAllTherapists(): Flow<List<TherapistDto>>
 }

@@ -51,7 +51,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import com.example.psychoremastered.core.ScreenRoutes
 import com.example.psychoremastered.presentation.auth.AuthEvent
 import com.example.psychoremastered.presentation.auth.AuthState
 import com.example.psychoremstered.R

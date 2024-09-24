@@ -6,7 +6,6 @@ import com.example.psychoremastered.domain.model.User
 fun AuthUser.toUser(): User {
     return User(
         userId = userId,
-        isNewUser = isNewUser,
         email = email,
         displayName = displayName,
         profilePictureUri = profilePictureUri

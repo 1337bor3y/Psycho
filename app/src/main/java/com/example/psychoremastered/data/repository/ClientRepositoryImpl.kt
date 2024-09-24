@@ -9,6 +9,7 @@ import com.example.psychoremastered.domain.model.Client
 import com.example.psychoremastered.domain.repository.ClientRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import javax.inject.Inject
 
 class ClientRepositoryImpl @Inject constructor(
@@ -18,18 +19,20 @@ class ClientRepositoryImpl @Inject constructor(
 
     override suspend fun saveClient(client: Client): Boolean {
         val imageUri = storageApi.saveImage(client.avatarUri.toUri())
-        return clientApi.saveClient(client.toClientDto().copy(
-            avatarUri = imageUri
-        ))
+        return clientApi.saveClient(
+            client.toClientDto().copy(
+                avatarUri = imageUri
+            )
+        )
     }
 
     override suspend fun removeClient(client: Client): Boolean {
         return clientApi.removeClient(client.toClientDto())
     }
 
-    override suspend fun getClient(clientId: String): Flow<Client> {
+    override fun getClient(clientId: String): Flow<Client?> {
         return clientApi.getClient(clientId).map {
-            it.toClient()
+            it?.toClient()
         }
     }
 }

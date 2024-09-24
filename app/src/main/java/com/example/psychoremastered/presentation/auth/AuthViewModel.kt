@@ -8,6 +8,9 @@ import com.example.psychoremastered.domain.model.Client
 import com.example.psychoremastered.domain.model.GoogleSignInResult
 import com.example.psychoremastered.domain.model.Resource
 import com.example.psychoremastered.domain.use_case.CreateUserWithEmailAndPasswordUseCase
+import com.example.psychoremastered.domain.use_case.GetClientUseCase
+import com.example.psychoremastered.domain.use_case.GetCurrentUserUseCase
+import com.example.psychoremastered.domain.use_case.GetTherapistUseCase
 import com.example.psychoremastered.domain.use_case.PutIsClientPreferenceUseCase
 import com.example.psychoremastered.domain.use_case.SaveClientUseCase
 import com.example.psychoremastered.domain.use_case.SignInWithCredentialUseCase
@@ -22,6 +25,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -41,7 +45,10 @@ class AuthViewModel @Inject constructor(
     private val validatePasswordUseCase: ValidatePasswordUseCase,
     private val validateConfirmPasswordUseCase: ValidateConfirmPasswordUseCase,
     private val saveClientUseCase: SaveClientUseCase,
-    private val putIsClientPreferenceUseCase: PutIsClientPreferenceUseCase
+    private val putIsClientPreferenceUseCase: PutIsClientPreferenceUseCase,
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val getClientUseCase: GetClientUseCase,
+    private val getTherapistUseCase: GetTherapistUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AuthState())
@@ -113,6 +120,53 @@ class AuthViewModel @Inject constructor(
             AuthEvent.ChooseClient -> putIsClientPreference(isClient = true)
 
             AuthEvent.ChooseTherapist -> putIsClientPreference(isClient = false)
+
+            is AuthEvent.IsCurrentUserSignedIn -> isCurrentUserSignedIn(event.navController)
+
+            is AuthEvent.OpenChooseDialog -> openChooseDialog(event.open)
+        }
+    }
+
+    private fun openChooseDialog(open: Boolean) {
+        _state.update {
+            it.copy(
+                isChooseDialogOpened = open
+            )
+        }
+    }
+
+    private fun isCurrentUserSignedIn(navController: NavController) {
+        viewModelScope.launch {
+            getCurrentUserUseCase()?.run {
+                signInExistingUser(userId, navController)
+            } ?: openChooseDialog(true)
+        }
+    }
+
+    private suspend fun signInExistingUser(userId: String, navController: NavController) {
+        if (state.value.isClient) {
+            getClientUseCase(userId).firstOrNull()?.run {
+                // Navigate to client ui
+            } ?: run {
+                getTherapistUseCase(userId).firstOrNull()?.let {
+                    saveClientUseCase(
+                        Client(
+                            id = it.id,
+                            displayName = it.displayName,
+                            email = it.email,
+                            avatarUri = it.avatarUri
+                        )
+                    )
+                }
+            }
+        } else {
+            getTherapistUseCase(userId).firstOrNull()?.run {
+                // Navigate to therapist ui
+            } ?: run {
+                getClientUseCase(userId).firstOrNull()?.let {
+                    navController.navigate(ScreenRoutes.TherapistRegistrationScreen)
+                }
+            }
         }
     }
 
@@ -135,31 +189,38 @@ class AuthViewModel @Inject constructor(
                     }
 
                     is Resource.Success -> {
-                        result.data?.run {
-                            if (isNewUser) {
-                                saveClientUseCase(
-                                    Client(
-                                        id = userId,
-                                        displayName = displayName ?: "",
-                                        email = email ?: "",
-                                        avatarUri = profilePictureUri ?: ""
-                                    )
-                                )
-                            }
-                        }
                         _state.update {
                             it.copy(
-                                user = result.data,
                                 isLoading = false
                             )
                         }
-                        navController.navigate(ScreenRoutes.TherapistRegistrationScreen)
+                        result.data?.run {
+                            if (state.value.isClient) {
+                                getClientUseCase(userId).firstOrNull()?.let {
+                                    // Navigate to client ui
+                                } ?: run {
+                                    saveClientUseCase(
+                                        Client(
+                                            id = userId,
+                                            displayName = displayName ?: "",
+                                            email = email ?: "",
+                                            avatarUri = profilePictureUri ?: ""
+                                        )
+                                    )
+                                }
+                            } else {
+                                getTherapistUseCase(userId).firstOrNull()?.let {
+                                    // Navigate to therapist ui
+                                } ?: run {
+                                    navController.navigate(ScreenRoutes.TherapistRegistrationScreen)
+                                }
+                            }
+                        }
                     }
                 }
             }.launchIn(viewModelScope)
         } ?: _state.update {
             it.copy(
-                user = null,
                 authError = signInResult.errorMessage
             )
         }
@@ -192,8 +253,13 @@ class AuthViewModel @Inject constructor(
                         }
 
                         is Resource.Success -> {
+                            _state.update {
+                                it.copy(
+                                    isLoading = false
+                                )
+                            }
                             result.data?.run {
-                                if (isNewUser) {
+                                if (state.value.isClient) {
                                     saveClientUseCase(
                                         Client(
                                             id = userId,
@@ -203,15 +269,11 @@ class AuthViewModel @Inject constructor(
                                             avatarUri = _state.value.profileImage
                                         )
                                     )
+                                    // Navigate to client ui
+                                } else {
+                                    navController.navigate(ScreenRoutes.TherapistRegistrationScreen)
                                 }
                             }
-                            _state.update {
-                                it.copy(
-                                    user = result.data,
-                                    isLoading = false
-                                )
-                            }
-                            navController.navigate(ScreenRoutes.TherapistRegistrationScreen)
                         }
                     }
                 }.launchIn(viewModelScope)
@@ -244,11 +306,12 @@ class AuthViewModel @Inject constructor(
                         is Resource.Success -> {
                             _state.update {
                                 it.copy(
-                                    user = result.data,
                                     isLoading = false
                                 )
                             }
-                            // Navigate
+                            result.data?.run {
+                                signInExistingUser(userId, navController)
+                            }
                         }
                     }
                 }.launchIn(viewModelScope)

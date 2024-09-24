@@ -16,7 +16,6 @@ class AuthFirebaseSource @Inject constructor(
         return auth.user?.run {
             AuthUser(
                 userId = uid,
-                isNewUser = auth.additionalUserInfo?.isNewUser ?: false,
                 email = email,
                 displayName = displayName,
                 profilePictureUri = photoUrl.toString()
@@ -33,7 +32,6 @@ class AuthFirebaseSource @Inject constructor(
         return user?.run {
             AuthUser(
                 userId = uid,
-                isNewUser = true,
                 email = email,
                 displayName = displayName,
                 profilePictureUri = photoUrl.toString()
@@ -50,7 +48,17 @@ class AuthFirebaseSource @Inject constructor(
         return user?.run {
             AuthUser(
                 userId = uid,
-                isNewUser = false,
+                email = email,
+                displayName = displayName,
+                profilePictureUri = photoUrl.toString()
+            )
+        }
+    }
+
+    override suspend fun getCurrentUser(): AuthUser? {
+        return auth.currentUser?.run {
+            AuthUser(
+                userId = uid,
                 email = email,
                 displayName = displayName,
                 profilePictureUri = photoUrl.toString()

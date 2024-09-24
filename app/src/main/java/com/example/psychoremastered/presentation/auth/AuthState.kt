@@ -1,10 +1,7 @@
 package com.example.psychoremastered.presentation.auth
 
-import com.example.psychoremastered.domain.model.User
-
 data class AuthState(
     val isLoading: Boolean = false,
-    val user: User? = null,
     val authError: String? = null,
     val email: String = "",
     val firstName: String = "",
@@ -24,5 +21,7 @@ data class AuthState(
     val passwordError: String = "",
     val isConfirmPasswordValid: Boolean = true,
     val confirmPasswordError: String = "",
-    val isClient: Boolean = true
+    val isClient: Boolean = true,
+    val isCurrentUserSignedIn: Boolean = false,
+    val isChooseDialogOpened: Boolean = false
 )

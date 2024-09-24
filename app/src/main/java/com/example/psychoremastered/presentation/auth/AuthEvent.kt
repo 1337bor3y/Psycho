@@ -18,4 +18,6 @@ sealed interface AuthEvent {
     data class SetProfileImage(val profileImage: String) : AuthEvent
     data object ChooseClient: AuthEvent
     data object ChooseTherapist: AuthEvent
+    data class IsCurrentUserSignedIn(val navController: NavController) : AuthEvent
+    data class OpenChooseDialog(val open: Boolean): AuthEvent
 }
