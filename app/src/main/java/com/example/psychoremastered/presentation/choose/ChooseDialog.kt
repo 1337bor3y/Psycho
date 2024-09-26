@@ -1,4 +1,4 @@
-package com.example.psychoremastered.presentation.auth.choose
+package com.example.psychoremastered.presentation.choose
 
 import android.view.Gravity
 import androidx.activity.ComponentActivity
@@ -35,14 +35,13 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogWindowProvider
 import androidx.navigation.NavController
 import com.example.psychoremastered.core.ScreenRoutes
-import com.example.psychoremastered.presentation.auth.AuthEvent
-import com.example.psychoremastered.presentation.auth.google_auth.GoogleAuthUiClient
+import com.example.psychoremastered.presentation.choose.google_auth.GoogleAuthUiClient
 import com.example.psychoremstered.R
 import kotlinx.coroutines.launch
 
 @Composable
 fun ChooseDialog(
-    onEvent: (AuthEvent) -> Unit,
+    onEvent: (ChooseEvent) -> Unit,
     onDismissRequest: () -> Unit,
     navController: NavController
 ) {
@@ -90,7 +89,7 @@ fun ChooseDialog(
                         val result = GoogleAuthUiClient(context as ComponentActivity)
                             .signIn()
                         onEvent(
-                            AuthEvent.SignInWithGoogle(
+                            ChooseEvent.SignInWithGoogle(
                                 result = result,
                                 navController = navController
                             )

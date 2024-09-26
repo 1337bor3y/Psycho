@@ -1,4 +1,4 @@
-package com.example.psychoremastered.presentation.auth.password_auth
+package com.example.psychoremastered.presentation.password_auth
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
@@ -29,8 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.psychoremastered.presentation.auth.AuthEvent
-import com.example.psychoremastered.presentation.auth.AuthState
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)

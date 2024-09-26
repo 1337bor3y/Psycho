@@ -16,9 +16,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.psychoremastered.core.ui.theme.PsychoRemsteredTheme
-import com.example.psychoremastered.presentation.auth.AuthViewModel
-import com.example.psychoremastered.presentation.auth.choose.ChooseScreen
-import com.example.psychoremastered.presentation.auth.password_auth.PasswordAuthUI
+import com.example.psychoremastered.presentation.choose.ChooseScreen
+import com.example.psychoremastered.presentation.choose.ChooseViewModel
+import com.example.psychoremastered.presentation.password_auth.AuthViewModel
+import com.example.psychoremastered.presentation.password_auth.PasswordAuthUI
 import com.example.psychoremastered.presentation.therapist_registration.RegistrationUI
 import com.example.psychoremastered.presentation.therapist_registration.RegistrationViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -57,20 +58,22 @@ class MainActivity : ComponentActivity() {
         setContent {
             PsychoRemsteredTheme {
                 val navController = rememberNavController()
-                val authViewModel = hiltViewModel<AuthViewModel>()
-                val authState by authViewModel.state.collectAsStateWithLifecycle()
                 NavHost(
                     navController = navController,
                     startDestination = ScreenRoutes.ChooseScreen
                 ) {
                     composable<ScreenRoutes.ChooseScreen> {
+                        val chooseViewModel = hiltViewModel<ChooseViewModel>()
+                        val chooseState by chooseViewModel.state.collectAsStateWithLifecycle()
                         ChooseScreen(
-                            state = authState,
-                            onEvent = authViewModel::onEvent,
+                            state = chooseState,
+                            onEvent = chooseViewModel::onEvent,
                             navController = navController
                         )
                     }
                     composable<ScreenRoutes.PasswordAuthScreen> {
+                        val authViewModel = hiltViewModel<AuthViewModel>()
+                        val authState by authViewModel.state.collectAsStateWithLifecycle()
                         PasswordAuthUI(
                             state = authState,
                             onEvent = authViewModel::onEvent,

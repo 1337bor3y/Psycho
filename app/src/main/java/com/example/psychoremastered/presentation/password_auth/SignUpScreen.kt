@@ -1,4 +1,4 @@
-package com.example.psychoremastered.presentation.auth.password_auth
+package com.example.psychoremastered.presentation.password_auth
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -51,8 +51,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import com.example.psychoremastered.presentation.auth.AuthEvent
-import com.example.psychoremastered.presentation.auth.AuthState
 import com.example.psychoremstered.R
 
 @Composable

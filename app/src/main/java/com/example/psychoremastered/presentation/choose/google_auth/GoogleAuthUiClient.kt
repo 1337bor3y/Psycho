@@ -1,4 +1,4 @@
-package com.example.psychoremastered.presentation.auth.google_auth
+package com.example.psychoremastered.presentation.choose.google_auth
 
 import android.content.Context
 import androidx.credentials.CredentialManager

@@ -1,4 +1,4 @@
-package com.example.psychoremastered.presentation.auth.choose
+package com.example.psychoremastered.presentation.choose
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -26,14 +26,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.psychoremastered.presentation.auth.AuthEvent
-import com.example.psychoremastered.presentation.auth.AuthState
 import com.example.psychoremstered.R
 
 @Composable
 fun ChooseScreen(
-    state: AuthState,
-    onEvent: (AuthEvent) -> Unit,
+    state: ChooseState,
+    onEvent: (ChooseEvent) -> Unit,
     navController: NavController
 ) {
     val context = LocalContext.current
@@ -43,7 +41,7 @@ fun ChooseScreen(
             navController = navController,
             onDismissRequest = {
                 onEvent(
-                    AuthEvent.OpenChooseDialog(false)
+                    ChooseEvent.OpenChooseDialog(false)
                 )
             }
         )
@@ -87,10 +85,10 @@ fun ChooseScreen(
                 shape = RoundedCornerShape(16.dp),
                 onClick = {
                     onEvent(
-                        AuthEvent.ChooseClient
+                        ChooseEvent.ChooseClient
                     )
                     onEvent(
-                        AuthEvent.IsCurrentUserSignedIn(navController)
+                        ChooseEvent.IsCurrentUserSignedIn(navController)
                     )
                 }) {
                 Text(
@@ -114,10 +112,10 @@ fun ChooseScreen(
                 shape = RoundedCornerShape(16.dp),
                 onClick = {
                     onEvent(
-                        AuthEvent.ChooseTherapist
+                        ChooseEvent.ChooseTherapist
                     )
                     onEvent(
-                        AuthEvent.IsCurrentUserSignedIn(navController)
+                        ChooseEvent.IsCurrentUserSignedIn(navController)
                     )
                 }) {
                 Text(

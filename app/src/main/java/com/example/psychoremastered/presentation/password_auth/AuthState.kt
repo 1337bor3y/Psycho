@@ -1,4 +1,4 @@
-package com.example.psychoremastered.presentation.auth
+package com.example.psychoremastered.presentation.password_auth
 
 data class AuthState(
     val isLoading: Boolean = false,
@@ -22,6 +22,4 @@ data class AuthState(
     val isConfirmPasswordValid: Boolean = true,
     val confirmPasswordError: String = "",
     val isClient: Boolean = true,
-    val isCurrentUserSignedIn: Boolean = false,
-    val isChooseDialogOpened: Boolean = false
 )

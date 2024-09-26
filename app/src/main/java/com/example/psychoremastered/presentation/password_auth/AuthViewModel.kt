@@ -1,19 +1,15 @@
-package com.example.psychoremastered.presentation.auth
+package com.example.psychoremastered.presentation.password_auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.example.psychoremastered.core.ScreenRoutes
 import com.example.psychoremastered.domain.model.Client
-import com.example.psychoremastered.domain.model.GoogleSignInResult
 import com.example.psychoremastered.domain.model.Resource
 import com.example.psychoremastered.domain.use_case.CreateUserWithEmailAndPasswordUseCase
 import com.example.psychoremastered.domain.use_case.GetClientUseCase
-import com.example.psychoremastered.domain.use_case.GetCurrentUserUseCase
 import com.example.psychoremastered.domain.use_case.GetTherapistUseCase
-import com.example.psychoremastered.domain.use_case.PutIsClientPreferenceUseCase
 import com.example.psychoremastered.domain.use_case.SaveClientUseCase
-import com.example.psychoremastered.domain.use_case.SignInWithCredentialUseCase
 import com.example.psychoremastered.domain.use_case.SignInWithEmailAndPasswordUseCase
 import com.example.psychoremastered.domain.use_case.ValidateConfirmPasswordUseCase
 import com.example.psychoremastered.domain.use_case.ValidateEmailUseCase
@@ -35,7 +31,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val signInWithCredentialUseCase: SignInWithCredentialUseCase,
     private val signInWithEmailAndPasswordUseCase: SignInWithEmailAndPasswordUseCase,
     private val createUserWithEmailAndPasswordUseCase: CreateUserWithEmailAndPasswordUseCase,
     private val validateProfileImageUseCase: ValidateProfileImageUseCase,
@@ -45,8 +40,6 @@ class AuthViewModel @Inject constructor(
     private val validatePasswordUseCase: ValidatePasswordUseCase,
     private val validateConfirmPasswordUseCase: ValidateConfirmPasswordUseCase,
     private val saveClientUseCase: SaveClientUseCase,
-    private val putIsClientPreferenceUseCase: PutIsClientPreferenceUseCase,
-    private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val getClientUseCase: GetClientUseCase,
     private val getTherapistUseCase: GetTherapistUseCase
 ) : ViewModel() {
@@ -56,11 +49,6 @@ class AuthViewModel @Inject constructor(
 
     fun onEvent(event: AuthEvent) {
         when (event) {
-            is AuthEvent.SignInWithGoogle -> signInWithGoogle(
-                event.result,
-                event.navController
-            )
-
             is AuthEvent.CreateUserWithEmailAndPassword -> createUserWithEmailAndPassword(
                 event.navController
             )
@@ -116,113 +104,6 @@ class AuthViewModel @Inject constructor(
                     isSurnameValid = true
                 )
             }
-
-            AuthEvent.ChooseClient -> putIsClientPreference(isClient = true)
-
-            AuthEvent.ChooseTherapist -> putIsClientPreference(isClient = false)
-
-            is AuthEvent.IsCurrentUserSignedIn -> isCurrentUserSignedIn(event.navController)
-
-            is AuthEvent.OpenChooseDialog -> openChooseDialog(event.open)
-        }
-    }
-
-    private fun openChooseDialog(open: Boolean) {
-        _state.update {
-            it.copy(
-                isChooseDialogOpened = open
-            )
-        }
-    }
-
-    private fun isCurrentUserSignedIn(navController: NavController) {
-        viewModelScope.launch {
-            getCurrentUserUseCase()?.run {
-                signInExistingUser(userId, navController)
-            } ?: openChooseDialog(true)
-        }
-    }
-
-    private suspend fun signInExistingUser(userId: String, navController: NavController) {
-        if (state.value.isClient) {
-            getClientUseCase(userId).firstOrNull()?.run {
-                // Navigate to client ui
-            } ?: run {
-                getTherapistUseCase(userId).firstOrNull()?.let {
-                    saveClientUseCase(
-                        Client(
-                            id = it.id,
-                            displayName = it.displayName,
-                            email = it.email,
-                            avatarUri = it.avatarUri
-                        )
-                    )
-                }
-            }
-        } else {
-            getTherapistUseCase(userId).firstOrNull()?.run {
-                // Navigate to therapist ui
-            } ?: run {
-                getClientUseCase(userId).firstOrNull()?.let {
-                    navController.navigate(ScreenRoutes.TherapistRegistrationScreen)
-                }
-            }
-        }
-    }
-
-    private fun signInWithGoogle(signInResult: GoogleSignInResult, navController: NavController) {
-        signInResult.idToken?.let { token ->
-            signInWithCredentialUseCase(token).onEach { result ->
-                when (result) {
-                    is Resource.Error -> _state.update {
-                        it.copy(
-                            authError = result.errorMessage,
-                            isLoading = false
-                        )
-                    }
-
-                    is Resource.Loading -> _state.update {
-                        it.copy(
-                            authError = null,
-                            isLoading = true
-                        )
-                    }
-
-                    is Resource.Success -> {
-                        _state.update {
-                            it.copy(
-                                isLoading = false
-                            )
-                        }
-                        result.data?.run {
-                            if (state.value.isClient) {
-                                getClientUseCase(userId).firstOrNull()?.let {
-                                    // Navigate to client ui
-                                } ?: run {
-                                    saveClientUseCase(
-                                        Client(
-                                            id = userId,
-                                            displayName = displayName ?: "",
-                                            email = email ?: "",
-                                            avatarUri = profilePictureUri ?: ""
-                                        )
-                                    )
-                                }
-                            } else {
-                                getTherapistUseCase(userId).firstOrNull()?.let {
-                                    // Navigate to therapist ui
-                                } ?: run {
-                                    navController.navigate(ScreenRoutes.TherapistRegistrationScreen)
-                                }
-                            }
-                        }
-                    }
-                }
-            }.launchIn(viewModelScope)
-        } ?: _state.update {
-            it.copy(
-                authError = signInResult.errorMessage
-            )
         }
     }
 
@@ -310,7 +191,30 @@ class AuthViewModel @Inject constructor(
                                 )
                             }
                             result.data?.run {
-                                signInExistingUser(userId, navController)
+                                if (state.value.isClient) {
+                                    getClientUseCase(userId).firstOrNull()?.run {
+                                        // Navigate to client ui
+                                    } ?: run {
+                                        getTherapistUseCase(userId).firstOrNull()?.let {
+                                            saveClientUseCase(
+                                                Client(
+                                                    id = it.id,
+                                                    displayName = it.displayName,
+                                                    email = it.email,
+                                                    avatarUri = it.avatarUri
+                                                )
+                                            )
+                                        }
+                                    }
+                                } else {
+                                    getTherapistUseCase(userId).firstOrNull()?.run {
+                                        // Navigate to therapist ui
+                                    } ?: run {
+                                        getClientUseCase(userId).firstOrNull()?.let {
+                                            navController.navigate(ScreenRoutes.TherapistRegistrationScreen)
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -367,17 +271,6 @@ class AuthViewModel @Inject constructor(
                 passwordError = validatePasswordUseCase(state.value.password)
                     .last().errorMessage ?: ""
             )
-        }
-    }
-
-    private fun putIsClientPreference(isClient: Boolean) {
-        viewModelScope.launch {
-            _state.update {
-                it.copy(
-                    isClient = isClient
-                )
-            }
-            putIsClientPreferenceUseCase(value = isClient)
         }
     }
 }
