@@ -1,8 +1,10 @@
 package com.example.psychoremastered.presentation.therapist_registration
 
 import com.example.psychoremastered.domain.model.Degree
+import com.example.psychoremastered.domain.model.User
 
 data class RegistrationState(
+    val user: User? = null,
     val specializations: MutableSet<String> = mutableSetOf(),
     val workFields: MutableSet<String> = mutableSetOf(),
     val languages: MutableSet<String> = mutableSetOf(),

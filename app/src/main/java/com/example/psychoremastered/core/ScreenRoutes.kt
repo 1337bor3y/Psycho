@@ -12,5 +12,10 @@ sealed class ScreenRoutes {
     data object PasswordAuthScreen: ScreenRoutes()
 
     @Serializable
-    data object TherapistRegistrationScreen: ScreenRoutes()
+    data class TherapistRegistrationScreen(
+        val userId: String,
+        val email: String?,
+        val displayName: String?,
+        val profilePictureUri: String?
+    ): ScreenRoutes()
 }

@@ -15,11 +15,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.psychoremastered.core.ui.theme.PsychoRemsteredTheme
+import com.example.psychoremastered.domain.model.User
 import com.example.psychoremastered.presentation.choose.ChooseScreen
 import com.example.psychoremastered.presentation.choose.ChooseViewModel
 import com.example.psychoremastered.presentation.password_auth.AuthViewModel
 import com.example.psychoremastered.presentation.password_auth.PasswordAuthUI
+import com.example.psychoremastered.presentation.therapist_registration.RegistrationEvent
 import com.example.psychoremastered.presentation.therapist_registration.RegistrationUI
 import com.example.psychoremastered.presentation.therapist_registration.RegistrationViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -81,12 +84,23 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable<ScreenRoutes.TherapistRegistrationScreen> {
+                        val user = it.toRoute<ScreenRoutes.TherapistRegistrationScreen>()
                         val regViewModel = hiltViewModel<RegistrationViewModel>()
                         val regState by regViewModel.state.collectAsStateWithLifecycle()
+                        regViewModel.onEvent(
+                            RegistrationEvent.SetUser(
+                                user = User(
+                                    userId = user.userId,
+                                    email = user.email,
+                                    displayName = user.displayName,
+                                    profilePictureUri = user.profilePictureUri
+                                )
+                            )
+                        )
                         RegistrationUI(
                             state = regState,
                             onEvent = regViewModel::onEvent,
-                            navController = navController
+                            navController = navController,
                         )
                     }
                 }

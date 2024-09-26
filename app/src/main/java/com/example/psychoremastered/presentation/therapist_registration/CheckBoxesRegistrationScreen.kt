@@ -74,6 +74,7 @@ fun CheckBoxesRegistrationScreen(
                             }
                         }
                         checkedStates[key] = isChecked
+                        page.checkBoxes[key] = isChecked
                     }
                 )
                 Text(key)

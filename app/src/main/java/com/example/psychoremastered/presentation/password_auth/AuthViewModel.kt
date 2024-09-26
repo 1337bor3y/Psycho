@@ -8,6 +8,7 @@ import com.example.psychoremastered.domain.model.Client
 import com.example.psychoremastered.domain.model.Resource
 import com.example.psychoremastered.domain.use_case.CreateUserWithEmailAndPasswordUseCase
 import com.example.psychoremastered.domain.use_case.GetClientUseCase
+import com.example.psychoremastered.domain.use_case.GetIsClientPreferenceUseCase
 import com.example.psychoremastered.domain.use_case.GetTherapistUseCase
 import com.example.psychoremastered.domain.use_case.SaveClientUseCase
 import com.example.psychoremastered.domain.use_case.SignInWithEmailAndPasswordUseCase
@@ -41,11 +42,22 @@ class AuthViewModel @Inject constructor(
     private val validateConfirmPasswordUseCase: ValidateConfirmPasswordUseCase,
     private val saveClientUseCase: SaveClientUseCase,
     private val getClientUseCase: GetClientUseCase,
-    private val getTherapistUseCase: GetTherapistUseCase
+    private val getTherapistUseCase: GetTherapistUseCase,
+    private val getIsClientPreferenceUseCase: GetIsClientPreferenceUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AuthState())
     val state = _state.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    isClient = getIsClientPreferenceUseCase() ?: true
+                )
+            }
+        }
+    }
 
     fun onEvent(event: AuthEvent) {
         when (event) {
@@ -152,7 +164,15 @@ class AuthViewModel @Inject constructor(
                                     )
                                     // Navigate to client ui
                                 } else {
-                                    navController.navigate(ScreenRoutes.TherapistRegistrationScreen)
+                                    navController.navigate(
+                                        ScreenRoutes.TherapistRegistrationScreen(
+                                            userId = userId,
+                                            email = email ?: "",
+                                            displayName = _state.value.firstName
+                                                    + " " + _state.value.surname,
+                                            profilePictureUri = _state.value.profileImage
+                                        )
+                                    )
                                 }
                             }
                         }
@@ -211,7 +231,14 @@ class AuthViewModel @Inject constructor(
                                         // Navigate to therapist ui
                                     } ?: run {
                                         getClientUseCase(userId).firstOrNull()?.let {
-                                            navController.navigate(ScreenRoutes.TherapistRegistrationScreen)
+                                            navController.navigate(
+                                                    ScreenRoutes.TherapistRegistrationScreen(
+                                                        userId = it.id,
+                                                        email = it.email,
+                                                        displayName = it.displayName,
+                                                        profilePictureUri = it.avatarUri
+                                                    )
+                                                )
                                         }
                                     }
                                 }

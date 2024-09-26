@@ -1,5 +1,7 @@
 package com.example.psychoremastered.presentation.therapist_registration
 
+import com.example.psychoremastered.domain.model.User
+
 sealed interface RegistrationEvent {
     data class AddSpecialization(val specialization: String) : RegistrationEvent
     data class RemoveSpecialization(val specialization: String) : RegistrationEvent
@@ -16,5 +18,6 @@ sealed interface RegistrationEvent {
     data class SetDocumentImage(val documentImage: String) : RegistrationEvent
     data class AddDegree(val degreeId: Int) : RegistrationEvent
     data class RemoveDegree(val degreeId: Int) : RegistrationEvent
-    data object SaveTherapistData : RegistrationEvent
+    data class SetUser(val user: User) : RegistrationEvent
+    data object SaveTherapist : RegistrationEvent
 }

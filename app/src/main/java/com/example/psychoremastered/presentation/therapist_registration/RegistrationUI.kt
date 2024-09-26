@@ -173,7 +173,9 @@ fun RegistrationUI(
                                 Toast.LENGTH_SHORT
                             ).show()
                         } else {
-                            // Save therapist
+                            onEvent(
+                                RegistrationEvent.SaveTherapist
+                            )
                             // Navigation
                         }
                     }

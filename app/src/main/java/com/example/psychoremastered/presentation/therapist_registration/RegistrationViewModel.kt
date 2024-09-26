@@ -1,16 +1,20 @@
 package com.example.psychoremastered.presentation.therapist_registration
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.psychoremastered.domain.model.Degree
+import com.example.psychoremastered.domain.model.Therapist
+import com.example.psychoremastered.domain.use_case.SaveTherapistUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RegistrationViewModel @Inject constructor(
-
+    private val saveTherapistUseCase: SaveTherapistUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(RegistrationState())
@@ -91,8 +95,14 @@ class RegistrationViewModel @Inject constructor(
             is RegistrationEvent.AddDegree ->
                 addDegree(event.degreeId)
 
-            RegistrationEvent.SaveTherapistData ->
-                saveTherapistData()
+            RegistrationEvent.SaveTherapist ->
+                saveTherapist()
+
+            is RegistrationEvent.SetUser -> _state.update {
+                it.copy(
+                    user = event.user
+                )
+            }
         }
     }
 
@@ -137,5 +147,25 @@ class RegistrationViewModel @Inject constructor(
         }
     }
 
-    private fun saveTherapistData() {}
+    private fun saveTherapist() {
+        viewModelScope.launch {
+            state.value.user?.run {
+                saveTherapistUseCase(
+                    Therapist(
+                        id = userId,
+                        avatarUri = profilePictureUri ?: "",
+                        email = email ?: "",
+                        displayName = displayName ?: "",
+                        specializations = state.value.specializations.toList(),
+                        workFields = state.value.workFields.toList(),
+                        languages = state.value.languages.toList(),
+                        description = state.value.description,
+                        price = state.value.price,
+                        hasDegree = true,
+                        degrees = state.value.degrees
+                    )
+                )
+            }
+        }
+    }
 }

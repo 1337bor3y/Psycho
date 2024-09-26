@@ -90,7 +90,14 @@ class ChooseViewModel @Inject constructor(
                 // Navigate to therapist ui
             } ?: run {
                 getClientUseCase(userId).firstOrNull()?.let {
-                    navController.navigate(ScreenRoutes.TherapistRegistrationScreen)
+                    navController.navigate(
+                        ScreenRoutes.TherapistRegistrationScreen(
+                            userId = it.id,
+                            email = it.email,
+                            displayName = it.displayName,
+                            profilePictureUri = it.avatarUri
+                        )
+                    )
                 }
             }
         }
@@ -138,7 +145,14 @@ class ChooseViewModel @Inject constructor(
                                 getTherapistUseCase(userId).firstOrNull()?.let {
                                     // Navigate to therapist ui
                                 } ?: run {
-                                    navController.navigate(ScreenRoutes.TherapistRegistrationScreen)
+                                    navController.navigate(
+                                        ScreenRoutes.TherapistRegistrationScreen(
+                                            userId = userId,
+                                            email = email,
+                                            displayName = displayName,
+                                            profilePictureUri = profilePictureUri
+                                        )
+                                    )
                                 }
                             }
                         }
