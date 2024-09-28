@@ -1,7 +1,6 @@
 package com.example.psychoremastered.data.repository
 
 import com.example.psychoremastered.core.util.Constants
-import com.example.psychoremastered.data.validation.EmailPatterValidator
 import com.example.psychoremastered.data.validation.PatternValidator
 import com.example.psychoremastered.domain.model.Resource
 import com.example.psychoremastered.domain.repository.ValidationRepository

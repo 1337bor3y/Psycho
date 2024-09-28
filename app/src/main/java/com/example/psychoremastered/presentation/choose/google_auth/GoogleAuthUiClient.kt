@@ -3,6 +3,7 @@ package com.example.psychoremastered.presentation.choose.google_auth
 import android.content.Context
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
+import androidx.credentials.exceptions.GetCredentialCancellationException
 import com.example.psychoremastered.domain.model.GoogleSignInResult
 import com.example.psychoremstered.R
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
@@ -24,6 +25,11 @@ class GoogleAuthUiClient(
 
             return GoogleSignInResult(
                 idToken = googleIdToken.idToken,
+                errorMessage = null
+            )
+        } catch (e: GetCredentialCancellationException) {
+            return GoogleSignInResult(
+                idToken = null,
                 errorMessage = null
             )
         } catch (e: Exception) {

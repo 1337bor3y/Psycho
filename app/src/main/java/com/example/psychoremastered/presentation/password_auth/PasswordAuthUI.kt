@@ -74,9 +74,11 @@ fun PasswordAuthUI(
                 }
             }
         )
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .weight(1f, false)) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f, false)
+        ) {
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier

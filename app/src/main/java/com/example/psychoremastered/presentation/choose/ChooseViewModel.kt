@@ -83,6 +83,7 @@ class ChooseViewModel @Inject constructor(
                             avatarUri = it.avatarUri
                         )
                     )
+                    // Navigate to client ui
                 }
             }
         } else {
@@ -139,6 +140,7 @@ class ChooseViewModel @Inject constructor(
                                             email = email ?: "",
                                             avatarUri = profilePictureUri ?: ""
                                         )
+                                        // Navigate to client ui
                                     )
                                 }
                             } else {

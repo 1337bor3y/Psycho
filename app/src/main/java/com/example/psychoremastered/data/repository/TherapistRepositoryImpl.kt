@@ -17,7 +17,7 @@ class TherapistRepositoryImpl @Inject constructor(
     private val storageApi: ImageStorageApi
 ) : TherapistRepository {
 
-    override suspend fun saveTherapist(therapist: Therapist): Boolean {
+    override suspend fun saveTherapist(therapist: Therapist) {
         val imageUri = storageApi.saveImage(therapist.avatarUri.toUri())
         return therapistApi.saveTherapist(
             therapist.toTherapistDto().copy(
@@ -26,7 +26,7 @@ class TherapistRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun removeTherapist(therapist: Therapist): Boolean {
+    override suspend fun removeTherapist(therapist: Therapist) {
         return therapistApi.removeTherapist(therapist.toTherapistDto())
     }
 

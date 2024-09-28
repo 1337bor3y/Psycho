@@ -5,9 +5,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface ClientRepository {
 
-    suspend fun saveClient(client: Client): Boolean
+    suspend fun saveClient(client: Client)
 
-    suspend fun removeClient(client: Client): Boolean
+    suspend fun removeClient(client: Client)
 
     fun getClient(clientId: String): Flow<Client?>
 }

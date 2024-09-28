@@ -5,9 +5,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface TherapistApi {
 
-    suspend fun saveTherapist(therapist: TherapistDto): Boolean
+    suspend fun saveTherapist(therapist: TherapistDto)
 
-    suspend fun removeTherapist(therapist: TherapistDto): Boolean
+    suspend fun removeTherapist(therapist: TherapistDto)
 
     fun getTherapist(therapistId: String): Flow<TherapistDto?>
 

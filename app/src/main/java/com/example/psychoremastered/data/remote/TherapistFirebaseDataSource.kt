@@ -8,6 +8,7 @@ import com.google.firebase.database.snapshots
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class TherapistFirebaseDataSource @Inject constructor(
@@ -15,12 +16,12 @@ class TherapistFirebaseDataSource @Inject constructor(
 ): TherapistApi {
     private val reference = db.getReference(Constants.FIREBASE_DB_THERAPIST_PATH)
 
-    override suspend fun saveTherapist(therapist: TherapistDto): Boolean {
-        return reference.child(therapist.id).setValue(therapist).isSuccessful
+    override suspend fun saveTherapist(therapist: TherapistDto) {
+        reference.child(therapist.id).setValue(therapist).await()
     }
 
-    override suspend fun removeTherapist(therapist: TherapistDto): Boolean {
-        return reference.child(therapist.id).removeValue().isSuccessful
+    override suspend fun removeTherapist(therapist: TherapistDto) {
+        reference.child(therapist.id).removeValue().await()
     }
 
     override fun getTherapist(therapistId: String): Flow<TherapistDto?> {

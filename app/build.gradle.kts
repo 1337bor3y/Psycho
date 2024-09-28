@@ -95,6 +95,13 @@ dependencies {
     // Test
     implementation(libs.core.ktx)
     implementation(libs.androidx.junit.ktx)
+    // Mockito
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.inline)
+    testImplementation(libs.mockito.kotlin)
+    // Flow testing
+    testImplementation(libs.turbine)
+    testImplementation(libs.kotlinx.coroutines.test)
 
     // Splash screen
     implementation(libs.androidx.core.splashscreen)

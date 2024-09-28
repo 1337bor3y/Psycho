@@ -224,6 +224,7 @@ class AuthViewModel @Inject constructor(
                                                     avatarUri = it.avatarUri
                                                 )
                                             )
+                                            // Navigate to client ui
                                         }
                                     }
                                 } else {

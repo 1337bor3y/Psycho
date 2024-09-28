@@ -165,6 +165,7 @@ class RegistrationViewModel @Inject constructor(
                         degrees = state.value.degrees
                     )
                 )
+                // Navigate to therapist ui
             }
         }
     }

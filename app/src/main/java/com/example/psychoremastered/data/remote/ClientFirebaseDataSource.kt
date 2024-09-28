@@ -6,9 +6,8 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.getValue
 import com.google.firebase.database.snapshots
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class ClientFirebaseDataSource @Inject constructor(
@@ -16,12 +15,12 @@ class ClientFirebaseDataSource @Inject constructor(
 ) : ClientApi {
     private val reference = db.getReference(Constants.FIREBASE_DB_CLIENT_PATH)
 
-    override suspend fun saveClient(client: ClientDto): Boolean {
-        return reference.child(client.id).setValue(client).isSuccessful
+    override suspend fun saveClient(client: ClientDto) {
+        reference.child(client.id).setValue(client).await()
     }
 
-    override suspend fun removeClient(client: ClientDto): Boolean {
-        return reference.child(client.id).removeValue().isSuccessful
+    override suspend fun removeClient(client: ClientDto) {
+        reference.child(client.id).removeValue().await()
     }
 
     override fun getClient(clientId: String): Flow<ClientDto?> {

@@ -106,7 +106,7 @@ fun DegreeRegistrationScreen(
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri ->
-            selectedImage = uri?.toString() ?: ""
+            selectedImage = uri?.toString() ?: selectedImage
             onEvent(
                 RegistrationEvent.SetDocumentImage(selectedImage)
             )
