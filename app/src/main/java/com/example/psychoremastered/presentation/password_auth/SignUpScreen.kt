@@ -42,6 +42,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -154,7 +155,7 @@ fun SignUpScreen(
                     AuthEvent.SetFirstName(it)
                 )
             },
-            label = { Text(text = context.getString(R.string.first_name)) },
+            label = { Text(text = stringResource(R.string.first_name)) },
             isError = !state.isFirstNameValid,
             supportingText = { Text(text = state.firstNameError) }
         )
@@ -169,7 +170,7 @@ fun SignUpScreen(
                     AuthEvent.SetSurname(it)
                 )
             },
-            label = { Text(text = context.getString(R.string.surname)) },
+            label = { Text(text = stringResource(R.string.surname)) },
             isError = !state.isSurnameValid,
             supportingText = { Text(text = state.surnameError) }
         )
@@ -183,7 +184,7 @@ fun SignUpScreen(
                     AuthEvent.SetEmail(it)
                 )
             },
-            label = { Text(text = context.getString(R.string.email)) },
+            label = { Text(text = stringResource(R.string.email)) },
             isError = !state.isEmailValid,
             supportingText = { Text(text = state.emailError) },
             keyboardOptions = KeyboardOptions(
@@ -201,7 +202,7 @@ fun SignUpScreen(
                     AuthEvent.SetPassword(it)
                 )
             },
-            label = { Text(text = context.getString(R.string.password)) },
+            label = { Text(text = stringResource(R.string.password)) },
             isError = !state.isPasswordValid,
             supportingText = { Text(text = state.passwordError) },
             keyboardOptions = KeyboardOptions(
@@ -231,7 +232,7 @@ fun SignUpScreen(
                     AuthEvent.SetConfirmPassword(it)
                 )
             },
-            label = { Text(text = context.getString(R.string.confirm_password)) },
+            label = { Text(text = stringResource(R.string.confirm_password)) },
             isError = !state.isConfirmPasswordValid,
             supportingText = { Text(text = state.confirmPasswordError) },
             keyboardOptions = KeyboardOptions(

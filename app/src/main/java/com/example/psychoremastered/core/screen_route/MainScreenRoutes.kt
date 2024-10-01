@@ -1,15 +1,15 @@
-package com.example.psychoremastered.core
+package com.example.psychoremastered.core.screen_route
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class ScreenRoutes {
+sealed class MainScreenRoutes {
 
     @Serializable
-    data object ChooseScreen: ScreenRoutes()
+    data object ChooseScreen: MainScreenRoutes()
 
     @Serializable
-    data object PasswordAuthScreen: ScreenRoutes()
+    data object PasswordAuthScreen: MainScreenRoutes()
 
     @Serializable
     data class TherapistRegistrationScreen(
@@ -17,5 +17,8 @@ sealed class ScreenRoutes {
         val email: String?,
         val displayName: String?,
         val profilePictureUri: String?
-    ): ScreenRoutes()
+    ): MainScreenRoutes()
+
+    @Serializable
+    data object ClientScreen: MainScreenRoutes()
 }

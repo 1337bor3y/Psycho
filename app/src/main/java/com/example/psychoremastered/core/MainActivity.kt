@@ -10,16 +10,25 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.getValue
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.example.psychoremastered.core.screen_route.ClientScreenRoutes
+import com.example.psychoremastered.core.screen_route.MainScreenRoutes
 import com.example.psychoremastered.core.ui.theme.PsychoRemsteredTheme
 import com.example.psychoremastered.domain.model.User
 import com.example.psychoremastered.presentation.choose.ChooseScreen
 import com.example.psychoremastered.presentation.choose.ChooseViewModel
+import com.example.psychoremastered.presentation.client.ClientUI
+import com.example.psychoremastered.presentation.client.chat.ClientChatsScreen
+import com.example.psychoremastered.presentation.client.proflie.ClientProfileScreen
+import com.example.psychoremastered.presentation.client.therapist_list.TherapistListScreen
 import com.example.psychoremastered.presentation.password_auth.AuthViewModel
 import com.example.psychoremastered.presentation.password_auth.PasswordAuthUI
 import com.example.psychoremastered.presentation.therapist_registration.RegistrationEvent
@@ -63,9 +72,9 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(
                     navController = navController,
-                    startDestination = ScreenRoutes.ChooseScreen
+                    startDestination = MainScreenRoutes.ChooseScreen
                 ) {
-                    composable<ScreenRoutes.ChooseScreen> {
+                    composable<MainScreenRoutes.ChooseScreen> {
                         val chooseViewModel = hiltViewModel<ChooseViewModel>()
                         val chooseState by chooseViewModel.state.collectAsStateWithLifecycle()
                         ChooseScreen(
@@ -74,7 +83,7 @@ class MainActivity : ComponentActivity() {
                             navController = navController
                         )
                     }
-                    composable<ScreenRoutes.PasswordAuthScreen> {
+                    composable<MainScreenRoutes.PasswordAuthScreen> {
                         val authViewModel = hiltViewModel<AuthViewModel>()
                         val authState by authViewModel.state.collectAsStateWithLifecycle()
                         PasswordAuthUI(
@@ -83,8 +92,8 @@ class MainActivity : ComponentActivity() {
                             navController = navController
                         )
                     }
-                    composable<ScreenRoutes.TherapistRegistrationScreen> {
-                        val user = it.toRoute<ScreenRoutes.TherapistRegistrationScreen>()
+                    composable<MainScreenRoutes.TherapistRegistrationScreen> {
+                        val user = it.toRoute<MainScreenRoutes.TherapistRegistrationScreen>()
                         val regViewModel = hiltViewModel<RegistrationViewModel>()
                         val regState by regViewModel.state.collectAsStateWithLifecycle()
                         regViewModel.onEvent(
@@ -101,6 +110,11 @@ class MainActivity : ComponentActivity() {
                             state = regState,
                             onEvent = regViewModel::onEvent,
                             navController = navController,
+                        )
+                    }
+                    composable<MainScreenRoutes.ClientScreen> {
+                        ClientUI(
+                            navController = navController
                         )
                     }
                 }

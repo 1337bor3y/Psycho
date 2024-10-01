@@ -3,10 +3,11 @@ package com.example.psychoremastered.presentation.choose
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.example.psychoremastered.core.ScreenRoutes
+import com.example.psychoremastered.core.screen_route.MainScreenRoutes
 import com.example.psychoremastered.domain.model.Client
 import com.example.psychoremastered.domain.model.GoogleSignInResult
 import com.example.psychoremastered.domain.model.Resource
+import com.example.psychoremastered.domain.model.User
 import com.example.psychoremastered.domain.use_case.GetClientUseCase
 import com.example.psychoremastered.domain.use_case.GetCurrentUserUseCase
 import com.example.psychoremastered.domain.use_case.GetTherapistUseCase
@@ -63,18 +64,18 @@ class ChooseViewModel @Inject constructor(
 
     private fun isCurrentUserSignedIn(navController: NavController) {
         viewModelScope.launch {
-            getCurrentUserUseCase()?.run {
-                signInExistingUser(userId, navController)
+            getCurrentUserUseCase()?.let {
+                signInExistingUser(it, navController)
             } ?: openChooseDialog(true)
         }
     }
 
-    private suspend fun signInExistingUser(userId: String, navController: NavController) {
+    private suspend fun signInExistingUser(user: User, navController: NavController) {
         if (state.value.isClient) {
-            getClientUseCase(userId).firstOrNull()?.run {
-                // Navigate to client ui
+            getClientUseCase(user.userId).firstOrNull()?.run {
+                navController.navigate(MainScreenRoutes.ClientScreen)
             } ?: run {
-                getTherapistUseCase(userId).firstOrNull()?.let {
+                getTherapistUseCase(user.userId).firstOrNull()?.let {
                     saveClientUseCase(
                         Client(
                             id = it.id,
@@ -83,20 +84,39 @@ class ChooseViewModel @Inject constructor(
                             avatarUri = it.avatarUri
                         )
                     )
-                    // Navigate to client ui
+                    navController.navigate(MainScreenRoutes.ClientScreen)
+                } ?: run {
+                    saveClientUseCase(
+                        Client(
+                            id = user.userId,
+                            email = user.email ?: "",
+                            displayName = user.email ?: "",
+                            avatarUri = user.profilePictureUri ?: ""
+                        )
+                    )
+                    navController.navigate(MainScreenRoutes.ClientScreen)
                 }
             }
         } else {
-            getTherapistUseCase(userId).firstOrNull()?.run {
+            getTherapistUseCase(user.userId).firstOrNull()?.run {
                 // Navigate to therapist ui
             } ?: run {
-                getClientUseCase(userId).firstOrNull()?.let {
+                getClientUseCase(user.userId).firstOrNull()?.let {
                     navController.navigate(
-                        ScreenRoutes.TherapistRegistrationScreen(
+                        MainScreenRoutes.TherapistRegistrationScreen(
                             userId = it.id,
                             email = it.email,
                             displayName = it.displayName,
                             profilePictureUri = it.avatarUri
+                        )
+                    )
+                } ?: run {
+                    navController.navigate(
+                        MainScreenRoutes.TherapistRegistrationScreen(
+                            userId = user.userId,
+                            email = user.email,
+                            displayName = user.email,
+                            profilePictureUri = user.profilePictureUri
                         )
                     )
                 }
@@ -131,7 +151,7 @@ class ChooseViewModel @Inject constructor(
                         result.data?.run {
                             if (state.value.isClient) {
                                 getClientUseCase(userId).firstOrNull()?.let {
-                                    // Navigate to client ui
+                                    navController.navigate(MainScreenRoutes.ClientScreen)
                                 } ?: run {
                                     saveClientUseCase(
                                         Client(
@@ -140,15 +160,15 @@ class ChooseViewModel @Inject constructor(
                                             email = email ?: "",
                                             avatarUri = profilePictureUri ?: ""
                                         )
-                                        // Navigate to client ui
                                     )
+                                    navController.navigate(MainScreenRoutes.ClientScreen)
                                 }
                             } else {
                                 getTherapistUseCase(userId).firstOrNull()?.let {
                                     // Navigate to therapist ui
                                 } ?: run {
                                     navController.navigate(
-                                        ScreenRoutes.TherapistRegistrationScreen(
+                                        MainScreenRoutes.TherapistRegistrationScreen(
                                             userId = userId,
                                             email = email,
                                             displayName = displayName,

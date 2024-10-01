@@ -3,8 +3,11 @@ package com.example.psychoremastered.presentation.password_auth
 import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
@@ -53,7 +56,7 @@ fun PasswordAuthUI(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = 44.dp),
+            .padding(WindowInsets.navigationBars.asPaddingValues())
     ) {
         TopAppBar(
             title = { Text(text = "") },
@@ -109,8 +112,7 @@ fun PasswordAuthUI(
         }
         TextButton(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(end = 10.dp),
+                .fillMaxWidth(),
             onClick = {
                 coroutineScope.launch {
                     if (pagerState.currentPage == 0) {

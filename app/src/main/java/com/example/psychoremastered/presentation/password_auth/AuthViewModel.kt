@@ -3,7 +3,7 @@ package com.example.psychoremastered.presentation.password_auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.example.psychoremastered.core.ScreenRoutes
+import com.example.psychoremastered.core.screen_route.MainScreenRoutes
 import com.example.psychoremastered.domain.model.Client
 import com.example.psychoremastered.domain.model.Resource
 import com.example.psychoremastered.domain.use_case.CreateUserWithEmailAndPasswordUseCase
@@ -162,10 +162,10 @@ class AuthViewModel @Inject constructor(
                                             avatarUri = _state.value.profileImage
                                         )
                                     )
-                                    // Navigate to client ui
+                                    navController.navigate(MainScreenRoutes.ClientScreen)
                                 } else {
                                     navController.navigate(
-                                        ScreenRoutes.TherapistRegistrationScreen(
+                                        MainScreenRoutes.TherapistRegistrationScreen(
                                             userId = userId,
                                             email = email ?: "",
                                             displayName = _state.value.firstName
@@ -213,7 +213,7 @@ class AuthViewModel @Inject constructor(
                             result.data?.run {
                                 if (state.value.isClient) {
                                     getClientUseCase(userId).firstOrNull()?.run {
-                                        // Navigate to client ui
+                                        navController.navigate(MainScreenRoutes.ClientScreen)
                                     } ?: run {
                                         getTherapistUseCase(userId).firstOrNull()?.let {
                                             saveClientUseCase(
@@ -224,7 +224,7 @@ class AuthViewModel @Inject constructor(
                                                     avatarUri = it.avatarUri
                                                 )
                                             )
-                                            // Navigate to client ui
+                                            navController.navigate(MainScreenRoutes.ClientScreen)
                                         }
                                     }
                                 } else {
@@ -233,7 +233,7 @@ class AuthViewModel @Inject constructor(
                                     } ?: run {
                                         getClientUseCase(userId).firstOrNull()?.let {
                                             navController.navigate(
-                                                    ScreenRoutes.TherapistRegistrationScreen(
+                                                    MainScreenRoutes.TherapistRegistrationScreen(
                                                         userId = it.id,
                                                         email = it.email,
                                                         displayName = it.displayName,

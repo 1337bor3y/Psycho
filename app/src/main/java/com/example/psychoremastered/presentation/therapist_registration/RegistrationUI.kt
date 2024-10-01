@@ -2,9 +2,11 @@ package com.example.psychoremastered.presentation.therapist_registration
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -60,7 +62,7 @@ fun RegistrationUI(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = 44.dp),
+            .padding(WindowInsets.navigationBars.asPaddingValues())
     ) {
         TopAppBar(
             title = { Text(text = "") },
@@ -148,8 +150,7 @@ fun RegistrationUI(
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(60.dp)
-                .padding(start = 24.dp, top = 8.dp, end = 24.dp, bottom = 10.dp),
+                .padding(start = 24.dp, top = 8.dp, end = 24.dp),
             shape = RoundedCornerShape(20.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color.Blue),
             onClick = {

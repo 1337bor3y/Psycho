@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -34,7 +35,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogWindowProvider
 import androidx.navigation.NavController
-import com.example.psychoremastered.core.ScreenRoutes
+import com.example.psychoremastered.core.screen_route.MainScreenRoutes
 import com.example.psychoremastered.presentation.choose.google_auth.GoogleAuthUiClient
 import com.example.psychoremstered.R
 import kotlinx.coroutines.launch
@@ -63,7 +64,7 @@ fun ChooseDialog(
         ) {
             Spacer(modifier = Modifier.height(15.dp))
             Text(
-                text = context.getString(R.string.text_dialog),
+                text = stringResource(R.string.text_dialog),
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme
@@ -107,7 +108,7 @@ fun ChooseDialog(
                     modifier = Modifier.size(21.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = context.getString(R.string.log_in_with_google), fontSize = 16.sp)
+                Text(text = stringResource(R.string.log_in_with_google), fontSize = 16.sp)
             }
             Spacer(modifier = Modifier.height(10.dp))
             Button(
@@ -122,7 +123,7 @@ fun ChooseDialog(
                 ),
                 onClick = {
                     navController.navigate(
-                        ScreenRoutes.PasswordAuthScreen
+                        MainScreenRoutes.PasswordAuthScreen
                     )
                     onDismissRequest()
                 }
@@ -133,7 +134,7 @@ fun ChooseDialog(
                     modifier = Modifier.size(21.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(text = context.getString(R.string.log_in_with_email), fontSize = 16.sp)
+                Text(text = stringResource(R.string.log_in_with_email), fontSize = 16.sp)
             }
         }
     }

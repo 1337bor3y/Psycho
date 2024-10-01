@@ -43,6 +43,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -157,7 +158,7 @@ fun DegreeRegistrationScreen(
                 isErrorUniversity = false
                 isSaved = false
             },
-            label = { Text(text = context.getString(R.string.name_of_the_educational_institution)) },
+            label = { Text(text = stringResource(R.string.name_of_the_educational_institution)) },
             isError = isErrorUniversity
         )
         Spacer(modifier = Modifier.height(10.dp))
@@ -174,7 +175,7 @@ fun DegreeRegistrationScreen(
                 isErrorSeciality = false
                 isSaved = false
             },
-            label = { Text(text = context.getString(R.string.specialty)) },
+            label = { Text(text = stringResource(R.string.specialty)) },
             isError = isErrorSeciality
         )
         Spacer(modifier = Modifier.height(10.dp))
@@ -200,7 +201,7 @@ fun DegreeRegistrationScreen(
                         isErrorAdmission = true
                     }
                 },
-                label = { Text(text = context.getString(R.string.admission_year)) },
+                label = { Text(text = stringResource(R.string.admission_year)) },
                 supportingText = { Text(text = "$admissionSymbolsCount/$symbolsLimit") },
                 isError = isErrorAdmission,
                 keyboardOptions = KeyboardOptions(
@@ -226,7 +227,7 @@ fun DegreeRegistrationScreen(
                         isErrorGraduation = true
                     }
                 },
-                label = { Text(text = context.getString(R.string.graduation_year)) },
+                label = { Text(text = stringResource(R.string.graduation_year)) },
                 supportingText = { Text(text = "$graduationSymbolsCount/$symbolsLimit") },
                 isError = isErrorGraduation,
                 keyboardOptions = KeyboardOptions(
@@ -349,7 +350,7 @@ fun DegreeRegistrationScreen(
                     }
                 }
             ) {
-                Text(text = context.getString(R.string.add_another_document), fontSize = 14.sp)
+                Text(text = stringResource(R.string.add_another_document), fontSize = 14.sp)
             }
         }
         if (degree.id > 0) {
@@ -365,7 +366,7 @@ fun DegreeRegistrationScreen(
                 ),
                 onClick = { removeOnClick() }
             ) {
-                Text(text = context.getString(R.string.remove_this_document), fontSize = 14.sp)
+                Text(text = stringResource(R.string.remove_this_document), fontSize = 14.sp)
             }
         }
     }
