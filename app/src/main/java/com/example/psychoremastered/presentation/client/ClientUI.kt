@@ -21,7 +21,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -52,7 +51,9 @@ fun ClientUI(
                 title = { Text(text = title) },
                 navigationIcon = {
                     IconButton(onClick = {
-                        navController.popBackStack()
+                        if (!clientNavController.popBackStack()) {
+                            navController.popBackStack()
+                        }
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
@@ -69,12 +70,18 @@ fun ClientUI(
                 modifier = Modifier.padding(padding)
             ) {
                 composable<ClientScreenRoutes.TherapistListScreen> {
+                    navigationSelectedItem = 0
+                    title = "Therapist list"
                     TherapistListScreen()
                 }
                 composable<ClientScreenRoutes.ProfileScreen> {
+                    navigationSelectedItem = 1
+                    title = "Profile"
                     ClientProfileScreen()
                 }
                 composable<ClientScreenRoutes.ChatsScreen> {
+                    navigationSelectedItem = 2
+                    title = "Chats"
                     ClientChatsScreen()
                 }
             }
@@ -99,12 +106,7 @@ fun ClientUI(
                             onClick = {
                                 navigationSelectedItem = index
                                 clientNavController.navigate(navigationItem.route) {
-                                    popUpTo(clientNavController.graph.findStartDestination().id) {
-                                        saveState = true
-                                    }
                                     launchSingleTop = true
-                                    restoreState = true
-                                    title = navigationItem.label
                                 }
                             }
                         )
