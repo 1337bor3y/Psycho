@@ -21,6 +21,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -30,6 +32,8 @@ import com.example.psychoremastered.presentation.client.chat.ClientChatsScreen
 import com.example.psychoremastered.presentation.client.model.BottomNavigationItem
 import com.example.psychoremastered.presentation.client.proflie.ClientProfileScreen
 import com.example.psychoremastered.presentation.client.therapist_list.TherapistListScreen
+import com.example.psychoremastered.presentation.client.therapist_list.TherapistListViewModel
+import com.example.psychoremastered.presentation.therapist_registration.RegistrationViewModel
 import com.example.psychoremstered.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -86,7 +90,12 @@ fun ClientUI(
                 composable<ClientScreenRoutes.TherapistListScreen> {
                     navigationSelectedItem = 0
                     title = "Therapist list"
-                    TherapistListScreen()
+                    val listViewModel = hiltViewModel<TherapistListViewModel>()
+                    val listState by listViewModel.state.collectAsStateWithLifecycle()
+                    TherapistListScreen(
+                        state = listState,
+                        navController = clientNavController
+                    )
                 }
                 composable<ClientScreenRoutes.ProfileScreen> {
                     navigationSelectedItem = 1

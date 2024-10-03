@@ -1,6 +1,7 @@
 package com.example.psychoremastered.data.repository
 
 import androidx.core.net.toUri
+import com.example.psychoremastered.data.auth.AuthApi
 import com.example.psychoremastered.data.mappers.toTherapist
 import com.example.psychoremastered.data.mappers.toTherapistDto
 import com.example.psychoremastered.data.remote.ImageStorageApi
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 class TherapistRepositoryImpl @Inject constructor(
     private val therapistApi: TherapistApi,
-    private val storageApi: ImageStorageApi
+    private val storageApi: ImageStorageApi,
+    private val authApi: AuthApi
 ) : TherapistRepository {
 
     override suspend fun saveTherapist(therapist: Therapist) {
@@ -38,9 +40,13 @@ class TherapistRepositoryImpl @Inject constructor(
 
     override fun getAllTherapists(): Flow<List<Therapist>> {
         return therapistApi.getAllTherapists().mapNotNull { therapist ->
-            therapist.map {
-                it.toTherapist()
-            }
+            therapist
+                .filter {
+                    it.id != authApi.getCurrentUser()?.userId
+                }
+                .map {
+                    it.toTherapist()
+                }
         }
     }
 }
