@@ -65,4 +65,8 @@ class AuthFirebaseSource @Inject constructor(
             )
         }
     }
+
+    override suspend fun signOut() {
+        auth.signOut()
+    }
 }

@@ -17,4 +17,6 @@ interface AuthApi {
     ): AuthUser?
 
     suspend fun getCurrentUser(): AuthUser?
+
+    suspend fun signOut()
 }

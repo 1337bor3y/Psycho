@@ -26,6 +26,7 @@ import com.example.psychoremastered.domain.model.User
 import com.example.psychoremastered.presentation.choose.ChooseScreen
 import com.example.psychoremastered.presentation.choose.ChooseViewModel
 import com.example.psychoremastered.presentation.client.ClientUI
+import com.example.psychoremastered.presentation.client.ClientViewModel
 import com.example.psychoremastered.presentation.client.chat.ClientChatsScreen
 import com.example.psychoremastered.presentation.client.proflie.ClientProfileScreen
 import com.example.psychoremastered.presentation.client.therapist_list.TherapistListScreen
@@ -113,7 +114,9 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable<MainScreenRoutes.ClientScreen> {
+                        val clientViewModel = hiltViewModel<ClientViewModel>()
                         ClientUI(
+                            onEvent = clientViewModel::onEvent,
                             navController = navController
                         )
                     }

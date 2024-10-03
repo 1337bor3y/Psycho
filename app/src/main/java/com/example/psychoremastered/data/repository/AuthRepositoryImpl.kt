@@ -31,4 +31,8 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun getCurrentUser(): User? {
         return authApi.getCurrentUser()?.toUser()
     }
+
+    override suspend fun signOut() {
+        authApi.signOut()
+    }
 }
