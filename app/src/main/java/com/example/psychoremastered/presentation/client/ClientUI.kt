@@ -27,14 +27,19 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.psychoremastered.core.screen_route.ClientScreenRoutes
+import com.example.psychoremastered.core.screen_route.parcelableType
+import com.example.psychoremastered.domain.model.Degree
+import com.example.psychoremastered.domain.model.Therapist
 import com.example.psychoremastered.presentation.client.chat.ClientChatsScreen
 import com.example.psychoremastered.presentation.client.model.BottomNavigationItem
 import com.example.psychoremastered.presentation.client.proflie.ClientProfileScreen
+import com.example.psychoremastered.presentation.client.therapist_list.PreviewTherapistScreen
 import com.example.psychoremastered.presentation.client.therapist_list.TherapistListScreen
 import com.example.psychoremastered.presentation.client.therapist_list.TherapistListViewModel
-import com.example.psychoremastered.presentation.therapist_registration.RegistrationViewModel
 import com.example.psychoremstered.R
+import kotlin.reflect.typeOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,6 +54,7 @@ fun ClientUI(
     var navigationSelectedItem by rememberSaveable {
         mutableIntStateOf(0)
     }
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize(),
@@ -106,6 +112,17 @@ fun ClientUI(
                     navigationSelectedItem = 2
                     title = "Chats"
                     ClientChatsScreen()
+                }
+                composable<ClientScreenRoutes.PreviewTherapistScreen>(
+                    typeMap = mapOf(
+                        typeOf<Therapist>() to parcelableType<Therapist>(),
+                        typeOf<Degree>() to parcelableType<Degree>()
+                    )
+                ) {
+                    val therapist =
+                        it.toRoute<ClientScreenRoutes.PreviewTherapistScreen>().therapist
+                    title = therapist.displayName
+                    PreviewTherapistScreen(therapist = therapist)
                 }
             }
         },

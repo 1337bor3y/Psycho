@@ -10,32 +10,27 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.getValue
 import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.psychoremastered.core.screen_route.ClientScreenRoutes
 import com.example.psychoremastered.core.screen_route.MainScreenRoutes
-import com.example.psychoremastered.core.ui.theme.PsychoRemsteredTheme
+import com.example.psychoremastered.core.screen_route.parcelableType
+import com.example.psychoremastered.core.ui.theme.PsychoRemasteredTheme
 import com.example.psychoremastered.domain.model.User
 import com.example.psychoremastered.presentation.choose.ChooseScreen
 import com.example.psychoremastered.presentation.choose.ChooseViewModel
 import com.example.psychoremastered.presentation.client.ClientUI
 import com.example.psychoremastered.presentation.client.ClientViewModel
-import com.example.psychoremastered.presentation.client.chat.ClientChatsScreen
-import com.example.psychoremastered.presentation.client.proflie.ClientProfileScreen
-import com.example.psychoremastered.presentation.client.therapist_list.TherapistListScreen
 import com.example.psychoremastered.presentation.password_auth.AuthViewModel
 import com.example.psychoremastered.presentation.password_auth.PasswordAuthUI
 import com.example.psychoremastered.presentation.therapist_registration.RegistrationEvent
 import com.example.psychoremastered.presentation.therapist_registration.RegistrationUI
 import com.example.psychoremastered.presentation.therapist_registration.RegistrationViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.reflect.typeOf
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -69,7 +64,7 @@ class MainActivity : ComponentActivity() {
         }
         enableEdgeToEdge()
         setContent {
-            PsychoRemsteredTheme {
+            PsychoRemasteredTheme {
                 val navController = rememberNavController()
                 NavHost(
                     navController = navController,
@@ -93,18 +88,15 @@ class MainActivity : ComponentActivity() {
                             navController = navController
                         )
                     }
-                    composable<MainScreenRoutes.TherapistRegistrationScreen> {
-                        val user = it.toRoute<MainScreenRoutes.TherapistRegistrationScreen>()
+                    composable<MainScreenRoutes.TherapistRegistrationScreen>(
+                        typeMap = mapOf(typeOf<User>() to parcelableType<User>())
+                    ) {
+                        val user = it.toRoute<MainScreenRoutes.TherapistRegistrationScreen>().user
                         val regViewModel = hiltViewModel<RegistrationViewModel>()
                         val regState by regViewModel.state.collectAsStateWithLifecycle()
                         regViewModel.onEvent(
                             RegistrationEvent.SetUser(
-                                user = User(
-                                    userId = user.userId,
-                                    email = user.email,
-                                    displayName = user.displayName,
-                                    profilePictureUri = user.profilePictureUri
-                                )
+                                user = user
                             )
                         )
                         RegistrationUI(

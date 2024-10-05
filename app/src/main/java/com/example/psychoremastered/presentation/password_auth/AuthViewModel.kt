@@ -6,6 +6,7 @@ import androidx.navigation.NavController
 import com.example.psychoremastered.core.screen_route.MainScreenRoutes
 import com.example.psychoremastered.domain.model.Client
 import com.example.psychoremastered.domain.model.Resource
+import com.example.psychoremastered.domain.model.User
 import com.example.psychoremastered.domain.use_case.CreateUserWithEmailAndPasswordUseCase
 import com.example.psychoremastered.domain.use_case.GetClientUseCase
 import com.example.psychoremastered.domain.use_case.GetIsClientPreferenceUseCase
@@ -166,11 +167,13 @@ class AuthViewModel @Inject constructor(
                                 } else {
                                     navController.navigate(
                                         MainScreenRoutes.TherapistRegistrationScreen(
-                                            userId = userId,
-                                            email = email ?: "",
-                                            displayName = _state.value.firstName
-                                                    + " " + _state.value.surname,
-                                            profilePictureUri = _state.value.profileImage
+                                            User(
+                                                userId = userId,
+                                                email = email ?: "",
+                                                displayName = _state.value.firstName
+                                                        + " " + _state.value.surname,
+                                                profilePictureUri = _state.value.profileImage
+                                            )
                                         )
                                     )
                                 }
@@ -233,13 +236,15 @@ class AuthViewModel @Inject constructor(
                                     } ?: run {
                                         getClientUseCase(userId).firstOrNull()?.let {
                                             navController.navigate(
-                                                    MainScreenRoutes.TherapistRegistrationScreen(
+                                                MainScreenRoutes.TherapistRegistrationScreen(
+                                                    User(
                                                         userId = it.id,
                                                         email = it.email,
                                                         displayName = it.displayName,
                                                         profilePictureUri = it.avatarUri
                                                     )
                                                 )
+                                            )
                                         }
                                     }
                                 }

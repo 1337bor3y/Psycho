@@ -104,20 +104,17 @@ class ChooseViewModel @Inject constructor(
                 getClientUseCase(user.userId).firstOrNull()?.let {
                     navController.navigate(
                         MainScreenRoutes.TherapistRegistrationScreen(
-                            userId = it.id,
-                            email = it.email,
-                            displayName = it.displayName,
-                            profilePictureUri = it.avatarUri
+                            User(
+                                userId = it.id,
+                                email = it.email,
+                                displayName = it.displayName,
+                                profilePictureUri = it.avatarUri
+                            )
                         )
                     )
                 } ?: run {
                     navController.navigate(
-                        MainScreenRoutes.TherapistRegistrationScreen(
-                            userId = user.userId,
-                            email = user.email,
-                            displayName = user.email,
-                            profilePictureUri = user.profilePictureUri
-                        )
+                        MainScreenRoutes.TherapistRegistrationScreen(user)
                     )
                 }
             }
@@ -169,10 +166,12 @@ class ChooseViewModel @Inject constructor(
                                 } ?: run {
                                     navController.navigate(
                                         MainScreenRoutes.TherapistRegistrationScreen(
-                                            userId = userId,
-                                            email = email,
-                                            displayName = displayName,
-                                            profilePictureUri = profilePictureUri
+                                            User(
+                                                userId = userId,
+                                                email = email,
+                                                displayName = displayName,
+                                                profilePictureUri = profilePictureUri
+                                            )
                                         )
                                     )
                                 }

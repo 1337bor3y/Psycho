@@ -28,15 +28,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.example.psychoremastered.domain.model.Therapist
+import com.example.psychoremstered.R
 
 @Composable
 fun TherapistListItem(
@@ -62,7 +63,10 @@ fun TherapistListItem(
                 verticalAlignment = Alignment.Top
             ) {
                 Image(
-                    painter = rememberAsyncImagePainter(model = therapist.avatarUri),
+                    painter = rememberAsyncImagePainter(
+                        model = therapist.avatarUri,
+                        placeholder = painterResource(id = R.drawable.placeholder)
+                    ),
                     contentDescription = "Document image",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier

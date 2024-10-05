@@ -20,11 +20,12 @@ class TherapistListViewModel @Inject constructor(
     private val _state = MutableStateFlow(TherapistListState())
     val state = _state.asStateFlow()
 
+
     init {
-        getTherapistsList()
+        fetchTherapistsList ()
     }
 
-    private fun getTherapistsList() {
+    private fun fetchTherapistsList() {
         getTherapistsListUseCase().onEach { result ->
             when (result) {
                 is Resource.Error -> _state.update {

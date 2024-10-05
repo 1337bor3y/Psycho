@@ -15,7 +15,7 @@ class ClientViewModel @Inject constructor(
 ) : ViewModel() {
 
     fun onEvent(event: ClientEvent) {
-        when(event) {
+        when (event) {
             is ClientEvent.SignOut -> signOut(event.navController)
         }
     }

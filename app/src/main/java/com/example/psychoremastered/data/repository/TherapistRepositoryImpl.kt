@@ -6,6 +6,7 @@ import com.example.psychoremastered.data.mappers.toTherapist
 import com.example.psychoremastered.data.mappers.toTherapistDto
 import com.example.psychoremastered.data.remote.ImageStorageApi
 import com.example.psychoremastered.data.remote.TherapistApi
+import com.example.psychoremastered.domain.model.Degree
 import com.example.psychoremastered.domain.model.Therapist
 import com.example.psychoremastered.domain.repository.TherapistRepository
 import kotlinx.coroutines.flow.Flow
@@ -21,10 +22,17 @@ class TherapistRepositoryImpl @Inject constructor(
 
     override suspend fun saveTherapist(therapist: Therapist) {
         val imageUri = storageApi.saveImage(therapist.avatarUri.toUri())
+        val updatedDegrees: ArrayList<Degree> = ArrayList()
+        therapist.degrees.forEach {
+            val documentUri = storageApi.saveImage(it.documentImage.toUri())
+            updatedDegrees.add(it.copy(documentImage = documentUri))
+        }
+        val updatedTherapist = therapist.copy(
+            avatarUri = imageUri,
+            degrees = updatedDegrees
+        )
         return therapistApi.saveTherapist(
-            therapist.toTherapistDto().copy(
-                avatarUri = imageUri
-            )
+            updatedTherapist.toTherapistDto()
         )
     }
 

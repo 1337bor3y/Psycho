@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.psychoremastered.core.screen_route.ClientScreenRoutes
 import com.example.psychoremastered.presentation.client.therapist_list.component.TherapistListItem
 
 @Composable
@@ -31,7 +32,9 @@ fun TherapistListScreen(
                 TherapistListItem(
                     therapist = therapist,
                     onItemClick = {
-                        // Navigate to therapist preview screen
+                        navController.navigate(
+                            ClientScreenRoutes.PreviewTherapistScreen(therapist)
+                        )
                     }
                 )
             }
