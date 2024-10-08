@@ -1,6 +1,11 @@
 package com.example.psychoremastered.presentation.client
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -10,7 +15,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -49,53 +53,53 @@ fun ClientUI(
 ) {
     val clientNavController = rememberNavController()
     var title by rememberSaveable {
-        mutableStateOf("Therapist list")
+        mutableStateOf("Therapists")
     }
     var navigationSelectedItem by rememberSaveable {
         mutableIntStateOf(0)
     }
+    val navItems = BottomNavigationItem().bottomNavigationItems()
 
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize(),
-        topBar = {
-            TopAppBar(
-                title = { Text(text = title) },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        if (!clientNavController.popBackStack()) {
-                            navController.popBackStack()
-                        }
-                    }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
-                        )
+    Column(modifier = Modifier.fillMaxSize()) {
+        TopAppBar(
+            title = { Text(text = title) },
+            navigationIcon = {
+                IconButton(onClick = {
+                    if (!clientNavController.popBackStack()) {
+                        navController.popBackStack()
                     }
-                },
-                actions = {
-                    IconButton(onClick = {
-                        onEvent(
-                            ClientEvent.SignOut(navController)
-                        )
-                    }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.Logout,
-                            contentDescription = "Sing out"
-                        )
-                    }
+                }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back"
+                    )
                 }
-            )
-        },
-        content = { padding ->
+            },
+            actions = {
+                IconButton(onClick = {
+                    onEvent(
+                        ClientEvent.SignOut(navController)
+                    )
+                }) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.Logout,
+                        contentDescription = "Sing out"
+                    )
+                }
+            }
+        )
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .padding(WindowInsets.navigationBars.asPaddingValues())
+        ) {
             NavHost(
                 navController = clientNavController,
-                startDestination = ClientScreenRoutes.TherapistListScreen,
-                modifier = Modifier.padding(padding)
+                startDestination = ClientScreenRoutes.TherapistListScreen
             ) {
                 composable<ClientScreenRoutes.TherapistListScreen> {
                     navigationSelectedItem = 0
-                    title = "Therapist list"
+                    title = navItems[navigationSelectedItem].label
                     val listViewModel = hiltViewModel<TherapistListViewModel>()
                     val listState by listViewModel.state.collectAsStateWithLifecycle()
                     TherapistListScreen(
@@ -105,12 +109,12 @@ fun ClientUI(
                 }
                 composable<ClientScreenRoutes.ProfileScreen> {
                     navigationSelectedItem = 1
-                    title = "Profile"
+                    title = navItems[navigationSelectedItem].label
                     ClientProfileScreen()
                 }
                 composable<ClientScreenRoutes.ChatsScreen> {
                     navigationSelectedItem = 2
-                    title = "Chats"
+                    title = navItems[navigationSelectedItem].label
                     ClientChatsScreen()
                 }
                 composable<ClientScreenRoutes.PreviewTherapistScreen>(
@@ -119,39 +123,38 @@ fun ClientUI(
                         typeOf<Degree>() to parcelableType<Degree>()
                     )
                 ) {
+                    navigationSelectedItem = 0
                     val therapist =
                         it.toRoute<ClientScreenRoutes.PreviewTherapistScreen>().therapist
                     title = therapist.displayName
                     PreviewTherapistScreen(therapist = therapist)
                 }
             }
-        },
-        bottomBar = {
-            NavigationBar(
-                containerColor = colorResource(id = R.color.white)
-            ) {
-                BottomNavigationItem().bottomNavigationItems()
-                    .forEachIndexed { index, navigationItem ->
-                        NavigationBarItem(
-                            selected = index == navigationSelectedItem,
-                            label = {
-                                Text(navigationItem.label)
-                            },
-                            icon = {
-                                Icon(
-                                    navigationItem.icon,
-                                    contentDescription = navigationItem.label
-                                )
-                            },
-                            onClick = {
-                                navigationSelectedItem = index
-                                clientNavController.navigate(navigationItem.route) {
-                                    launchSingleTop = true
-                                }
-                            }
+        }
+        NavigationBar(
+            containerColor = colorResource(id = R.color.white)
+        ) {
+            navItems.forEachIndexed { index, navigationItem ->
+                NavigationBarItem(
+                    selected = index == navigationSelectedItem,
+                    label = {
+                        Text(navigationItem.label)
+                    },
+                    icon = {
+                        Icon(
+                            navigationItem.icon,
+                            contentDescription = navigationItem.label
                         )
+                    },
+                    onClick = {
+                        navigationSelectedItem = index
+                        clientNavController.navigate(navigationItem.route) {
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                     }
+                )
             }
         }
-    )
+    }
 }

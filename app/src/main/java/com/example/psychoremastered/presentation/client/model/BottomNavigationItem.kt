@@ -17,7 +17,7 @@ data class BottomNavigationItem(
     fun bottomNavigationItems() : List<BottomNavigationItem> {
         return listOf(
             BottomNavigationItem(
-                label = "Therapist list",
+                label = "Therapists",
                 icon = Icons.Filled.Search,
                 route = ClientScreenRoutes.TherapistListScreen
             ),

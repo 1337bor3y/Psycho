@@ -20,7 +20,6 @@ class TherapistListViewModel @Inject constructor(
     private val _state = MutableStateFlow(TherapistListState())
     val state = _state.asStateFlow()
 
-
     init {
         fetchTherapistsList ()
     }
