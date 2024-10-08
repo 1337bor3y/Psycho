@@ -2,11 +2,7 @@ package com.example.psychoremastered.presentation.client
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
@@ -88,11 +84,7 @@ fun ClientUI(
                 }
             }
         )
-        Box(
-            modifier = Modifier
-                .weight(1f)
-                .padding(WindowInsets.navigationBars.asPaddingValues())
-        ) {
+        Box(modifier = Modifier.weight(1f)) {
             NavHost(
                 navController = clientNavController,
                 startDestination = ClientScreenRoutes.TherapistListScreen

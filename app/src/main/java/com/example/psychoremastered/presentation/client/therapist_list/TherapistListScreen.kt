@@ -1,8 +1,13 @@
 package com.example.psychoremastered.presentation.client.therapist_list
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -13,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.psychoremastered.core.screen_route.ClientScreenRoutes
@@ -23,7 +29,16 @@ fun TherapistListScreen(
     state: TherapistListState,
     navController: NavController
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    val windowPadding = WindowInsets.navigationBars.asPaddingValues()
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(
+                start = windowPadding.calculateStartPadding(LayoutDirection.Ltr),
+                end = windowPadding.calculateEndPadding(LayoutDirection.Ltr)
+            )
+    ) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
