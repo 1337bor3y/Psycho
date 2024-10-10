@@ -21,7 +21,7 @@ class TherapistListViewModel @Inject constructor(
     val state = _state.asStateFlow()
 
     init {
-        fetchTherapistsList ()
+        fetchTherapistsList()
     }
 
     private fun fetchTherapistsList() {

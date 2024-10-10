@@ -28,12 +28,4 @@ class TherapistFirebaseDataSource @Inject constructor(
             it.getValue<TherapistDto>()
         }
     }
-
-    override fun getAllTherapists(): Flow<List<TherapistDto>> {
-        return reference.snapshots.map { snapshot ->
-            snapshot.children.mapNotNull {
-                it.getValue<TherapistDto>()
-            }
-        }
-    }
 }
