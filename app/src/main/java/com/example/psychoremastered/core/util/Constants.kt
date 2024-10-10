@@ -8,5 +8,5 @@ object Constants {
     const val FIREBASE_STORAGE_IMAGE_PATH = "chat_images"
     const val PREFERENCE_NAME = "preferences"
     const val PREFERENCE_KEY_IS_CLIENT = "is_client"
-    const val PAGE_SIZE = 10
+    const val PAGE_SIZE = 4
 }

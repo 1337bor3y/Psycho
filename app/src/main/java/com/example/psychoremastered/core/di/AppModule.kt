@@ -2,6 +2,7 @@ package com.example.psychoremastered.core.di
 
 import android.app.Application
 import android.content.Context
+import androidx.paging.PagingConfig
 import androidx.room.Room
 import com.example.psychoremastered.core.util.Constants
 import com.example.psychoremastered.data.local.preference.DataStoreManager
@@ -64,5 +65,13 @@ object AppModule {
     @Singleton
     fun providePreferenceManager(application: Application): PreferenceManager {
         return DataStoreManager(application)
+    }
+
+    @Provides
+    @Singleton
+    fun providePagingConfig(): PagingConfig {
+        return PagingConfig(
+            pageSize = Constants.PAGE_SIZE
+        )
     }
 }

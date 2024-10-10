@@ -3,7 +3,6 @@ package com.example.psychoremastered.data.remote
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.psychoremastered.core.util.Constants
-import com.example.psychoremastered.core.util.Constants.PAGE_SIZE
 import com.example.psychoremastered.data.remote.dto.TherapistDto
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.FirebaseDatabase
@@ -18,7 +17,7 @@ class TherapistsPagingSource @Inject constructor(
 
     override suspend fun load(params: LoadParams<DataSnapshot>) = try {
         val queryTherapists = db.getReference(Constants.FIREBASE_DB_THERAPIST_PATH)
-            .limitToFirst(PAGE_SIZE)
+            .orderByKey().limitToFirst(Constants.PAGE_SIZE)
         val currentPage = params.key ?: queryTherapists.get().await()
         val lastVisibleProductKey = currentPage.children.last().key
         val nextPage = queryTherapists.startAfter(lastVisibleProductKey).get().await()

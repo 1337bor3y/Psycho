@@ -1,26 +1,27 @@
 package com.example.psychoremastered.presentation.client.therapist_list
 
+import android.widget.Toast
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.paging.LoadState
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.psychoremastered.core.screen_route.ClientScreenRoutes
 import com.example.psychoremastered.presentation.client.therapist_list.component.TherapistListItem
 
@@ -29,7 +30,9 @@ fun TherapistListScreen(
     state: TherapistListState,
     navController: NavController
 ) {
+    val context = LocalContext.current
     val windowPadding = WindowInsets.navigationBars.asPaddingValues()
+    val therapists = state.therapists.collectAsLazyPagingItems()
 
     Box(
         modifier = Modifier
@@ -39,34 +42,49 @@ fun TherapistListScreen(
                 end = windowPadding.calculateEndPadding(LayoutDirection.Ltr)
             )
     ) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            items(state.therapists) { therapist ->
-                TherapistListItem(
-                    therapist = therapist,
-                    onItemClick = {
-                        navController.navigate(
-                            ClientScreenRoutes.PreviewTherapistScreen(therapist)
-                        )
-                    }
+        when (therapists.loadState.refresh) {
+            is LoadState.Loading -> {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center)
                 )
             }
-        }
-        if (state.error.isNotBlank()) {
-            Text(
-                text = state.error,
-                color = MaterialTheme.colorScheme.error,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp)
-                    .align(Alignment.Center)
-            )
-        }
-        if (state.isLoading) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+
+            is LoadState.Error -> {
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = "${(therapists.loadState.refresh as LoadState.Error).error.message}"
+                )
+            }
+
+            else -> {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    items(therapists.itemCount) { therapistIndex ->
+                        if (therapists[therapistIndex] != null) {
+                            therapists[therapistIndex]?.let { therapist ->
+                                TherapistListItem(
+                                    therapist = therapist,
+                                    onItemClick = {
+                                        navController.navigate(
+                                            ClientScreenRoutes.PreviewTherapistScreen(therapist)
+                                        )
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    item {
+                        if (therapists.loadState.append is LoadState.Loading) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.align(Alignment.Center)
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }
