@@ -1,5 +1,6 @@
 package com.example.psychoremastered.domain.repository
 
+import androidx.paging.PagingData
 import com.example.psychoremastered.domain.model.Therapist
 import kotlinx.coroutines.flow.Flow
 
@@ -11,5 +12,5 @@ interface TherapistRepository {
 
     fun getTherapist(therapistId: String): Flow<Therapist?>
 
-    fun getAllTherapists(): Flow<List<Therapist>>
+    fun getAllTherapists(): Flow<PagingData<Therapist>>
 }

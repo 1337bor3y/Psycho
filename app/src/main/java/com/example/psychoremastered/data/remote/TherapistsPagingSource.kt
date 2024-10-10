@@ -9,8 +9,9 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.getValue
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class TherapistsPagingSource(
+class TherapistsPagingSource @Inject constructor(
     private val db: FirebaseDatabase
 ) : PagingSource<DataSnapshot, TherapistDto>() {
     override fun getRefreshKey(state: PagingState<DataSnapshot, TherapistDto>): DataSnapshot? = null
