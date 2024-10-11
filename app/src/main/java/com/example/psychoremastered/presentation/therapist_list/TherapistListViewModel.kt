@@ -1,4 +1,4 @@
-package com.example.psychoremastered.presentation.client.therapist_list
+package com.example.psychoremastered.presentation.therapist_list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

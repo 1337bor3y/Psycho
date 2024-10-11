@@ -1,6 +1,5 @@
-package com.example.psychoremastered.presentation.client.therapist_list
+package com.example.psychoremastered.presentation.therapist_list
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
@@ -16,21 +15,19 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.psychoremastered.core.screen_route.ClientScreenRoutes
-import com.example.psychoremastered.presentation.client.therapist_list.component.TherapistListItem
+import com.example.psychoremastered.presentation.therapist_list.component.TherapistListItem
 
 @Composable
 fun TherapistListScreen(
     state: TherapistListState,
     navController: NavController
 ) {
-    val context = LocalContext.current
     val windowPadding = WindowInsets.navigationBars.asPaddingValues()
     val therapists = state.therapists.collectAsLazyPagingItems()
 

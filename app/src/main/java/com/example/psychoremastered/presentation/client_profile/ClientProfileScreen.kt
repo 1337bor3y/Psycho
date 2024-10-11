@@ -1,4 +1,4 @@
-package com.example.psychoremastered.presentation.client.proflie
+package com.example.psychoremastered.presentation.client_profile
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize

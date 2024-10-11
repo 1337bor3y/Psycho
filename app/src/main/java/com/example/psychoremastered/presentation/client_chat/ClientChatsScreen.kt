@@ -1,4 +1,4 @@
-package com.example.psychoremastered.presentation.client.chat
+package com.example.psychoremastered.presentation.client_chat
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize

@@ -32,12 +32,12 @@ import com.example.psychoremastered.core.screen_route.ClientScreenRoutes
 import com.example.psychoremastered.core.screen_route.parcelableType
 import com.example.psychoremastered.domain.model.Degree
 import com.example.psychoremastered.domain.model.Therapist
-import com.example.psychoremastered.presentation.client.chat.ClientChatsScreen
+import com.example.psychoremastered.presentation.client_chat.ClientChatsScreen
 import com.example.psychoremastered.presentation.client.model.BottomNavigationItem
-import com.example.psychoremastered.presentation.client.proflie.ClientProfileScreen
-import com.example.psychoremastered.presentation.client.therapist_list.PreviewTherapistScreen
-import com.example.psychoremastered.presentation.client.therapist_list.TherapistListScreen
-import com.example.psychoremastered.presentation.client.therapist_list.TherapistListViewModel
+import com.example.psychoremastered.presentation.client_profile.ClientProfileScreen
+import com.example.psychoremastered.presentation.therapist_list.PreviewTherapistScreen
+import com.example.psychoremastered.presentation.therapist_list.TherapistListScreen
+import com.example.psychoremastered.presentation.therapist_list.TherapistListViewModel
 import com.example.psychoremstered.R
 import kotlin.reflect.typeOf
 

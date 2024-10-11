@@ -1,4 +1,4 @@
-package com.example.psychoremastered.presentation.client.therapist_list.component
+package com.example.psychoremastered.presentation.therapist_list.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxWidth

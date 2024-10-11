@@ -1,4 +1,4 @@
-package com.example.psychoremastered.presentation.client.therapist_list
+package com.example.psychoremastered.presentation.therapist_list
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -39,8 +39,8 @@ import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.example.psychoremastered.domain.model.Therapist
-import com.example.psychoremastered.presentation.client.therapist_list.component.DegreeImageDialog
-import com.example.psychoremastered.presentation.client.therapist_list.component.DegreeItem
+import com.example.psychoremastered.presentation.therapist_list.component.DegreeImageDialog
+import com.example.psychoremastered.presentation.therapist_list.component.DegreeItem
 import com.example.psychoremstered.R
 
 @Composable

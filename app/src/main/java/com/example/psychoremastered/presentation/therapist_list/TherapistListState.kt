@@ -1,4 +1,4 @@
-package com.example.psychoremastered.presentation.client.therapist_list
+package com.example.psychoremastered.presentation.therapist_list
 
 import androidx.paging.PagingData
 import com.example.psychoremastered.domain.model.Therapist
