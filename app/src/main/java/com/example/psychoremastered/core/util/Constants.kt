@@ -9,4 +9,5 @@ object Constants {
     const val PREFERENCE_NAME = "preferences"
     const val PREFERENCE_KEY_IS_CLIENT = "is_client"
     const val PAGE_SIZE = 4
+    const val FIREBASE_DB_UNAVAILABLE_TIME_PATH = "unavailableTimes"
 }

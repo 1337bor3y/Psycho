@@ -42,6 +42,7 @@ fun Calendar() {
     var selectedTime by rememberSaveable { mutableStateOf<LocalTime?>(null) }
     var selectedDay by rememberSaveable { mutableStateOf(currentDate) }
     var daysOfWeek by rememberSaveable { mutableStateOf(generateDaysOfWeek(currentDate)) }
+    var unavailableTimes by rememberSaveable { mutableStateOf<List<LocalTime>>(emptyList()) }
 
     Column(
         modifier = Modifier.padding(16.dp),
@@ -128,6 +129,7 @@ fun Calendar() {
                 8
             },
             selectedTime = selectedTime,
+            unavailableTimes = unavailableTimes,
             onTimeSelected = { selectedTime = it })
         Spacer(modifier = Modifier.height(16.dp))
         Text(
@@ -155,39 +157,58 @@ fun generateDaysOfWeek(current: LocalDate): List<LocalDate> {
 }
 
 @Composable
-fun TimeSlotRow(startTime: Int, selectedTime: LocalTime?, onTimeSelected: (LocalTime) -> Unit) {
+fun TimeSlotRow(
+    startTime: Int,
+    selectedTime: LocalTime?,
+    unavailableTimes: List<LocalTime>,
+    onTimeSelected: (LocalTime) -> Unit
+) {
     val timeSlots = generateTimeSlots(startTime, 20, 30)
 
     LazyRow(modifier = Modifier.fillMaxWidth()) {
         items(timeSlots.size) { index ->
             val time = timeSlots[index]
+            val isUnavailable = unavailableTimes.contains(time)
             TimeSlotItem(
                 time = time,
                 isSelected = time == selectedTime,
-                onClick = { onTimeSelected(time) }
+                isUnavailable = isUnavailable,
+                onClick = { if (!isUnavailable) onTimeSelected(time) }
             )
         }
     }
 }
 
 @Composable
-fun TimeSlotItem(time: LocalTime, isSelected: Boolean, onClick: () -> Unit) {
+fun TimeSlotItem(time: LocalTime, isSelected: Boolean, isUnavailable: Boolean, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .padding(8.dp)
-            .clickable { onClick() }
+            .clickable(enabled = !isUnavailable) { onClick() }
             .background(
-                if (isSelected) MaterialTheme.colorScheme.primary else Color.White,
+                when {
+                    isSelected -> MaterialTheme.colorScheme.primary
+                    isUnavailable -> Color.LightGray
+                    else -> Color.White
+                },
                 RoundedCornerShape(8.dp)
             )
-            .border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
+            .border(
+                2.dp,
+                if (isUnavailable) Color.LightGray else MaterialTheme.colorScheme.primary,
+                RoundedCornerShape(8.dp)
+            )
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = time.format(DateTimeFormatter.ofPattern("hh:mm a")),
             fontSize = 16.sp,
-            color = if (isSelected) Color.White else Color.Black
+            color = when {
+                isUnavailable -> Color.Gray  // Grey text if unavailable
+                isSelected -> Color.White
+                else -> Color.Black
+            }
         )
     }
 }
