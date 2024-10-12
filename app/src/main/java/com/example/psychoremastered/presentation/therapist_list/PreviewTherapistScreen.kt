@@ -19,7 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -45,7 +44,6 @@ import com.example.psychoremastered.presentation.therapist_list.component.Degree
 import com.example.psychoremastered.presentation.therapist_list.component.DegreeItem
 import com.example.psychoremstered.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PreviewTherapistScreen(
     therapist: Therapist
@@ -56,7 +54,7 @@ fun PreviewTherapistScreen(
     var showBookSession by rememberSaveable { mutableStateOf(false) }
 
     if (showBookSession) {
-        BookSessionBottomSheet() {
+        BookSessionBottomSheet(therapistId = therapist.id) {
             showBookSession = false
         }
     }

@@ -6,7 +6,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.getValue
 import com.google.firebase.database.snapshots
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -26,8 +26,8 @@ class UnavailableTimeFirebaseSource @Inject constructor(
     }
 
     override fun getUnavailableTime(therapistId: String, date: String): Flow<List<String>> {
-        return reference.child(therapistId).child(date).snapshots.mapNotNull {
-            it.getValue<List<String>>()
+        return reference.child(therapistId).child(date).snapshots.map {
+            it.getValue<List<String>>() ?: emptyList()
         }
     }
 }

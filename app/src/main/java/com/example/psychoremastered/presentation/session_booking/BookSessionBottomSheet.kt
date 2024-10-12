@@ -19,6 +19,7 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,17 +28,24 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
+import com.example.psychoremastered.domain.model.Therapist
 import com.example.psychoremastered.presentation.session_booking.component.Calendar
 import com.example.psychoremstered.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookSessionBottomSheet(
+    therapistId: String,
+    viewModel: BookSessionViewModel = hiltViewModel(),
     onDismiss: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     val sheetState = rememberModalBottomSheetState()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val onEvent = viewModel::onEvent
 
     ModalBottomSheet(
         containerColor = colorResource(id = R.color.grey_white),
@@ -120,7 +128,11 @@ fun BookSessionBottomSheet(
                     style = MaterialTheme.typography.titleLarge
                         .copy(fontWeight = FontWeight.Bold)
                 )
-                Calendar()
+                Calendar(
+                    therapistId = therapistId,
+                    state = state,
+                    onEvent = onEvent
+                )
             }
         }
     }

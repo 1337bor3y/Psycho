@@ -21,6 +21,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -31,19 +32,32 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.psychoremastered.presentation.session_booking.BookSessionEvent
+import com.example.psychoremastered.presentation.session_booking.BookSessionState
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.Year
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun Calendar() {
+fun Calendar(
+    therapistId: String,
+    state: BookSessionState,
+    onEvent: (BookSessionEvent) -> Unit
+) {
     var currentDate by rememberSaveable { mutableStateOf(LocalDate.now()) }
     var selectedTime by rememberSaveable { mutableStateOf<LocalTime?>(null) }
     var selectedDay by rememberSaveable { mutableStateOf(currentDate) }
     var daysOfWeek by rememberSaveable { mutableStateOf(generateDaysOfWeek(currentDate)) }
-    var unavailableTimes by rememberSaveable { mutableStateOf<List<LocalTime>>(emptyList()) }
 
+    LaunchedEffect(selectedDay) {
+        onEvent(
+            BookSessionEvent.GetUnavailableTimes(
+                date = selectedDay.toString(),
+                therapistId = therapistId
+            )
+        )
+    }
     Column(
         modifier = Modifier.padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -129,7 +143,7 @@ fun Calendar() {
                 8
             },
             selectedTime = selectedTime,
-            unavailableTimes = unavailableTimes,
+            unavailableTimes = state.unavailableTimes,
             onTimeSelected = { selectedTime = it })
         Spacer(modifier = Modifier.height(16.dp))
         Text(
