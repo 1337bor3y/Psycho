@@ -4,6 +4,7 @@ import com.example.psychoremastered.domain.model.Degree
 import com.example.psychoremastered.domain.model.User
 
 data class RegistrationState(
+    val isLoading: Boolean = false,
     val authError: String? = null,
     val user: User? = null,
     val specializations: MutableSet<String> = mutableSetOf(),

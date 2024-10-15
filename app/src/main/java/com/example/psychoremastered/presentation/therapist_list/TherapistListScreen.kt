@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -49,7 +50,9 @@ fun TherapistListScreen(
             is LoadState.Error -> {
                 Text(
                     modifier = Modifier.align(Alignment.Center),
-                    text = "${(therapists.loadState.refresh as LoadState.Error).error.message}"
+                    text = "${(therapists.loadState.refresh as LoadState.Error).error.message}",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
 

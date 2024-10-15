@@ -1,6 +1,7 @@
 package com.example.psychoremastered.presentation.therapist_registration
 
 import android.widget.Toast
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -83,67 +86,79 @@ fun RegistrationUI(
                 }
             }
         )
-        HorizontalPager(
-            state = pagerState,
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .weight(1f, false),
-            verticalAlignment = Alignment.Top
-        ) { page ->
-            if (page <= 2) {
-                CheckBoxesRegistrationScreen(
-                    page = registrationPages[page],
-                    onEvent = onEvent,
-                    pageOffset = (
-                            (pagerState.currentPage - page)
-                                    + pagerState.currentPageOffsetFraction
-                            ).absoluteValue
-                )
-            } else if (page in 3..4) {
-                TextFieldRegistrationScreen(
-                    page = registrationPages[page],
-                    state = state,
-                    onEvent = onEvent,
-                    pageOffset = (
-                            (pagerState.currentPage - page)
-                                    + pagerState.currentPageOffsetFraction
-                            ).absoluteValue
-                )
-            } else {
-                DegreeRegistrationScreen(
-                    page = registrationPages[5],
-                    pageOffset = (
-                            (pagerState.currentPage - page)
-                                    + pagerState.currentPageOffsetFraction
-                            ).absoluteValue,
-                    degree = try {
-                        state.degrees[page - 5]
-                    } catch (e: IndexOutOfBoundsException) {
-                        Degree(
-                            id = page - 5,
-                            university = "",
-                            speciality = "",
-                            admissionYear = "",
-                            graduationYear = "",
-                            documentImage = ""
-                        )
-                    },
-                    onEvent = onEvent,
-                    moveToNextPage = {
-                        coroutineScope.launch {
-                            pageCount++
-                            pagerState.animateScrollToPage(page + 1)
-                        }
-                    },
-                    removeOnClick = {
-                        coroutineScope.launch {
-                            onEvent(
-                                RegistrationEvent.RemoveDegree(page - 5)
+                .weight(1f, false)
+        ) {
+            HorizontalPager(
+                state = pagerState,
+                modifier = Modifier
+                    .fillMaxSize(),
+                verticalAlignment = Alignment.Top
+            ) { page ->
+                if (page <= 2) {
+                    CheckBoxesRegistrationScreen(
+                        page = registrationPages[page],
+                        onEvent = onEvent,
+                        pageOffset = (
+                                (pagerState.currentPage - page)
+                                        + pagerState.currentPageOffsetFraction
+                                ).absoluteValue
+                    )
+                } else if (page in 3..4) {
+                    TextFieldRegistrationScreen(
+                        page = registrationPages[page],
+                        state = state,
+                        onEvent = onEvent,
+                        pageOffset = (
+                                (pagerState.currentPage - page)
+                                        + pagerState.currentPageOffsetFraction
+                                ).absoluteValue
+                    )
+                } else {
+                    DegreeRegistrationScreen(
+                        page = registrationPages[5],
+                        pageOffset = (
+                                (pagerState.currentPage - page)
+                                        + pagerState.currentPageOffsetFraction
+                                ).absoluteValue,
+                        degree = try {
+                            state.degrees[page - 5]
+                        } catch (e: IndexOutOfBoundsException) {
+                            Degree(
+                                id = page - 5,
+                                university = "",
+                                speciality = "",
+                                admissionYear = "",
+                                graduationYear = "",
+                                documentImage = ""
                             )
-                            pagerState.animateScrollToPage(page - 1)
-                            --pageCount
+                        },
+                        onEvent = onEvent,
+                        moveToNextPage = {
+                            coroutineScope.launch {
+                                pageCount++
+                                pagerState.animateScrollToPage(page + 1)
+                            }
+                        },
+                        removeOnClick = {
+                            coroutineScope.launch {
+                                onEvent(
+                                    RegistrationEvent.RemoveDegree(page - 5)
+                                )
+                                pagerState.animateScrollToPage(page - 1)
+                                --pageCount
+                            }
                         }
-                    }
+                    )
+                }
+            }
+            if (state.isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .size(70.dp)
                 )
             }
         }
@@ -158,33 +173,9 @@ fun RegistrationUI(
                     if (pagerState.currentPage != pagerState.pageCount - 1) {
                         pagerState.animateScrollToPage(pagerState.currentPage + 1)
                     } else {
-                        if (state.specializations.size == 0) {
-                            Toast.makeText(context, "Fill in specializations!", Toast.LENGTH_SHORT)
-                                .show()
-                        } else if (state.workFields.size == 0) {
-                            Toast.makeText(context, "Fill in work fields!", Toast.LENGTH_SHORT)
-                                .show()
-                        } else if (state.languages.size == 0) {
-                            Toast.makeText(context, "Fill in languages!", Toast.LENGTH_SHORT)
-                                .show()
-                        } else if (state.description.isBlank()) {
-                            Toast.makeText(context, "Fill in description!", Toast.LENGTH_SHORT)
-                                .show()
-                        } else if (state.price.isBlank()) {
-                            Toast.makeText(context, "Fill in price!", Toast.LENGTH_SHORT)
-                                .show()
-                        } else if (state.degrees.size == 0) {
-                            Toast.makeText(
-                                context,
-                                "Add at least one degree!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        } else {
-                            onEvent(
-                                RegistrationEvent.SaveTherapist
-                            )
-                            // Navigation
-                        }
+                        onEvent(
+                            RegistrationEvent.SaveTherapist
+                        )
                     }
                 }
             }

@@ -148,24 +148,78 @@ class RegistrationViewModel @Inject constructor(
     }
 
     private fun saveTherapist() {
+        _state.update {
+            it.copy(
+                isLoading = true
+            )
+        }
         viewModelScope.launch {
-            state.value.user?.run {
-                saveTherapistUseCase(
-                    Therapist(
-                        id = userId,
-                        avatarUri = profilePictureUri ?: "",
-                        email = email ?: "",
-                        displayName = displayName ?: "",
-                        specializations = state.value.specializations.toList(),
-                        workFields = state.value.workFields.toList(),
-                        languages = state.value.languages.toList(),
-                        description = state.value.description,
-                        price = state.value.price,
-                        hasDegree = true,
-                        degrees = state.value.degrees
+            if (state.value.specializations.isEmpty()) {
+                _state.update {
+                    it.copy(
+                        authError = "Fill in specializations!",
+                        isLoading = false
                     )
-                )
-                // Navigate to therapist ui
+                }
+            } else if (state.value.workFields.isEmpty()) {
+                _state.update {
+                    it.copy(
+                        authError = "Fill in work fields!",
+                        isLoading = false
+                    )
+                }
+            } else if (state.value.languages.isEmpty()) {
+                _state.update {
+                    it.copy(
+                        authError = "Fill in languages!",
+                        isLoading = false
+                    )
+                }
+            } else if (state.value.description.isBlank()) {
+                _state.update {
+                    it.copy(
+                        authError = "Fill in description!",
+                        isLoading = false
+                    )
+                }
+            } else if (state.value.price.isBlank()) {
+                _state.update {
+                    it.copy(
+                        authError = "Fill in price!",
+                        isLoading = false
+                    )
+                }
+            } else if (state.value.degrees.isEmpty()) {
+                _state.update {
+                    it.copy(
+                        authError = "Add at least one degree!",
+                        isLoading = false
+                    )
+                }
+            } else {
+                state.value.user?.run {
+                    saveTherapistUseCase(
+                        Therapist(
+                            id = userId,
+                            avatarUri = profilePictureUri ?: "",
+                            email = email ?: "",
+                            displayName = displayName ?: "",
+                            specializations = state.value.specializations.toList(),
+                            workFields = state.value.workFields.toList(),
+                            languages = state.value.languages.toList(),
+                            description = state.value.description,
+                            price = state.value.price,
+                            hasDegree = true,
+                            degrees = state.value.degrees
+                        )
+                    )
+                    _state.update {
+                        it.copy(
+                            isLoading = false
+                        )
+                    }
+                    // Navigate to therapist ui
+                }
             }
         }
     }

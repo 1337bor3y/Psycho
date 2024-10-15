@@ -52,7 +52,7 @@ fun Calendar(
 
     LaunchedEffect(selectedDay) {
         onEvent(
-            BookSessionEvent.GetUnavailableTimes(
+            BookSessionEvent.GetUnavailableTime(
                 date = selectedDay.toString(),
                 therapistId = therapistId
             )
@@ -194,7 +194,12 @@ fun TimeSlotRow(
 }
 
 @Composable
-fun TimeSlotItem(time: LocalTime, isSelected: Boolean, isUnavailable: Boolean, onClick: () -> Unit) {
+fun TimeSlotItem(
+    time: LocalTime,
+    isSelected: Boolean,
+    isUnavailable: Boolean,
+    onClick: () -> Unit
+) {
     Box(
         modifier = Modifier
             .padding(8.dp)
@@ -219,7 +224,7 @@ fun TimeSlotItem(time: LocalTime, isSelected: Boolean, isUnavailable: Boolean, o
             text = time.format(DateTimeFormatter.ofPattern("hh:mm a")),
             fontSize = 16.sp,
             color = when {
-                isUnavailable -> Color.Gray  // Grey text if unavailable
+                isUnavailable -> Color.Gray
                 isSelected -> Color.White
                 else -> Color.Black
             }

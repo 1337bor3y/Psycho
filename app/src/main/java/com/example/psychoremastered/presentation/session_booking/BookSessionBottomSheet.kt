@@ -31,7 +31,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
-import com.example.psychoremastered.domain.model.Therapist
 import com.example.psychoremastered.presentation.session_booking.component.Calendar
 import com.example.psychoremstered.R
 

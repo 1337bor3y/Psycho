@@ -23,14 +23,14 @@ class BookSessionViewModel @Inject constructor(
 
     fun onEvent(event: BookSessionEvent) {
         when (event) {
-            is BookSessionEvent.GetUnavailableTimes -> getUnavailableTimes(
+            is BookSessionEvent.GetUnavailableTime -> getUnavailableTime(
                 event.therapistId,
                 event.date
             )
         }
     }
 
-    private fun getUnavailableTimes(therapistId: String, date: String) {
+    private fun getUnavailableTime(therapistId: String, date: String) {
         viewModelScope.launch {
             getUnavailableTimeUseCase(therapistId, date).firstOrNull()?.let { unavailableTimes ->
                 _state.update {
