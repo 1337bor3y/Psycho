@@ -59,7 +59,7 @@ fun Calendar(
         )
     }
     Column(
-        modifier = Modifier.padding(16.dp),
+        modifier = Modifier.padding(5.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -156,6 +156,7 @@ fun Calendar(
                     + selectedDay,
             style = MaterialTheme.typography.bodyLarge
         )
+        Spacer(modifier = Modifier.height(10.dp))
     }
 }
 

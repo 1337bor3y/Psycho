@@ -54,9 +54,13 @@ fun PreviewTherapistScreen(
     var showBookSession by rememberSaveable { mutableStateOf(false) }
 
     if (showBookSession) {
-        BookSessionBottomSheet(therapistId = therapist.id) {
-            showBookSession = false
-        }
+        BookSessionBottomSheet(
+            therapistId = therapist.id,
+            sessionPrice = therapist.price,
+            onDismiss = {
+                showBookSession = false
+
+            })
     }
     if (showDegreeImage != null) {
         DegreeImageDialog(showDegreeImage = showDegreeImage) {

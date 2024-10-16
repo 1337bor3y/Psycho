@@ -13,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedCard
@@ -37,9 +38,10 @@ import com.example.psychoremstered.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookSessionBottomSheet(
-    therapistId: String,
     viewModel: BookSessionViewModel = hiltViewModel(),
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    therapistId: String,
+    sessionPrice: String
 ) {
     val scrollState = rememberScrollState()
     val sheetState = rememberModalBottomSheetState()
@@ -60,22 +62,23 @@ fun BookSessionBottomSheet(
         )
         Spacer(modifier = Modifier.height(10.dp))
         Column(
-            modifier = Modifier.verticalScroll(scrollState)
+            modifier = Modifier
+                .verticalScroll(scrollState)
+                .padding(20.dp)
         ) {
             Text(
                 modifier = Modifier
-                    .align(Alignment.Start)
-                    .padding(start = 10.dp),
+                    .align(Alignment.Start),
                 text = "Appointment",
                 style = MaterialTheme.typography.bodyLarge
             )
             OutlinedCard(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(10.dp)
+                    .padding(vertical = 10.dp)
             ) {
                 Text(
-                    modifier = Modifier.padding(start = 10.dp, top = 5.dp),
+                    modifier = Modifier.padding(start = 10.dp, top = 10.dp),
                     text = "Patient info",
                     style = MaterialTheme.typography.titleLarge
                         .copy(fontWeight = FontWeight.Bold)
@@ -108,21 +111,20 @@ fun BookSessionBottomSheet(
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(15.dp))
             Text(
                 modifier = Modifier
-                    .align(Alignment.Start)
-                    .padding(start = 10.dp),
+                    .align(Alignment.Start),
                 text = "Available time",
                 style = MaterialTheme.typography.bodyLarge
             )
             OutlinedCard(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(10.dp)
+                    .padding(vertical = 10.dp)
             ) {
                 Text(
-                    modifier = Modifier.padding(start = 10.dp, top = 5.dp),
+                    modifier = Modifier.padding(start = 10.dp, top = 10.dp),
                     text = "Time & Date",
                     style = MaterialTheme.typography.titleLarge
                         .copy(fontWeight = FontWeight.Bold)
@@ -131,6 +133,60 @@ fun BookSessionBottomSheet(
                     therapistId = therapistId,
                     state = state,
                     onEvent = onEvent
+                )
+            }
+            Spacer(modifier = Modifier.height(15.dp))
+            Text(
+                modifier = Modifier
+                    .align(Alignment.Start),
+                text = "Payment",
+                style = MaterialTheme.typography.bodyLarge
+            )
+            OutlinedCard(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 10.dp)
+            ) {
+                Text(
+                    modifier = Modifier.padding(start = 10.dp, top = 10.dp),
+                    text = "Bill Details",
+                    style = MaterialTheme.typography.titleLarge
+                        .copy(fontWeight = FontWeight.Bold)
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                HorizontalDivider(thickness = 1.dp)
+                Spacer(modifier = Modifier.height(5.dp))
+                Text(
+                    modifier = Modifier.padding(start = 10.dp),
+                    text = "Session fees:",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Spacer(modifier = Modifier.height(5.dp))
+                Text(
+                    modifier = Modifier.padding(start = 10.dp),
+                    text = "Booking fees:",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                HorizontalDivider(thickness = 1.dp)
+                Spacer(modifier = Modifier.height(5.dp))
+                Text(
+                    modifier = Modifier.padding(start = 10.dp, bottom = 10.dp),
+                    text = "Total Pay:",
+                    style = MaterialTheme.typography.titleMedium
+                        .copy(fontWeight = FontWeight.Bold)
+                )
+            }
+            OutlinedCard(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 5.dp)
+            ) {
+                Text(
+                    modifier = Modifier.padding(start = 10.dp, top = 10.dp),
+                    text = "Pay with",
+                    style = MaterialTheme.typography.titleLarge
+                        .copy(fontWeight = FontWeight.Bold)
                 )
             }
         }

@@ -130,4 +130,8 @@ dependencies {
     // Paging
     implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.androidx.paging.compose)
+
+    // Google Pay
+    implementation(libs.play.services.wallet)
+    implementation(libs.compose.pay.button)
 }
