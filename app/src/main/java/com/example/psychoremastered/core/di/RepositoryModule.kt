@@ -2,6 +2,8 @@ package com.example.psychoremastered.core.di
 
 import com.example.psychoremastered.data.auth.AuthApi
 import com.example.psychoremastered.data.auth.AuthFirebaseSource
+import com.example.psychoremastered.data.pay.GooglePaymentsUtil
+import com.example.psychoremastered.data.pay.PaymentsUtil
 import com.example.psychoremastered.data.remote.ClientApi
 import com.example.psychoremastered.data.remote.ClientFirebaseDataSource
 import com.example.psychoremastered.data.remote.ImageStorageApi
@@ -106,4 +108,10 @@ abstract class RepositoryModule {
     abstract fun provideUnavailableTimeRepository(
         unavailableTimeRepositoryImpl: UnavailableTimeRepositoryImpl
     ): UnavailableTimeRepository
+
+    @Binds
+    @Singleton
+    abstract fun providePaymentsUtil(
+        googlePaymentsUtil: GooglePaymentsUtil
+    ): PaymentsUtil
 }

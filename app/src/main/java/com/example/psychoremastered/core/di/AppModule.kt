@@ -9,8 +9,8 @@ import com.example.psychoremastered.data.local.preference.DataStoreManager
 import com.example.psychoremastered.data.local.preference.PreferenceManager
 import com.example.psychoremastered.data.local.room.TherapistDao
 import com.example.psychoremastered.data.local.room.TherapistDatabase
-import com.example.psychoremastered.data.pay.PaymentsUtil
 import com.google.android.gms.wallet.PaymentsClient
+import com.google.android.gms.wallet.Wallet
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
@@ -79,7 +79,12 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providePaymentsClient(application: Application): PaymentsClient {
-        return PaymentsUtil.createPaymentsClient(application)
+    fun provideGooglePaymentsClient(application: Application): PaymentsClient {
+        return Wallet.getPaymentsClient(
+            application,
+            Wallet.WalletOptions.Builder()
+                .setEnvironment(Constants.PAYMENTS_ENVIRONMENT)
+                .build()
+        )
     }
 }
