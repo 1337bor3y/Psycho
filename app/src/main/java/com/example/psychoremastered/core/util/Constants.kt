@@ -12,6 +12,7 @@ object Constants {
     const val PREFERENCE_KEY_IS_CLIENT = "is_client"
     const val PAGE_SIZE = 4
     const val FIREBASE_DB_UNAVAILABLE_TIME_PATH = "unavailableTimes"
+    const val BOOKING_FEES_PERCENTAGE = 0.1
     const val PAYMENTS_ENVIRONMENT = WalletConstants.ENVIRONMENT_TEST
     val SUPPORTED_NETWORKS = listOf(
         "AMEX",

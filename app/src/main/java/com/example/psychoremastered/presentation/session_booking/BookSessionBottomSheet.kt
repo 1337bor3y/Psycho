@@ -28,10 +28,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
+import com.example.psychoremastered.presentation.google_pay.PaymentScreen
 import com.example.psychoremastered.presentation.session_booking.component.Calendar
 import com.example.psychoremstered.R
 
@@ -41,13 +43,14 @@ fun BookSessionBottomSheet(
     viewModel: BookSessionViewModel = hiltViewModel(),
     onDismiss: () -> Unit,
     therapistId: String,
-    sessionPrice: String
+    sessionPrice: String,
 ) {
     val scrollState = rememberScrollState()
     val sheetState = rememberModalBottomSheetState()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val onEvent = viewModel::onEvent
 
+    onEvent(BookSessionEvent.CalculateTotalPay(sessionPrice))
     ModalBottomSheet(
         containerColor = colorResource(id = R.color.grey_white),
         sheetState = sheetState,
@@ -83,14 +86,14 @@ fun BookSessionBottomSheet(
                     style = MaterialTheme.typography.titleLarge
                         .copy(fontWeight = FontWeight.Bold)
                 )
-                Spacer(modifier = Modifier.height(16.dp))
-                Row(verticalAlignment = Alignment.Top) {
+                Spacer(modifier = Modifier.height(5.dp))
+                Row(modifier = Modifier.padding(10.dp), verticalAlignment = Alignment.Top) {
                     Image(
                         painter = rememberAsyncImagePainter(
-                            model = "client.avatarUri",
+                            model = state.clientAvatarUri,
                             placeholder = painterResource(id = R.drawable.placeholder)
                         ),
-                        contentDescription = "Document image",
+                        contentDescription = "Client avatar uri",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .size(125.dp)
@@ -99,13 +102,13 @@ fun BookSessionBottomSheet(
                     Spacer(modifier = Modifier.width(10.dp))
                     Column {
                         Text(
-                            text = "Client display name",
+                            text = state.clientDisplayName,
                             style = MaterialTheme.typography.bodyLarge
                                 .copy(fontWeight = FontWeight.Bold)
                         )
                         Spacer(modifier = Modifier.height(5.dp))
                         Text(
-                            text = "Client email",
+                            text = state.clientEmail,
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
@@ -115,8 +118,8 @@ fun BookSessionBottomSheet(
             Text(
                 modifier = Modifier
                     .align(Alignment.Start),
-                text = "Available time",
-                style = MaterialTheme.typography.bodyLarge
+                text = "Schedule",
+                style = MaterialTheme.typography.bodyLarge,
             )
             OutlinedCard(
                 modifier = Modifier
@@ -140,7 +143,7 @@ fun BookSessionBottomSheet(
                 modifier = Modifier
                     .align(Alignment.Start),
                 text = "Payment",
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
             )
             OutlinedCard(
                 modifier = Modifier
@@ -148,48 +151,71 @@ fun BookSessionBottomSheet(
                     .padding(vertical = 10.dp)
             ) {
                 Text(
-                    modifier = Modifier.padding(start = 10.dp, top = 10.dp),
+                    modifier = Modifier.padding(10.dp),
                     text = "Bill Details",
                     style = MaterialTheme.typography.titleLarge
                         .copy(fontWeight = FontWeight.Bold)
                 )
+                HorizontalDivider(thickness = 1.dp)
+                Spacer(modifier = Modifier.height(10.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp)
+                ) {
+                    Text(
+                        text = "Session fees:",
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Text(
+                        text = "$${state.sessionPrice}",
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        textAlign = TextAlign.End
+                    )
+                }
+                Spacer(modifier = Modifier.height(5.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp)
+                ) {
+                    Text(
+                        text = "Booking fees:",
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Text(
+                        text = "\$${state.bookingFees}",
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        textAlign = TextAlign.End
+                    )
+                }
                 Spacer(modifier = Modifier.height(10.dp))
                 HorizontalDivider(thickness = 1.dp)
                 Spacer(modifier = Modifier.height(5.dp))
-                Text(
-                    modifier = Modifier.padding(start = 10.dp),
-                    text = "Session fees:",
-                    style = MaterialTheme.typography.bodyLarge
-                )
-                Spacer(modifier = Modifier.height(5.dp))
-                Text(
-                    modifier = Modifier.padding(start = 10.dp),
-                    text = "Booking fees:",
-                    style = MaterialTheme.typography.bodyLarge
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                HorizontalDivider(thickness = 1.dp)
-                Spacer(modifier = Modifier.height(5.dp))
-                Text(
-                    modifier = Modifier.padding(start = 10.dp, bottom = 10.dp),
-                    text = "Total Pay:",
-                    style = MaterialTheme.typography.titleMedium
-                        .copy(fontWeight = FontWeight.Bold)
-                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                ) {
+                    Text(
+                        text = "Total Pay:",
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        modifier = Modifier.weight(1f)
+                    )
+                    Text(
+                        text = "$${state.totalPay}",
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        textAlign = TextAlign.End
+                    )
+                }
             }
-            OutlinedCard(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 5.dp)
-            ) {
-                Text(
-                    modifier = Modifier.padding(start = 10.dp, top = 10.dp),
-                    text = "Pay with",
-                    style = MaterialTheme.typography.titleLarge
-                        .copy(fontWeight = FontWeight.Bold)
-                )
-            }
+            Spacer(modifier = Modifier.height(15.dp))
+            PaymentScreen(
+                price = state.totalPay,
+                payButtonEnabled = state.chosenTime.isNotBlank()
+            )
         }
     }
 }
-

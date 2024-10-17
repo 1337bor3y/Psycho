@@ -37,7 +37,6 @@ import com.example.psychoremastered.presentation.session_booking.BookSessionStat
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.Year
-import java.time.format.DateTimeFormatter
 
 @Composable
 fun Calendar(
@@ -59,7 +58,7 @@ fun Calendar(
         )
     }
     Column(
-        modifier = Modifier.padding(5.dp),
+        modifier = Modifier.padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -144,16 +143,15 @@ fun Calendar(
             },
             selectedTime = selectedTime,
             unavailableTimes = state.unavailableTimes,
-            onTimeSelected = { selectedTime = it })
+            onTimeSelected = {
+                selectedTime = it
+                onEvent(
+                    BookSessionEvent.SetChosenTime("$it $selectedDay")
+                )
+            })
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "Selected time: "
-                    + (selectedTime?.let {
-                        selectedTime!!.format(
-                            DateTimeFormatter.ofPattern("hh:mm a")
-                        ) + " "
-                    } ?: "")
-                    + selectedDay,
+            text = "Selected time: ${state.chosenTime}",
             style = MaterialTheme.typography.bodyLarge
         )
         Spacer(modifier = Modifier.height(10.dp))
@@ -222,7 +220,8 @@ fun TimeSlotItem(
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = time.format(DateTimeFormatter.ofPattern("hh:mm a")),
+            modifier = Modifier.padding(horizontal = 5.dp),
+            text = time.toString(),
             fontSize = 16.sp,
             color = when {
                 isUnavailable -> Color.Gray
