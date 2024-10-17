@@ -14,6 +14,7 @@ import com.example.psychoremastered.data.remote.UnavailableTimeApi
 import com.example.psychoremastered.data.remote.UnavailableTimeFirebaseSource
 import com.example.psychoremastered.data.repository.AuthRepositoryImpl
 import com.example.psychoremastered.data.repository.ClientRepositoryImpl
+import com.example.psychoremastered.data.repository.PaymentsRepositoryImpl
 import com.example.psychoremastered.data.repository.PreferenceRepositoryImpl
 import com.example.psychoremastered.data.repository.TherapistRepositoryImpl
 import com.example.psychoremastered.data.repository.UnavailableTimeRepositoryImpl
@@ -22,6 +23,7 @@ import com.example.psychoremastered.data.validation.EmailPatterValidator
 import com.example.psychoremastered.data.validation.PatternValidator
 import com.example.psychoremastered.domain.repository.AuthRepository
 import com.example.psychoremastered.domain.repository.ClientRepository
+import com.example.psychoremastered.domain.repository.PaymentsRepository
 import com.example.psychoremastered.domain.repository.PreferenceRepository
 import com.example.psychoremastered.domain.repository.TherapistRepository
 import com.example.psychoremastered.domain.repository.UnavailableTimeRepository
@@ -114,4 +116,10 @@ abstract class RepositoryModule {
     abstract fun providePaymentsUtil(
         googlePaymentsUtil: GooglePaymentsUtil
     ): PaymentsUtil
+
+    @Binds
+    @Singleton
+    abstract fun providePaymentsRepository(
+        paymentsRepositoryImpl: PaymentsRepositoryImpl
+    ): PaymentsRepository
 }
