@@ -29,14 +29,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.psychoremastered.presentation.session_booking.BookSessionEvent
 import com.example.psychoremastered.presentation.session_booking.BookSessionState
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.Year
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun Calendar(
@@ -145,13 +151,24 @@ fun Calendar(
             unavailableTimes = state.unavailableTimes,
             onTimeSelected = {
                 selectedTime = it
+                val chosenDateTime = LocalDateTime.of(selectedDay, it)
+                val formattedChosenDateTime =
+                    chosenDateTime.format(DateTimeFormatter.ofPattern("EEEE, MMMM dd, yyyy HH:mm"))
                 onEvent(
-                    BookSessionEvent.SetChosenTime("$it $selectedDay")
+                    BookSessionEvent.SetChosenTime(
+                        "$formattedChosenDateTime - " + it.plusMinutes(30)
+                    )
                 )
             })
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            text = "Selected time: ${state.chosenTime}",
+            textAlign = TextAlign.Center,
+            text = buildAnnotatedString {
+                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                    append("Selected time:")
+                }
+                append("\n${state.chosenTime}")
+            },
             style = MaterialTheme.typography.bodyLarge
         )
         Spacer(modifier = Modifier.height(10.dp))
@@ -176,7 +193,7 @@ fun TimeSlotRow(
     unavailableTimes: List<LocalTime>,
     onTimeSelected: (LocalTime) -> Unit
 ) {
-    val timeSlots = generateTimeSlots(startTime, 20, 30)
+    val timeSlots = generateTimeSlots(startTime, 20, 45)
 
     LazyRow(modifier = Modifier.fillMaxWidth()) {
         items(timeSlots.size) { index ->
