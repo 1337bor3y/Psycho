@@ -46,6 +46,12 @@ class GooglePaymentViewModel @Inject constructor(
             )
 
             is GooglePaymentEvent.SetPaymentData -> setPaymentData(event.paymentData)
+
+            is GooglePaymentEvent.SetPaymentCompleted -> _state.update {
+                it.copy(
+                    paymentCompleted = event.isCompleted
+                )
+            }
         }
     }
 
@@ -94,7 +100,7 @@ class GooglePaymentViewModel @Inject constructor(
         } ?: _state.update {
             it.copy(
                 paymentCompleted = false,
-                error = CommonStatusCodes.INTERNAL_ERROR.toString()
+                error = "Internal error"
             )
         }
     }

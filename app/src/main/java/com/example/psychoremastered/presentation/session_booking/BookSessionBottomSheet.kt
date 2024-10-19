@@ -33,7 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
-import com.example.psychoremastered.presentation.google_pay.PaymentScreen
+import com.example.psychoremastered.domain.model.Therapist
+import com.example.psychoremastered.presentation.google_pay.GooglePaymentButton
 import com.example.psychoremastered.presentation.session_booking.component.Calendar
 import com.example.psychoremstered.R
 
@@ -42,15 +43,14 @@ import com.example.psychoremstered.R
 fun BookSessionBottomSheet(
     viewModel: BookSessionViewModel = hiltViewModel(),
     onDismiss: () -> Unit,
-    therapistId: String,
-    sessionPrice: String,
+    therapist: Therapist
 ) {
     val scrollState = rememberScrollState()
     val sheetState = rememberModalBottomSheetState()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val onEvent = viewModel::onEvent
 
-    onEvent(BookSessionEvent.CalculateTotalPay(sessionPrice))
+    onEvent(BookSessionEvent.CalculateTotalPay(therapist.price))
     ModalBottomSheet(
         containerColor = colorResource(id = R.color.grey_white),
         sheetState = sheetState,
@@ -93,7 +93,7 @@ fun BookSessionBottomSheet(
                             model = state.clientAvatarUri,
                             placeholder = painterResource(id = R.drawable.placeholder)
                         ),
-                        contentDescription = "Client avatar uri",
+                        contentDescription = "Client image",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .size(125.dp)
@@ -133,7 +133,7 @@ fun BookSessionBottomSheet(
                         .copy(fontWeight = FontWeight.Bold)
                 )
                 Calendar(
-                    therapistId = therapistId,
+                    therapistId = therapist.id,
                     state = state,
                     onEvent = onEvent
                 )
@@ -212,9 +212,13 @@ fun BookSessionBottomSheet(
                 }
             }
             Spacer(modifier = Modifier.height(15.dp))
-            PaymentScreen(
+            GooglePaymentButton(
                 price = state.totalPay,
-                payButtonEnabled = state.chosenTime.isNotBlank()
+                payButtonEnabled = state.chosenTime.isNotBlank(),
+                therapistProfileUri = therapist.avatarUri,
+                therapistDisplayName = therapist.displayName,
+                therapistSpecialization = therapist.specializations.joinToString(", "),
+                sessionDate = state.chosenTime
             )
         }
     }

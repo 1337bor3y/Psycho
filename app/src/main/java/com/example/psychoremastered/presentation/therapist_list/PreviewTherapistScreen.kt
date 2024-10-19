@@ -55,8 +55,7 @@ fun PreviewTherapistScreen(
 
     if (showBookSession) {
         BookSessionBottomSheet(
-            therapistId = therapist.id,
-            sessionPrice = therapist.price,
+            therapist = therapist,
             onDismiss = {
                 showBookSession = false
 

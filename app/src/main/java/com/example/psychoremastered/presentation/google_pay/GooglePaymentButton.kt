@@ -15,10 +15,14 @@ import com.google.android.gms.wallet.contract.TaskResultContracts
 import com.google.pay.button.PayButton
 
 @Composable
-fun PaymentScreen(
+fun GooglePaymentButton(
     googlePaymentViewModel: GooglePaymentViewModel = hiltViewModel(),
     price: String,
-    payButtonEnabled: Boolean
+    payButtonEnabled: Boolean,
+    therapistProfileUri: String,
+    therapistDisplayName: String,
+    therapistSpecialization: String,
+    sessionDate: String
 ) {
     val state by googlePaymentViewModel.state.collectAsStateWithLifecycle()
     val onEvent = googlePaymentViewModel::onEvent
@@ -59,6 +63,16 @@ fun PaymentScreen(
         )
     }
     if (state.paymentCompleted) {
-        // Show payment completed screen/dialog/sheet
+        PaymentCompletedSheet(
+            therapistProfileUri = therapistProfileUri,
+            therapistDisplayName = therapistDisplayName,
+            therapistSpecialization = therapistSpecialization,
+            sessionDate = sessionDate,
+            onDismiss = {
+                onEvent(
+                    GooglePaymentEvent.SetPaymentCompleted(false)
+                )
+            }
+        )
     }
 }

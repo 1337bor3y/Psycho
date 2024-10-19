@@ -49,9 +49,15 @@ class GooglePaymentsUtil @Inject constructor(
     private fun baseCardPaymentMethod(): JSONObject =
         JSONObject()
             .put("type", "CARD")
-            .put("parameters", JSONObject()
+            .put(
+                "parameters", JSONObject()
                     .put("allowedAuthMethods", allowedCardAuthMethods)
                     .put("allowedCardNetworks", allowedCardNetworks)
+                    .put("billingAddressRequired", true)
+                    .put(
+                        "billingAddressParameters", JSONObject()
+                            .put("format", "FULL")
+                    )
             )
 
     override fun getLoadPaymentDataTask(price: String): Task<PaymentData> {
@@ -65,6 +71,7 @@ class GooglePaymentsUtil @Inject constructor(
             .put("allowedPaymentMethods", getAllowedPaymentMethods())
             .put("transactionInfo", getTransactionInfo(price))
             .put("merchantInfo", merchantInfo)
+
 
     private fun getTransactionInfo(price: String): JSONObject =
         JSONObject()

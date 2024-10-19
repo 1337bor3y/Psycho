@@ -9,4 +9,5 @@ sealed interface GooglePaymentEvent {
         val price: String,
         val onCompleteListener: OnCompleteListener<PaymentData>
     ) : GooglePaymentEvent
+    data class SetPaymentCompleted(val isCompleted: Boolean) : GooglePaymentEvent
 }
