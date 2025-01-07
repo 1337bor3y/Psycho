@@ -1,5 +1,7 @@
 package com.example.psychoremastered.presentation.google_pay
 
+import android.content.Intent
+import android.provider.CalendarContract
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -44,6 +47,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.psychoremstered.R
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,6 +62,7 @@ fun PaymentCompletedSheet(
 ) {
     val sheetState = rememberModalBottomSheetState()
     val scrollState = rememberScrollState()
+    val context = LocalContext.current
 
     ModalBottomSheet(
         containerColor = colorResource(id = R.color.grey_white),
@@ -177,7 +184,31 @@ fun PaymentCompletedSheet(
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
-                onClick = { /*TODO*/ }
+                onClick = {
+                    val startDateTime = LocalDateTime.parse(
+                        sessionDate.split(" - ")[0],
+                        DateTimeFormatter.ofPattern("EEEE, MMMM dd, yyyy HH:mm")
+                    )
+                    val startMillis =
+                        startDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+                    val intent = Intent(Intent.ACTION_INSERT)
+                        .setData(CalendarContract.Events.CONTENT_URI)
+                        .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startMillis)
+                        .putExtra(
+                            CalendarContract.EXTRA_EVENT_END_TIME,
+                            startMillis + 30 * 60 * 1000
+                        )
+                        .putExtra(CalendarContract.Events.TITLE, "Psychology session")
+                        .putExtra(
+                            CalendarContract.Events.DESCRIPTION,
+                            "Psychology session with $therapistDisplayName"
+                        )
+                        .putExtra(
+                            CalendarContract.Events.AVAILABILITY,
+                            CalendarContract.Events.AVAILABILITY_BUSY
+                        )
+                    context.startActivity(intent)
+                }
             ) {
                 Icon(
                     modifier = Modifier
