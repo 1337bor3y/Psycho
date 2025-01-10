@@ -9,8 +9,11 @@ import com.example.psychoremastered.data.local.room.entity.TherapistEntity
 interface TherapistDao {
 
     @Upsert
-    suspend fun upsertTherapist(therapist: TherapistEntity)
+    suspend fun upsertFavouriteTherapist(therapist: TherapistEntity)
 
-    @Query("SELECT * FROM therapistentity WHERE therapist_id = :therapistId")
-    suspend fun getTherapist(therapistId: String): TherapistEntity
+    @Query("SELECT * FROM therapistentity")
+    suspend fun getFavouriteTherapists(): List<TherapistEntity>
+
+    @Query("DELETE FROM therapistentity WHERE therapist_id = :therapistId")
+    suspend fun removeFavouriteTherapist(therapistId: String)
 }
