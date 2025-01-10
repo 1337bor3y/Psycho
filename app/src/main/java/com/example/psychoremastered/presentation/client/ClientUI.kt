@@ -96,6 +96,7 @@ fun ClientUI(
                     val listState by listViewModel.state.collectAsStateWithLifecycle()
                     TherapistListScreen(
                         state = listState,
+                        onEvent = listViewModel::onEvent,
                         navController = clientNavController
                     )
                 }

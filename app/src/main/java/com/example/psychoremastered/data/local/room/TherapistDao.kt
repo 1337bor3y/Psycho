@@ -1,6 +1,7 @@
 package com.example.psychoremastered.data.local.room
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
 import com.example.psychoremastered.data.local.room.entity.TherapistEntity
@@ -15,6 +16,6 @@ interface TherapistDao {
     @Query("SELECT * FROM therapistentity")
     fun getFavouriteTherapists(): Flow<List<TherapistEntity>>
 
-    @Query("DELETE FROM therapistentity WHERE therapist_id = :therapistId")
-    suspend fun removeFavouriteTherapist(therapistId: String)
+    @Delete
+    suspend fun removeFavouriteTherapist(therapist: TherapistEntity)
 }

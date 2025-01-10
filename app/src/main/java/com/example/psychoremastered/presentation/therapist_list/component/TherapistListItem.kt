@@ -37,14 +37,17 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.example.psychoremastered.domain.model.Therapist
+import com.example.psychoremastered.presentation.therapist_list.TherapistListEvent
 import com.example.psychoremstered.R
 
 @Composable
 fun TherapistListItem(
     therapist: Therapist,
-    onItemClick: (Therapist) -> Unit
+    onItemClick: (Therapist) -> Unit,
+    isFavoriteTherapist: Boolean,
+    onEvent: (TherapistListEvent) -> Unit
 ) {
-    var isFavorite by rememberSaveable { mutableStateOf(false) }
+    var isFavorite by rememberSaveable { mutableStateOf(isFavoriteTherapist) }
 
     OutlinedCard(
         modifier = Modifier
@@ -104,6 +107,11 @@ fun TherapistListItem(
                 IconToggleButton(
                     checked = isFavorite,
                     onCheckedChange = {
+                        if (isFavorite) {
+                            onEvent(TherapistListEvent.RemoveFavouriteTherapist(therapist))
+                        } else {
+                            onEvent(TherapistListEvent.SaveFavouriteTherapist(therapist))
+                        }
                         isFavorite = !isFavorite
                     }
                 ) {

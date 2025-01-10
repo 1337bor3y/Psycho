@@ -27,6 +27,7 @@ import com.example.psychoremastered.presentation.therapist_list.component.Therap
 @Composable
 fun TherapistListScreen(
     state: TherapistListState,
+    onEvent: (TherapistListEvent) -> Unit,
     navController: NavController
 ) {
     val windowPadding = WindowInsets.navigationBars.asPaddingValues()
@@ -71,7 +72,9 @@ fun TherapistListScreen(
                                         navController.navigate(
                                             ClientScreenRoutes.PreviewTherapistScreen(therapist)
                                         )
-                                    }
+                                    },
+                                    isFavoriteTherapist = state.favouriteTherapist.contains(therapist),
+                                    onEvent = onEvent
                                 )
                             }
                         }

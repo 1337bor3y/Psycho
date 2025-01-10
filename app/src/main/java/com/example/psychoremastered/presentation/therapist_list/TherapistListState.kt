@@ -6,5 +6,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 
 data class TherapistListState(
-    val therapists: Flow<PagingData<Therapist>> = emptyFlow()
+    val therapists: Flow<PagingData<Therapist>> = emptyFlow(),
+    val favouriteTherapist: List<Therapist> = emptyList()
 )

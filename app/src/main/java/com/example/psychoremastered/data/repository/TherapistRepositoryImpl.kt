@@ -73,6 +73,6 @@ class TherapistRepositoryImpl @Inject constructor(
     override fun getFavouriteTherapists() =
         dao.getFavouriteTherapists().map { it.map { th -> th.toTherapist() } }
 
-    override suspend fun removeFavouriteTherapist(therapistId: String) =
-        dao.removeFavouriteTherapist(therapistId)
+    override suspend fun removeFavouriteTherapist(therapist: Therapist) =
+        dao.removeFavouriteTherapist(therapist.toTherapistEntity())
 }

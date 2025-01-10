@@ -18,5 +18,5 @@ interface TherapistRepository {
 
     fun getFavouriteTherapists(): Flow<List<Therapist>>
 
-    suspend fun removeFavouriteTherapist(therapistId: String)
+    suspend fun removeFavouriteTherapist(therapist: Therapist)
 }
