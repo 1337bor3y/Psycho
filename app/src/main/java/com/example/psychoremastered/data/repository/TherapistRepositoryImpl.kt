@@ -6,8 +6,10 @@ import androidx.paging.PagingConfig
 import androidx.paging.filter
 import androidx.paging.map
 import com.example.psychoremastered.data.auth.AuthApi
+import com.example.psychoremastered.data.local.room.TherapistDao
 import com.example.psychoremastered.data.mappers.toTherapist
 import com.example.psychoremastered.data.mappers.toTherapistDto
+import com.example.psychoremastered.data.mappers.toTherapistEntity
 import com.example.psychoremastered.data.remote.ImageStorageApi
 import com.example.psychoremastered.data.remote.TherapistApi
 import com.example.psychoremastered.data.remote.TherapistsPagingSource
@@ -23,7 +25,8 @@ class TherapistRepositoryImpl @Inject constructor(
     private val storageApi: ImageStorageApi,
     private val authApi: AuthApi,
     private val source: TherapistsPagingSource,
-    private val config: PagingConfig
+    private val config: PagingConfig,
+    private val dao: TherapistDao
 ) : TherapistRepository {
 
     override suspend fun saveTherapist(therapist: Therapist) {
@@ -63,4 +66,14 @@ class TherapistRepositoryImpl @Inject constructor(
             therapist.id != authApi.getCurrentUser()?.userId
         }
     }
+
+    override suspend fun upsertFavouriteTherapist(therapist: Therapist) =
+        dao.upsertFavouriteTherapist(therapist.toTherapistEntity())
+
+
+    override fun getFavouriteTherapists() =
+        dao.getFavouriteTherapists().map { it.map { th -> th.toTherapist() } }
+
+    override suspend fun removeFavouriteTherapist(therapistId: String) =
+        dao.removeFavouriteTherapist(therapistId)
 }
