@@ -3,12 +3,16 @@ package com.example.psychoremastered.presentation.client
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
@@ -20,7 +24,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -32,8 +38,8 @@ import com.example.psychoremastered.core.screen_route.ClientScreenRoutes
 import com.example.psychoremastered.core.screen_route.parcelableType
 import com.example.psychoremastered.domain.model.Degree
 import com.example.psychoremastered.domain.model.Therapist
-import com.example.psychoremastered.presentation.client_chat.ClientChatsScreen
 import com.example.psychoremastered.presentation.client.model.BottomNavigationItem
+import com.example.psychoremastered.presentation.client_chat.ClientChatsScreen
 import com.example.psychoremastered.presentation.client_profile.ClientProfileScreen
 import com.example.psychoremastered.presentation.therapist_list.PreviewTherapistScreen
 import com.example.psychoremastered.presentation.therapist_list.TherapistListScreen
@@ -44,6 +50,7 @@ import kotlin.reflect.typeOf
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ClientUI(
+    state: ClientState,
     onEvent: (ClientEvent) -> Unit,
     navController: NavController
 ) {
@@ -72,6 +79,23 @@ fun ClientUI(
                 }
             },
             actions = {
+                IconToggleButton(
+                    checked = state.showFavouriteTherapists,
+                    onCheckedChange = {
+                        onEvent(ClientEvent.ShowFavouriteTherapists(!state.showFavouriteTherapists))
+                    }
+                ) {
+                    Icon(
+                        modifier = Modifier.size(32.dp),
+                        tint = Color.Black,
+                        imageVector = if (state.showFavouriteTherapists) {
+                            Icons.Filled.Favorite
+                        } else {
+                            Icons.Default.FavoriteBorder
+                        },
+                        contentDescription = "Favourite"
+                    )
+                }
                 IconButton(onClick = {
                     onEvent(
                         ClientEvent.SignOut(navController)
@@ -97,7 +121,8 @@ fun ClientUI(
                     TherapistListScreen(
                         state = listState,
                         onEvent = listViewModel::onEvent,
-                        navController = clientNavController
+                        navController = clientNavController,
+                        showFavouriteTherapists = state.showFavouriteTherapists
                     )
                 }
                 composable<ClientScreenRoutes.ProfileScreen> {
