@@ -15,6 +15,10 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.LayoutDirection
@@ -34,6 +38,9 @@ fun TherapistListScreen(
 ) {
     val windowPadding = WindowInsets.navigationBars.asPaddingValues()
     val therapists = state.therapists.collectAsLazyPagingItems()
+    var isFavTherapistsEmpty by rememberSaveable {
+        mutableStateOf(true)
+    }
 
     Box(
         modifier = Modifier
@@ -43,29 +50,29 @@ fun TherapistListScreen(
                 end = windowPadding.calculateEndPadding(LayoutDirection.Ltr)
             )
     ) {
-        if (!showFavouriteTherapists) {
-            when (therapists.loadState.refresh) {
-                is LoadState.Loading -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                }
+        when (therapists.loadState.refresh) {
+            is LoadState.Loading -> {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
 
-                is LoadState.Error -> {
-                    Text(
-                        modifier = Modifier.align(Alignment.Center),
-                        text = "${(therapists.loadState.refresh as LoadState.Error).error.message}",
-                        color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
+            is LoadState.Error -> {
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = "${(therapists.loadState.refresh as LoadState.Error).error.message}",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
 
-                else -> {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.spacedBy(10.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
+            else -> {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    if (!showFavouriteTherapists) {
                         items(therapists.itemCount) { therapistIndex ->
                             if (therapists[therapistIndex] != null) {
                                 therapists[therapistIndex]?.let { therapist ->
@@ -76,7 +83,7 @@ fun TherapistListScreen(
                                                 ClientScreenRoutes.PreviewTherapistScreen(therapist)
                                             )
                                         },
-                                        isFavoriteTherapist = state.favouriteTherapist.contains(
+                                        isFavoriteTherapist = state.favouriteTherapists.contains(
                                             therapist
                                         ),
                                         onEvent = onEvent
@@ -91,28 +98,31 @@ fun TherapistListScreen(
                                 )
                             }
                         }
+                    } else {
+                        isFavTherapistsEmpty = state.favouriteTherapists.isEmpty()
+                        items(state.favouriteTherapists) { therapist ->
+                            TherapistListItem(
+                                therapist = therapist,
+                                onItemClick = {
+                                    navController.navigate(
+                                        ClientScreenRoutes.PreviewTherapistScreen(therapist)
+                                    )
+                                },
+                                isFavoriteTherapist = true,
+                                onEvent = onEvent
+                            )
+                        }
                     }
                 }
             }
-        } else {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                items(state.favouriteTherapist) { therapist ->
-                    TherapistListItem(
-                        therapist = therapist,
-                        onItemClick = {
-                            navController.navigate(
-                                ClientScreenRoutes.PreviewTherapistScreen(therapist)
-                            )
-                        },
-                        isFavoriteTherapist = true,
-                        onEvent = onEvent
-                    )
-                }
-            }
+        }
+        if (showFavouriteTherapists && isFavTherapistsEmpty) {
+            Text(
+                modifier = Modifier.align(Alignment.Center),
+                text = "There are no favourite therapists",
+                color = MaterialTheme.colorScheme.outline,
+                style = MaterialTheme.typography.bodyLarge
+            )
         }
     }
 }

@@ -32,7 +32,7 @@ class TherapistListViewModel @Inject constructor(
             _state.update {
                 it.copy(
                     therapists = getPagingTherapistsUseCase().cachedIn(viewModelScope),
-                    favouriteTherapist = getFavouriteTherapistsUseCase().first()
+                    favouriteTherapists = getFavouriteTherapistsUseCase().first()
                 )
             }
         }
