@@ -13,4 +13,10 @@ interface TherapistRepository {
     fun getTherapist(therapistId: String): Flow<Therapist?>
 
     fun getAllTherapists(): Flow<PagingData<Therapist>>
+
+    suspend fun upsertFavouriteTherapist(therapist: Therapist)
+
+    fun getFavouriteTherapists(): Flow<List<Therapist>>
+
+    suspend fun removeFavouriteTherapist(therapist: Therapist)
 }
