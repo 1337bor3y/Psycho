@@ -107,7 +107,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable<MainScreenRoutes.ClientScreen> {
                         val clientViewModel = hiltViewModel<ClientViewModel>()
+                        val clientState by clientViewModel.state.collectAsStateWithLifecycle()
                         ClientUI(
+                            state = clientState,
                             onEvent = clientViewModel::onEvent,
                             navController = navController
                         )

@@ -6,8 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class TherapistEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 1,
+    @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "therapist_id")
     val therapistId: String,
     @ColumnInfo(name = "avatar_uri")

@@ -10,10 +10,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.LayoutDirection
@@ -27,10 +32,15 @@ import com.example.psychoremastered.presentation.therapist_list.component.Therap
 @Composable
 fun TherapistListScreen(
     state: TherapistListState,
-    navController: NavController
+    onEvent: (TherapistListEvent) -> Unit,
+    navController: NavController,
+    showFavouriteTherapists: Boolean
 ) {
     val windowPadding = WindowInsets.navigationBars.asPaddingValues()
     val therapists = state.therapists.collectAsLazyPagingItems()
+    var isFavTherapistsEmpty by rememberSaveable {
+        mutableStateOf(true)
+    }
 
     Box(
         modifier = Modifier
@@ -62,29 +72,57 @@ fun TherapistListScreen(
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    items(therapists.itemCount) { therapistIndex ->
-                        if (therapists[therapistIndex] != null) {
-                            therapists[therapistIndex]?.let { therapist ->
-                                TherapistListItem(
-                                    therapist = therapist,
-                                    onItemClick = {
-                                        navController.navigate(
-                                            ClientScreenRoutes.PreviewTherapistScreen(therapist)
-                                        )
-                                    }
+                    if (!showFavouriteTherapists) {
+                        items(therapists.itemCount) { therapistIndex ->
+                            if (therapists[therapistIndex] != null) {
+                                therapists[therapistIndex]?.let { therapist ->
+                                    TherapistListItem(
+                                        therapist = therapist,
+                                        onItemClick = {
+                                            navController.navigate(
+                                                ClientScreenRoutes.PreviewTherapistScreen(therapist)
+                                            )
+                                        },
+                                        isFavoriteTherapist = state.favouriteTherapists.contains(
+                                            therapist
+                                        ),
+                                        onEvent = onEvent
+                                    )
+                                }
+                            }
+                        }
+                        item {
+                            if (therapists.loadState.append is LoadState.Loading) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.align(Alignment.Center)
                                 )
                             }
                         }
-                    }
-                    item {
-                        if (therapists.loadState.append is LoadState.Loading) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.align(Alignment.Center)
+                    } else {
+                        isFavTherapistsEmpty = state.favouriteTherapists.isEmpty()
+                        items(state.favouriteTherapists) { therapist ->
+                            TherapistListItem(
+                                therapist = therapist,
+                                onItemClick = {
+                                    navController.navigate(
+                                        ClientScreenRoutes.PreviewTherapistScreen(therapist)
+                                    )
+                                },
+                                isFavoriteTherapist = true,
+                                onEvent = onEvent
                             )
                         }
                     }
                 }
             }
+        }
+        if (showFavouriteTherapists && isFavTherapistsEmpty) {
+            Text(
+                modifier = Modifier.align(Alignment.Center),
+                text = "There are no favourite therapists",
+                color = MaterialTheme.colorScheme.outline,
+                style = MaterialTheme.typography.bodyLarge
+            )
         }
     }
 }
