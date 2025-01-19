@@ -48,6 +48,11 @@ class TherapistListViewModel @Inject constructor(
     private fun removeFavouriteTherapist(therapist: Therapist) {
         viewModelScope.launch {
             removeFavouriteTherapistUseCase(therapist)
+            _state.update {
+                it.copy(
+                    favouriteTherapists = getFavouriteTherapistsUseCase().first()
+                )
+            }
         }
     }
 
