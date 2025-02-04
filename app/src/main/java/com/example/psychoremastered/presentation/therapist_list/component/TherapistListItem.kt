@@ -52,7 +52,10 @@ fun TherapistListItem(
     OutlinedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 10.dp),
+            .padding(
+                horizontal = 10.dp,
+                vertical = 5.dp
+            ),
         onClick = {
             onItemClick(therapist)
         }

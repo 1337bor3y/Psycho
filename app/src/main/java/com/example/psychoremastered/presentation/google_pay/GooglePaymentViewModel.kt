@@ -2,9 +2,12 @@ package com.example.psychoremastered.presentation.google_pay
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.psychoremastered.domain.model.UnavailableTime
 import com.example.psychoremastered.domain.use_case.GetAllowedPaymentMethodsUseCase
 import com.example.psychoremastered.domain.use_case.GetLoadPaymentDataTaskUseCase
+import com.example.psychoremastered.domain.use_case.GetUnavailableTimeUseCase
 import com.example.psychoremastered.domain.use_case.IsReadyToPayUseCase
+import com.example.psychoremastered.domain.use_case.SaveUnavailableTimeUseCase
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.tasks.OnCompleteListener
@@ -12,6 +15,7 @@ import com.google.android.gms.wallet.PaymentData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.json.JSONException
@@ -22,7 +26,9 @@ import javax.inject.Inject
 class GooglePaymentViewModel @Inject constructor(
     getAllowedPaymentMethodsUseCase: GetAllowedPaymentMethodsUseCase,
     private val getLoadPaymentDataTaskUseCase: GetLoadPaymentDataTaskUseCase,
-    private val isReadyToPayUseCase: IsReadyToPayUseCase
+    private val isReadyToPayUseCase: IsReadyToPayUseCase,
+    private val saveUnavailableTimeUseCase: SaveUnavailableTimeUseCase,
+    private val getUnavailableTimeUseCase: GetUnavailableTimeUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(
@@ -101,6 +107,21 @@ class GooglePaymentViewModel @Inject constructor(
             it.copy(
                 paymentCompleted = false,
                 error = "Internal error"
+            )
+        }
+    }
+
+    private fun saveChosenTime(therapistId: String, chosenDate: String, chosenTime: String) {
+        viewModelScope.launch {
+            val unavailableTimes =
+                getUnavailableTimeUseCase(therapistId, chosenDate).first() as ArrayList<String>
+            unavailableTimes.add(chosenTime)
+            saveUnavailableTimeUseCase(
+                UnavailableTime(
+                    therapistId = therapistId,
+                    date = chosenDate,
+                    unavailableTimes = unavailableTimes
+                )
             )
         }
     }
