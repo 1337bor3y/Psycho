@@ -3,8 +3,8 @@ package com.example.psychoremastered.presentation.client
 import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
@@ -26,7 +26,6 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
@@ -43,7 +42,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -85,139 +83,14 @@ fun ClientUI(
     val showNavigationRail =
         windowClass.widthSizeClass != WindowWidthSizeClass.Compact
 
-    Scaffold(
-        topBar = {
-            if (!showNavigationRail) {
-                TopAppBar(
-                    modifier = Modifier
-                        .background(MaterialTheme.colorScheme.inverseOnSurface)
-                        .offset(y = (-1).dp),
-                    title = { Text(text = title) },
-                    navigationIcon = {
-                        IconButton(onClick = {
-                            if (!clientNavController.popBackStack()) {
-                                navController.popBackStack()
-                            }
-                        }) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Back"
-                            )
-                        }
-                    },
-                    actions = {
-                        IconToggleButton(
-                            checked = clientState.showFavouriteTherapists,
-                            onCheckedChange = {
-                                onClientEvent(ClientEvent.ShowFavouriteTherapists(!clientState.showFavouriteTherapists))
-                            }
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(32.dp),
-                                tint = Color.Black,
-                                imageVector = if (clientState.showFavouriteTherapists) {
-                                    Icons.Filled.Favorite
-                                } else {
-                                    Icons.Default.FavoriteBorder
-                                },
-                                contentDescription = "Favourite"
-                            )
-                        }
-                        IconButton(onClick = {
-                            onClientEvent(
-                                ClientEvent.SignOut(navController)
-                            )
-                        }) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.Logout,
-                                contentDescription = "Sing out"
-                            )
-                        }
-                    }
-                )
-            }
-        },
-        bottomBar = {
-            if (!showNavigationRail) {
-                NavigationBar(
-                    modifier = Modifier
-                        .background(MaterialTheme.colorScheme.inverseOnSurface)
-                        .offset(y = (1).dp),
-                    containerColor = colorResource(id = R.color.white)
-                ) {
-                    navItems.forEachIndexed { index, navigationItem ->
-                        NavigationBarItem(
-                            selected = index == navigationSelectedItem,
-                            label = {
-                                Text(navigationItem.label)
-                            },
-                            icon = {
-                                NavigationIcon(
-                                    item = navigationItem,
-                                )
-                            },
-                            onClick = {
-                                navigationSelectedItem = index
-                                clientNavController.navigate(navigationItem.route) {
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            }
-                        )
-                    }
-                }
-            }
-        }
-    ) { padding ->
-        NavHost(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(
-                    start = if (showNavigationRail) 80.dp else padding.calculateStartPadding(
-                        LayoutDirection.Ltr
-                    ),
-                    top = padding.calculateTopPadding(),
-                    bottom = padding.calculateBottomPadding()
-                ),
-            navController = clientNavController,
-            startDestination = ClientScreenRoutes.TherapistListScreen
-        ) {
-            composable<ClientScreenRoutes.TherapistListScreen> {
-                navigationSelectedItem = 0
-                title = navItems[navigationSelectedItem].label
-                TherapistListScreen(
-                    state = listState,
-                    onEvent = onListEvent,
-                    navController = clientNavController,
-                    showFavouriteTherapists = clientState.showFavouriteTherapists
-                )
-            }
-            composable<ClientScreenRoutes.ProfileScreen> {
-                navigationSelectedItem = 1
-                title = navItems[navigationSelectedItem].label
-                ClientProfileScreen()
-            }
-            composable<ClientScreenRoutes.ChatsScreen> {
-                navigationSelectedItem = 2
-                title = navItems[navigationSelectedItem].label
-                ClientChatsScreen()
-            }
-            composable<ClientScreenRoutes.PreviewTherapistScreen>(
-                typeMap = mapOf(
-                    typeOf<Therapist>() to parcelableType<Therapist>(),
-                    typeOf<Degree>() to parcelableType<Degree>()
-                )
-            ) {
-                navigationSelectedItem = 0
-                val therapist =
-                    it.toRoute<ClientScreenRoutes.PreviewTherapistScreen>().therapist
-                title = therapist.displayName
-                PreviewTherapistScreen(therapist = therapist)
-            }
-        }
-        if (showNavigationRail) {
-            NavigationRail(
-                header = {
+    Column(modifier = Modifier.fillMaxSize()) {
+        if (!showNavigationRail) {
+            TopAppBar(
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.inverseOnSurface)
+                    .offset(y = (-1).dp),
+                title = { Text(text = title) },
+                navigationIcon = {
                     IconButton(onClick = {
                         if (!clientNavController.popBackStack()) {
                             navController.popBackStack()
@@ -228,6 +101,8 @@ fun ClientUI(
                             contentDescription = "Back"
                         )
                     }
+                },
+                actions = {
                     IconToggleButton(
                         checked = clientState.showFavouriteTherapists,
                         onCheckedChange = {
@@ -255,35 +130,155 @@ fun ClientUI(
                             contentDescription = "Sing out"
                         )
                     }
-                },
+                }
+            )
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(1f)
+        ) {
+            NavHost(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(
+                        start = if (showNavigationRail) 80.dp else 0.dp
+                    ),
+                navController = clientNavController,
+                startDestination = ClientScreenRoutes.TherapistListScreen
+            ) {
+                composable<ClientScreenRoutes.TherapistListScreen> {
+                    navigationSelectedItem = 0
+                    title = navItems[navigationSelectedItem].label
+                    TherapistListScreen(
+                        state = listState,
+                        onEvent = onListEvent,
+                        navController = clientNavController,
+                        showFavouriteTherapists = clientState.showFavouriteTherapists
+                    )
+                }
+                composable<ClientScreenRoutes.ProfileScreen> {
+                    navigationSelectedItem = 1
+                    title = navItems[navigationSelectedItem].label
+                    ClientProfileScreen()
+                }
+                composable<ClientScreenRoutes.ChatsScreen> {
+                    navigationSelectedItem = 2
+                    title = navItems[navigationSelectedItem].label
+                    ClientChatsScreen()
+                }
+                composable<ClientScreenRoutes.PreviewTherapistScreen>(
+                    typeMap = mapOf(
+                        typeOf<Therapist>() to parcelableType<Therapist>(),
+                        typeOf<Degree>() to parcelableType<Degree>()
+                    )
+                ) {
+                    navigationSelectedItem = 0
+                    val therapist =
+                        it.toRoute<ClientScreenRoutes.PreviewTherapistScreen>().therapist
+                    title = therapist.displayName
+                    PreviewTherapistScreen(therapist = therapist)
+                }
+            }
+            if (showNavigationRail) {
+                NavigationRail(
+                    header = {
+                        IconButton(onClick = {
+                            if (!clientNavController.popBackStack()) {
+                                navController.popBackStack()
+                            }
+                        }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back"
+                            )
+                        }
+                        IconToggleButton(
+                            checked = clientState.showFavouriteTherapists,
+                            onCheckedChange = {
+                                onClientEvent(ClientEvent.ShowFavouriteTherapists(!clientState.showFavouriteTherapists))
+                            }
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(32.dp),
+                                tint = Color.Black,
+                                imageVector = if (clientState.showFavouriteTherapists) {
+                                    Icons.Filled.Favorite
+                                } else {
+                                    Icons.Default.FavoriteBorder
+                                },
+                                contentDescription = "Favourite"
+                            )
+                        }
+                        IconButton(onClick = {
+                            onClientEvent(
+                                ClientEvent.SignOut(navController)
+                            )
+                        }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.Logout,
+                                contentDescription = "Sing out"
+                            )
+                        }
+                    },
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.inverseOnSurface)
+                        .offset(x = (-1).dp)
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxHeight(),
+                        verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.Bottom)
+                    ) {
+                        navItems.forEachIndexed { index, navigationItem ->
+                            NavigationRailItem(
+                                selected = index == navigationSelectedItem,
+                                label = {
+                                    Text(navigationItem.label)
+                                },
+                                icon = {
+                                    NavigationIcon(
+                                        item = navigationItem,
+                                    )
+                                },
+                                onClick = {
+                                    navigationSelectedItem = index
+                                    clientNavController.navigate(navigationItem.route) {
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        if (!showNavigationRail) {
+            NavigationBar(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.inverseOnSurface)
-                    .offset(x = (-1).dp)
+                    .offset(y = (1).dp),
+                containerColor = colorResource(id = R.color.white)
             ) {
-                Column(
-                    modifier = Modifier.fillMaxHeight(),
-                    verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.Bottom)
-                ) {
-                    navItems.forEachIndexed { index, navigationItem ->
-                        NavigationRailItem(
-                            selected = index == navigationSelectedItem,
-                            label = {
-                                Text(navigationItem.label)
-                            },
-                            icon = {
-                                NavigationIcon(
-                                    item = navigationItem,
-                                )
-                            },
-                            onClick = {
-                                navigationSelectedItem = index
-                                clientNavController.navigate(navigationItem.route) {
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
+                navItems.forEachIndexed { index, navigationItem ->
+                    NavigationBarItem(
+                        selected = index == navigationSelectedItem,
+                        label = {
+                            Text(navigationItem.label)
+                        },
+                        icon = {
+                            NavigationIcon(
+                                item = navigationItem,
+                            )
+                        },
+                        onClick = {
+                            navigationSelectedItem = index
+                            clientNavController.navigate(navigationItem.route) {
+                                launchSingleTop = true
+                                restoreState = true
                             }
-                        )
-                    }
+                        }
+                    )
                 }
             }
         }
