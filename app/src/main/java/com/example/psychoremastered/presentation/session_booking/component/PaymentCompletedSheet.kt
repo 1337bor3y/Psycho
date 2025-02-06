@@ -1,4 +1,4 @@
-package com.example.psychoremastered.presentation.google_pay
+package com.example.psychoremastered.presentation.session_booking.component
 
 import android.content.Intent
 import android.provider.CalendarContract
