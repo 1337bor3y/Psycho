@@ -1,5 +1,8 @@
 package com.example.psychoremastered.presentation.therapist_list
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -44,8 +47,11 @@ import com.example.psychoremastered.presentation.therapist_list.component.Degree
 import com.example.psychoremastered.presentation.therapist_list.component.DegreeItem
 import com.example.psychoremstered.R
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun PreviewTherapistScreen(
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     therapist: Therapist
 ) {
     val scrollState = rememberScrollState()
@@ -77,27 +83,42 @@ fun PreviewTherapistScreen(
         horizontalAlignment = Alignment.Start
     ) {
         Spacer(modifier = Modifier.height(10.dp))
-        Image(
-            painter = rememberAsyncImagePainter(
-                model = therapist.avatarUri,
-                placeholder = painterResource(id = R.drawable.placeholder)
-            ),
-            contentDescription = "Profile image",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(150.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .align(Alignment.CenterHorizontally)
-        )
+        with(sharedTransitionScope) {
+            Image(
+                painter = rememberAsyncImagePainter(
+                    model = therapist.avatarUri,
+                    placeholder = painterResource(id = R.drawable.placeholder)
+                ),
+                contentDescription = "Profile image",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .sharedBounds(
+                        rememberSharedContentState(key = "image/${therapist.id}"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                    )
+                    .size(150.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .align(Alignment.CenterHorizontally)
+            )
+        }
         Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            text = therapist.displayName,
-            style = MaterialTheme.typography.titleLarge.copy(
-                fontWeight = FontWeight.Bold
-            ),
-            overflow = TextOverflow.Ellipsis
-        )
+        with(sharedTransitionScope) {
+            Text(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .sharedBounds(
+                        rememberSharedContentState(key = "displayName/${therapist.id}"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                    ),
+                text = therapist.displayName,
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                overflow = TextOverflow.Ellipsis
+            )
+        }
         Spacer(modifier = Modifier.height(20.dp))
         HorizontalDivider(thickness = 2.dp)
         Spacer(modifier = Modifier.height(20.dp))
@@ -111,13 +132,20 @@ fun PreviewTherapistScreen(
             overflow = TextOverflow.Ellipsis
         )
         Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            modifier = Modifier
-                .padding(horizontal = 20.dp),
-            text = therapist.specializations.joinToString(", "),
-            style = MaterialTheme.typography.bodyLarge,
-            overflow = TextOverflow.Ellipsis
-        )
+        with(sharedTransitionScope) {
+            Text(
+                modifier = Modifier
+                    .padding(horizontal = 20.dp)
+                    .sharedBounds(
+                        rememberSharedContentState(key = "specializations/${therapist.id}"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                    ),
+                text = therapist.specializations.joinToString(", "),
+                style = MaterialTheme.typography.bodyLarge,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
         Spacer(modifier = Modifier.height(20.dp))
         HorizontalDivider(thickness = 2.dp)
         Spacer(modifier = Modifier.height(20.dp))
@@ -131,13 +159,20 @@ fun PreviewTherapistScreen(
             overflow = TextOverflow.Ellipsis
         )
         Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            modifier = Modifier
-                .padding(horizontal = 20.dp),
-            text = therapist.description,
-            style = MaterialTheme.typography.bodyLarge,
-            overflow = TextOverflow.Ellipsis
-        )
+        with(sharedTransitionScope) {
+            Text(
+                modifier = Modifier
+                    .padding(horizontal = 20.dp)
+                    .sharedBounds(
+                        rememberSharedContentState(key = "description/${therapist.id}"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                    ),
+                text = therapist.description,
+                style = MaterialTheme.typography.bodyLarge,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
         Spacer(modifier = Modifier.height(20.dp))
         HorizontalDivider(thickness = 2.dp)
         Spacer(modifier = Modifier.height(20.dp))
@@ -151,13 +186,20 @@ fun PreviewTherapistScreen(
             overflow = TextOverflow.Ellipsis
         )
         Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            modifier = Modifier
-                .padding(horizontal = 20.dp),
-            text = therapist.languages.joinToString(", "),
-            style = MaterialTheme.typography.bodyLarge,
-            overflow = TextOverflow.Ellipsis
-        )
+        with(sharedTransitionScope) {
+            Text(
+                modifier = Modifier
+                    .padding(horizontal = 20.dp)
+                    .sharedBounds(
+                        rememberSharedContentState(key = "languages/${therapist.id}"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                    ),
+                text = therapist.languages.joinToString(", "),
+                style = MaterialTheme.typography.bodyLarge,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
         Spacer(modifier = Modifier.height(20.dp))
         HorizontalDivider(thickness = 2.dp)
         Spacer(modifier = Modifier.height(20.dp))
@@ -191,13 +233,20 @@ fun PreviewTherapistScreen(
             overflow = TextOverflow.Ellipsis
         )
         Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            modifier = Modifier
-                .padding(horizontal = 20.dp),
-            text = therapist.price + "$",
-            style = MaterialTheme.typography.bodyLarge,
-            overflow = TextOverflow.Ellipsis
-        )
+        with(sharedTransitionScope) {
+            Text(
+                modifier = Modifier
+                    .padding(horizontal = 20.dp)
+                    .sharedBounds(
+                        rememberSharedContentState(key = "price/${therapist.id}"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                    ),
+                text = therapist.price + "$",
+                style = MaterialTheme.typography.bodyLarge,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
         Spacer(modifier = Modifier.height(20.dp))
         HorizontalDivider(thickness = 2.dp)
         Spacer(modifier = Modifier.height(20.dp))

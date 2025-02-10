@@ -1,5 +1,8 @@
 package com.example.psychoremastered.presentation.therapist_list.component
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -40,8 +43,11 @@ import com.example.psychoremastered.domain.model.Therapist
 import com.example.psychoremastered.presentation.therapist_list.TherapistListEvent
 import com.example.psychoremstered.R
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun TherapistListItem(
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     therapist: Therapist,
     onItemClick: (Therapist) -> Unit,
     isFavoriteTherapist: Boolean,
@@ -68,43 +74,74 @@ fun TherapistListItem(
             Row(
                 verticalAlignment = Alignment.Top
             ) {
-                Image(
-                    painter = rememberAsyncImagePainter(
-                        model = therapist.avatarUri,
-                        placeholder = painterResource(id = R.drawable.placeholder)
-                    ),
-                    contentDescription = "Document image",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(150.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                )
+                with(sharedTransitionScope) {
+                    Image(
+                        painter = rememberAsyncImagePainter(
+                            model = therapist.avatarUri,
+                            placeholder = painterResource(id = R.drawable.placeholder)
+                        ),
+                        contentDescription = "Document image",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .sharedBounds(
+                                rememberSharedContentState(key = "image/${therapist.id}"),
+                                animatedVisibilityScope = animatedVisibilityScope,
+                                resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                            )
+                            .size(150.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                    )
+                }
                 Spacer(modifier = Modifier.width(10.dp))
                 Column(
                     modifier = Modifier.weight(1f),
                     horizontalAlignment = Alignment.Start
                 ) {
-                    Text(
-                        text = therapist.displayName,
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Bold
-                        ),
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    with(sharedTransitionScope) {
+                        Text(
+                            modifier = Modifier
+                                .sharedBounds(
+                                    rememberSharedContentState(key = "displayName/${therapist.id}"),
+                                    animatedVisibilityScope = animatedVisibilityScope,
+                                    resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                                ),
+                            text = therapist.displayName,
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontWeight = FontWeight.Bold
+                            ),
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                     Spacer(modifier = Modifier.height(10.dp))
-                    Text(
-                        text = therapist.specializations.joinToString(", "),
-                        style = MaterialTheme.typography.bodyMedium.copy(
-                            fontWeight = FontWeight.Bold
-                        ),
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    with(sharedTransitionScope) {
+                        Text(
+                            modifier = Modifier
+                                .sharedBounds(
+                                    rememberSharedContentState(key = "specializations/${therapist.id}"),
+                                    animatedVisibilityScope = animatedVisibilityScope,
+                                    resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                                ),
+                            text = therapist.specializations.joinToString(", "),
+                            style = MaterialTheme.typography.bodyMedium.copy(
+                                fontWeight = FontWeight.Bold
+                            ),
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                     Spacer(modifier = Modifier.height(5.dp))
-                    Text(
-                        text = therapist.languages.joinToString(", "),
-                        style = MaterialTheme.typography.bodyMedium,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    with(sharedTransitionScope) {
+                        Text(
+                            modifier = Modifier
+                                .sharedBounds(
+                                    rememberSharedContentState(key = "languages/${therapist.id}"),
+                                    animatedVisibilityScope = animatedVisibilityScope,
+                                    resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                                ),
+                            text = therapist.languages.joinToString(", "),
+                            style = MaterialTheme.typography.bodyMedium,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 }
                 Spacer(modifier = Modifier.width(10.dp))
                 IconToggleButton(
@@ -131,23 +168,39 @@ fun TherapistListItem(
                 }
             }
             Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                text = therapist.description,
-                maxLines = 3,
-                style = MaterialTheme.typography.bodyMedium,
-                overflow = TextOverflow.Ellipsis
-            )
+            with(sharedTransitionScope) {
+                Text(
+                    modifier = Modifier
+                        .sharedBounds(
+                            rememberSharedContentState(key = "description/${therapist.id}"),
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                        ),
+                    text = therapist.description,
+                    maxLines = 3,
+                    style = MaterialTheme.typography.bodyMedium,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
             Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                        append("${therapist.price}$")
-                    }
-                    append(" for one session")
-                },
-                style = MaterialTheme.typography.bodyMedium,
-                overflow = TextOverflow.Ellipsis
-            )
+            with(sharedTransitionScope) {
+                Text(
+                    modifier = Modifier
+                        .sharedBounds(
+                            rememberSharedContentState(key = "price/${therapist.id}"),
+                            animatedVisibilityScope = animatedVisibilityScope,
+                            resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                        ),
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                            append("${therapist.price}$")
+                        }
+                        append(" for one session")
+                    },
+                    style = MaterialTheme.typography.bodyMedium,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
     }
 }

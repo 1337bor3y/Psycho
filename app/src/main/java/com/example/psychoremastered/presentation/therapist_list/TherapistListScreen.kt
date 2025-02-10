@@ -1,5 +1,8 @@
 package com.example.psychoremastered.presentation.therapist_list
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -27,8 +30,11 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.example.psychoremastered.core.screen_route.ClientScreenRoutes
 import com.example.psychoremastered.presentation.therapist_list.component.TherapistListItem
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun TherapistListScreen(
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     state: TherapistListState,
     onEvent: (TherapistListEvent) -> Unit,
     navController: NavController,
@@ -70,10 +76,12 @@ fun TherapistListScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     if (!showFavouriteTherapists) {
-                        items(therapists.itemCount) { therapistIndex ->
+                        items(therapists.itemCount, key = { therapists[it]?.id ?: it }) { therapistIndex ->
                             if (therapists[therapistIndex] != null) {
                                 therapists[therapistIndex]?.let { therapist ->
                                     TherapistListItem(
+                                        sharedTransitionScope = sharedTransitionScope,
+                                        animatedVisibilityScope = animatedVisibilityScope,
                                         therapist = therapist,
                                         onItemClick = {
                                             navController.navigate(
@@ -97,8 +105,10 @@ fun TherapistListScreen(
                         }
                     } else {
                         isFavTherapistsEmpty = state.favouriteTherapists.isEmpty()
-                        items(state.favouriteTherapists) { therapist ->
+                        items(state.favouriteTherapists, key = { it.id }) { therapist ->
                             TherapistListItem(
+                                sharedTransitionScope = sharedTransitionScope,
+                                animatedVisibilityScope = animatedVisibilityScope,
                                 therapist = therapist,
                                 onItemClick = {
                                     navController.navigate(

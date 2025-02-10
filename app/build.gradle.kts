@@ -137,4 +137,7 @@ dependencies {
 
     // Window size
     implementation(libs.androidx.material3.window.size)
+
+    // Animation
+    implementation(libs.androidx.compose.animation)
 }

@@ -1,6 +1,8 @@
 package com.example.psychoremastered.presentation.client
 
 import android.app.Activity
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -62,7 +64,10 @@ import com.example.psychoremastered.presentation.therapist_list.TherapistListSta
 import com.example.psychoremstered.R
 import kotlin.reflect.typeOf
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3WindowSizeClassApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalMaterial3WindowSizeClassApi::class,
+    ExperimentalSharedTransitionApi::class
+)
 @Composable
 fun ClientUI(
     clientState: ClientState,
@@ -138,46 +143,54 @@ fun ClientUI(
                 .fillMaxSize()
                 .weight(1f)
         ) {
-            NavHost(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(
-                        start = if (showNavigationRail) 80.dp else 0.dp
-                    ),
-                navController = clientNavController,
-                startDestination = ClientScreenRoutes.TherapistListScreen
-            ) {
-                composable<ClientScreenRoutes.TherapistListScreen> {
-                    navigationSelectedItem = 0
-                    title = navItems[navigationSelectedItem].label
-                    TherapistListScreen(
-                        state = listState,
-                        onEvent = onListEvent,
-                        navController = clientNavController,
-                        showFavouriteTherapists = clientState.showFavouriteTherapists
-                    )
-                }
-                composable<ClientScreenRoutes.ProfileScreen> {
-                    navigationSelectedItem = 1
-                    title = navItems[navigationSelectedItem].label
-                    ClientProfileScreen()
-                }
-                composable<ClientScreenRoutes.ChatsScreen> {
-                    navigationSelectedItem = 2
-                    title = navItems[navigationSelectedItem].label
-                    ClientChatsScreen()
-                }
-                composable<ClientScreenRoutes.PreviewTherapistScreen>(
-                    typeMap = mapOf(
-                        typeOf<Therapist>() to parcelableType<Therapist>(),
-                        typeOf<Degree>() to parcelableType<Degree>()
-                    )
+            SharedTransitionLayout {
+                NavHost(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(
+                            start = if (showNavigationRail) 80.dp else 0.dp
+                        ),
+                    navController = clientNavController,
+                    startDestination = ClientScreenRoutes.TherapistListScreen
                 ) {
-                    navigationSelectedItem = 0
-                    val therapist =
-                        it.toRoute<ClientScreenRoutes.PreviewTherapistScreen>().therapist
-                    title = therapist.displayName
-                    PreviewTherapistScreen(therapist = therapist)
+                    composable<ClientScreenRoutes.TherapistListScreen> {
+                        navigationSelectedItem = 0
+                        title = navItems[navigationSelectedItem].label
+                        TherapistListScreen(
+                            state = listState,
+                            onEvent = onListEvent,
+                            navController = clientNavController,
+                            showFavouriteTherapists = clientState.showFavouriteTherapists,
+                            animatedVisibilityScope = this,
+                            sharedTransitionScope = this@SharedTransitionLayout
+                        )
+                    }
+                    composable<ClientScreenRoutes.ProfileScreen> {
+                        navigationSelectedItem = 1
+                        title = navItems[navigationSelectedItem].label
+                        ClientProfileScreen()
+                    }
+                    composable<ClientScreenRoutes.ChatsScreen> {
+                        navigationSelectedItem = 2
+                        title = navItems[navigationSelectedItem].label
+                        ClientChatsScreen()
+                    }
+                    composable<ClientScreenRoutes.PreviewTherapistScreen>(
+                        typeMap = mapOf(
+                            typeOf<Therapist>() to parcelableType<Therapist>(),
+                            typeOf<Degree>() to parcelableType<Degree>()
+                        )
+                    ) {
+                        navigationSelectedItem = 0
+                        val therapist =
+                            it.toRoute<ClientScreenRoutes.PreviewTherapistScreen>().therapist
+                        title = therapist.displayName
+                        PreviewTherapistScreen(
+                            sharedTransitionScope = this@SharedTransitionLayout,
+                            animatedVisibilityScope = this,
+                            therapist = therapist
+                        )
+                    }
                 }
             }
             if (showNavigationRail) {
