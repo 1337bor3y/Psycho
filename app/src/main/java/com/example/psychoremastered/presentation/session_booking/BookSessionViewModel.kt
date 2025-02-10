@@ -116,6 +116,11 @@ class BookSessionViewModel @Inject constructor(
     }
 
     private fun getUnavailableTime(therapistId: String, date: String) {
+        _state.update {
+            it.copy(
+                sessionDate = ""
+            )
+        }
         viewModelScope.launch {
             getUnavailableTimeUseCase(therapistId, date).firstOrNull()?.let { unavailableTimes ->
                 _state.update {
