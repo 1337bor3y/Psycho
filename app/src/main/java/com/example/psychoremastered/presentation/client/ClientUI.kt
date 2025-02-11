@@ -88,62 +88,65 @@ fun ClientUI(
     val showNavigationRail =
         windowClass.widthSizeClass != WindowWidthSizeClass.Compact
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        if (!showNavigationRail) {
-            TopAppBar(
+    SharedTransitionLayout {
+        Column(modifier = Modifier.fillMaxSize()) {
+            if (!showNavigationRail) {
+                TopAppBar(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.inverseOnSurface)
+                        .offset(y = (-1).dp)
+                        .renderInSharedTransitionScopeOverlay(
+                            zIndexInOverlay = 1f
+                        ),
+                    title = { Text(text = title) },
+                    navigationIcon = {
+                        IconButton(onClick = {
+                            if (!clientNavController.popBackStack()) {
+                                navController.popBackStack()
+                            }
+                        }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back"
+                            )
+                        }
+                    },
+                    actions = {
+                        IconToggleButton(
+                            checked = clientState.showFavouriteTherapists,
+                            onCheckedChange = {
+                                onClientEvent(ClientEvent.ShowFavouriteTherapists(!clientState.showFavouriteTherapists))
+                            }
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(32.dp),
+                                tint = Color.Black,
+                                imageVector = if (clientState.showFavouriteTherapists) {
+                                    Icons.Filled.Favorite
+                                } else {
+                                    Icons.Default.FavoriteBorder
+                                },
+                                contentDescription = "Favourite"
+                            )
+                        }
+                        IconButton(onClick = {
+                            onClientEvent(
+                                ClientEvent.SignOut(navController)
+                            )
+                        }) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.Logout,
+                                contentDescription = "Sing out"
+                            )
+                        }
+                    }
+                )
+            }
+            Box(
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.inverseOnSurface)
-                    .offset(y = (-1).dp),
-                title = { Text(text = title) },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        if (!clientNavController.popBackStack()) {
-                            navController.popBackStack()
-                        }
-                    }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
-                        )
-                    }
-                },
-                actions = {
-                    IconToggleButton(
-                        checked = clientState.showFavouriteTherapists,
-                        onCheckedChange = {
-                            onClientEvent(ClientEvent.ShowFavouriteTherapists(!clientState.showFavouriteTherapists))
-                        }
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(32.dp),
-                            tint = Color.Black,
-                            imageVector = if (clientState.showFavouriteTherapists) {
-                                Icons.Filled.Favorite
-                            } else {
-                                Icons.Default.FavoriteBorder
-                            },
-                            contentDescription = "Favourite"
-                        )
-                    }
-                    IconButton(onClick = {
-                        onClientEvent(
-                            ClientEvent.SignOut(navController)
-                        )
-                    }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.Logout,
-                            contentDescription = "Sing out"
-                        )
-                    }
-                }
-            )
-        }
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .weight(1f)
-        ) {
-            SharedTransitionLayout {
+                    .fillMaxSize()
+                    .weight(1f)
+            ) {
                 NavHost(
                     modifier = Modifier
                         .fillMaxSize()
@@ -192,106 +195,109 @@ fun ClientUI(
                         )
                     }
                 }
-            }
-            if (showNavigationRail) {
-                NavigationRail(
-                    header = {
-                        IconButton(onClick = {
-                            if (!clientNavController.popBackStack()) {
-                                navController.popBackStack()
-                            }
-                        }) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Back"
-                            )
-                        }
-                        IconToggleButton(
-                            checked = clientState.showFavouriteTherapists,
-                            onCheckedChange = {
-                                onClientEvent(ClientEvent.ShowFavouriteTherapists(!clientState.showFavouriteTherapists))
-                            }
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(32.dp),
-                                tint = Color.Black,
-                                imageVector = if (clientState.showFavouriteTherapists) {
-                                    Icons.Filled.Favorite
-                                } else {
-                                    Icons.Default.FavoriteBorder
-                                },
-                                contentDescription = "Favourite"
-                            )
-                        }
-                        IconButton(onClick = {
-                            onClientEvent(
-                                ClientEvent.SignOut(navController)
-                            )
-                        }) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.Logout,
-                                contentDescription = "Sing out"
-                            )
-                        }
-                    },
-                    modifier = Modifier
-                        .background(MaterialTheme.colorScheme.inverseOnSurface)
-                        .offset(x = (-1).dp)
-                ) {
-                    Column(
-                        modifier = Modifier.fillMaxHeight(),
-                        verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.Bottom)
-                    ) {
-                        navItems.forEachIndexed { index, navigationItem ->
-                            NavigationRailItem(
-                                selected = index == navigationSelectedItem,
-                                label = {
-                                    Text(navigationItem.label)
-                                },
-                                icon = {
-                                    NavigationIcon(
-                                        item = navigationItem,
-                                    )
-                                },
-                                onClick = {
-                                    navigationSelectedItem = index
-                                    clientNavController.navigate(navigationItem.route) {
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
+                if (showNavigationRail) {
+                    NavigationRail(
+                        header = {
+                            IconButton(onClick = {
+                                if (!clientNavController.popBackStack()) {
+                                    navController.popBackStack()
                                 }
-                            )
+                            }) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = "Back"
+                                )
+                            }
+                            IconToggleButton(
+                                checked = clientState.showFavouriteTherapists,
+                                onCheckedChange = {
+                                    onClientEvent(ClientEvent.ShowFavouriteTherapists(!clientState.showFavouriteTherapists))
+                                }
+                            ) {
+                                Icon(
+                                    modifier = Modifier.size(32.dp),
+                                    tint = Color.Black,
+                                    imageVector = if (clientState.showFavouriteTherapists) {
+                                        Icons.Filled.Favorite
+                                    } else {
+                                        Icons.Default.FavoriteBorder
+                                    },
+                                    contentDescription = "Favourite"
+                                )
+                            }
+                            IconButton(onClick = {
+                                onClientEvent(
+                                    ClientEvent.SignOut(navController)
+                                )
+                            }) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.Logout,
+                                    contentDescription = "Sing out"
+                                )
+                            }
+                        },
+                        modifier = Modifier
+                            .background(MaterialTheme.colorScheme.inverseOnSurface)
+                            .offset(x = (-1).dp)
+                    ) {
+                        Column(
+                            modifier = Modifier.fillMaxHeight(),
+                            verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.Bottom)
+                        ) {
+                            navItems.forEachIndexed { index, navigationItem ->
+                                NavigationRailItem(
+                                    selected = index == navigationSelectedItem,
+                                    label = {
+                                        Text(navigationItem.label)
+                                    },
+                                    icon = {
+                                        NavigationIcon(
+                                            item = navigationItem,
+                                        )
+                                    },
+                                    onClick = {
+                                        navigationSelectedItem = index
+                                        clientNavController.navigate(navigationItem.route) {
+                                            launchSingleTop = true
+                                            restoreState = true
+                                        }
+                                    }
+                                )
+                            }
                         }
                     }
                 }
             }
-        }
-        if (!showNavigationRail) {
-            NavigationBar(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.inverseOnSurface)
-                    .offset(y = (1).dp),
-                containerColor = colorResource(id = R.color.white)
-            ) {
-                navItems.forEachIndexed { index, navigationItem ->
-                    NavigationBarItem(
-                        selected = index == navigationSelectedItem,
-                        label = {
-                            Text(navigationItem.label)
-                        },
-                        icon = {
-                            NavigationIcon(
-                                item = navigationItem,
-                            )
-                        },
-                        onClick = {
-                            navigationSelectedItem = index
-                            clientNavController.navigate(navigationItem.route) {
-                                launchSingleTop = true
-                                restoreState = true
+            if (!showNavigationRail) {
+                NavigationBar(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.inverseOnSurface)
+                        .offset(y = (1).dp)
+                        .renderInSharedTransitionScopeOverlay(
+                            zIndexInOverlay = 1f
+                        ),
+                    containerColor = colorResource(id = R.color.white)
+                ) {
+                    navItems.forEachIndexed { index, navigationItem ->
+                        NavigationBarItem(
+                            selected = index == navigationSelectedItem,
+                            label = {
+                                Text(navigationItem.label)
+                            },
+                            icon = {
+                                NavigationIcon(
+                                    item = navigationItem,
+                                )
+                            },
+                            onClick = {
+                                navigationSelectedItem = index
+                                clientNavController.navigate(navigationItem.route) {
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             }
         }
