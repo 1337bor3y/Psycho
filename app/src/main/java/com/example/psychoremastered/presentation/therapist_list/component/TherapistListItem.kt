@@ -66,15 +66,20 @@ fun TherapistListItem(
             onItemClick(therapist)
         }
     ) {
-        Column(
-            modifier = Modifier
-                .padding(10.dp),
-            horizontalAlignment = Alignment.Start
-        ) {
-            Row(
-                verticalAlignment = Alignment.Top
+        with(sharedTransitionScope) {
+            Column(
+                modifier = Modifier
+                    .sharedBounds(
+                        rememberSharedContentState(key = "layout/${therapist.id}"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                    )
+                    .padding(10.dp),
+                horizontalAlignment = Alignment.Start
             ) {
-                with(sharedTransitionScope) {
+                Row(
+                    verticalAlignment = Alignment.Top
+                ) {
                     Image(
                         painter = rememberAsyncImagePainter(
                             model = therapist.avatarUri,
@@ -91,13 +96,11 @@ fun TherapistListItem(
                             .size(150.dp)
                             .clip(RoundedCornerShape(8.dp))
                     )
-                }
-                Spacer(modifier = Modifier.width(10.dp))
-                Column(
-                    modifier = Modifier.weight(1f),
-                    horizontalAlignment = Alignment.Start
-                ) {
-                    with(sharedTransitionScope) {
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        horizontalAlignment = Alignment.Start
+                    ) {
                         Text(
                             modifier = Modifier
                                 .sharedBounds(
@@ -111,9 +114,7 @@ fun TherapistListItem(
                             ),
                             overflow = TextOverflow.Ellipsis
                         )
-                    }
-                    Spacer(modifier = Modifier.height(10.dp))
-                    with(sharedTransitionScope) {
+                        Spacer(modifier = Modifier.height(10.dp))
                         Text(
                             modifier = Modifier
                                 .sharedBounds(
@@ -127,9 +128,7 @@ fun TherapistListItem(
                             ),
                             overflow = TextOverflow.Ellipsis
                         )
-                    }
-                    Spacer(modifier = Modifier.height(5.dp))
-                    with(sharedTransitionScope) {
+                        Spacer(modifier = Modifier.height(5.dp))
                         Text(
                             modifier = Modifier
                                 .sharedBounds(
@@ -142,33 +141,31 @@ fun TherapistListItem(
                             overflow = TextOverflow.Ellipsis
                         )
                     }
-                }
-                Spacer(modifier = Modifier.width(10.dp))
-                IconToggleButton(
-                    checked = isFavorite,
-                    onCheckedChange = {
-                        if (isFavorite) {
-                            onEvent(TherapistListEvent.RemoveFavouriteTherapist(therapist))
-                        } else {
-                            onEvent(TherapistListEvent.SaveFavouriteTherapist(therapist))
+                    Spacer(modifier = Modifier.width(10.dp))
+                    IconToggleButton(
+                        checked = isFavorite,
+                        onCheckedChange = {
+                            if (isFavorite) {
+                                onEvent(TherapistListEvent.RemoveFavouriteTherapist(therapist))
+                            } else {
+                                onEvent(TherapistListEvent.SaveFavouriteTherapist(therapist))
+                            }
+                            isFavorite = !isFavorite
                         }
-                        isFavorite = !isFavorite
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(32.dp),
+                            tint = Color.Red,
+                            imageVector = if (isFavorite) {
+                                Icons.Filled.Favorite
+                            } else {
+                                Icons.Default.FavoriteBorder
+                            },
+                            contentDescription = "Favourite"
+                        )
                     }
-                ) {
-                    Icon(
-                        modifier = Modifier.size(32.dp),
-                        tint = Color.Red,
-                        imageVector = if (isFavorite) {
-                            Icons.Filled.Favorite
-                        } else {
-                            Icons.Default.FavoriteBorder
-                        },
-                        contentDescription = "Favourite"
-                    )
                 }
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-            with(sharedTransitionScope) {
+                Spacer(modifier = Modifier.height(10.dp))
                 Text(
                     modifier = Modifier
                         .sharedBounds(
@@ -181,9 +178,7 @@ fun TherapistListItem(
                     style = MaterialTheme.typography.bodyMedium,
                     overflow = TextOverflow.Ellipsis
                 )
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-            with(sharedTransitionScope) {
+                Spacer(modifier = Modifier.height(10.dp))
                 Text(
                     modifier = Modifier
                         .sharedBounds(
