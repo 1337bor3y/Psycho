@@ -40,20 +40,46 @@ class TherapistListViewModel @Inject constructor(
 
     fun onEvent(event: TherapistListEvent) {
         when (event) {
-            is TherapistListEvent.RemoveFavouriteTherapist -> removeFavouriteTherapist(event.therapist)
+            is TherapistListEvent.RemoveFavouriteTherapist -> removeFavouriteTherapist(
+                event.therapist,
+                event.updateFavouriteTherapistList
+            )
+
             is TherapistListEvent.SaveFavouriteTherapist -> saveFavouriteTherapist(event.therapist)
+
+            TherapistListEvent.ShowFavouriteTherapists -> showFavouriteTherapists()
         }
     }
 
-    private fun removeFavouriteTherapist(therapist: Therapist) {
+    private fun removeFavouriteTherapist(
+        therapist: Therapist,
+        updateFavouriteTherapistList: Boolean
+    ) {
         viewModelScope.launch {
             removeFavouriteTherapistUseCase(therapist)
+            if (updateFavouriteTherapistList) {
+                _state.update {
+                    it.copy(
+                        favouriteTherapists = getFavouriteTherapistsUseCase().first()
+                    )
+                }
+            }
         }
     }
 
     private fun saveFavouriteTherapist(therapist: Therapist) {
         viewModelScope.launch {
             saveFavouriteTherapistUseCase(therapist)
+        }
+    }
+
+    private fun showFavouriteTherapists() {
+        viewModelScope.launch {
+            _state.update {
+                it.copy(
+                    favouriteTherapists = getFavouriteTherapistsUseCase().first()
+                )
+            }
         }
     }
 }

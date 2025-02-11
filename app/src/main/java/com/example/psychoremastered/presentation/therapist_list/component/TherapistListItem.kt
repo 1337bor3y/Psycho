@@ -51,7 +51,8 @@ fun TherapistListItem(
     therapist: Therapist,
     onItemClick: (Therapist) -> Unit,
     isFavoriteTherapist: Boolean,
-    onEvent: (TherapistListEvent) -> Unit
+    onEvent: (TherapistListEvent) -> Unit,
+    isFavoriteTherapistScreen: Boolean
 ) {
     var isFavorite by rememberSaveable { mutableStateOf(isFavoriteTherapist) }
 
@@ -146,7 +147,12 @@ fun TherapistListItem(
                         checked = isFavorite,
                         onCheckedChange = {
                             if (isFavorite) {
-                                onEvent(TherapistListEvent.RemoveFavouriteTherapist(therapist))
+                                onEvent(
+                                    TherapistListEvent.RemoveFavouriteTherapist(
+                                        therapist,
+                                        isFavoriteTherapistScreen
+                                    )
+                                )
                             } else {
                                 onEvent(TherapistListEvent.SaveFavouriteTherapist(therapist))
                             }
@@ -180,12 +186,6 @@ fun TherapistListItem(
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
-                    modifier = Modifier
-                        .sharedBounds(
-                            rememberSharedContentState(key = "price/${therapist.id}"),
-                            animatedVisibilityScope = animatedVisibilityScope,
-                            resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
-                        ),
                     text = buildAnnotatedString {
                         withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                             append("${therapist.price}$")

@@ -91,7 +91,8 @@ fun TherapistListScreen(
                                         isFavoriteTherapist = state.favouriteTherapists.contains(
                                             therapist
                                         ),
-                                        onEvent = onEvent
+                                        onEvent = onEvent,
+                                        isFavoriteTherapistScreen = false
                                     )
                                 }
                             }
@@ -104,6 +105,9 @@ fun TherapistListScreen(
                             }
                         }
                     } else {
+                        onEvent(
+                            TherapistListEvent.ShowFavouriteTherapists
+                        )
                         isFavTherapistsEmpty = state.favouriteTherapists.isEmpty()
                         items(state.favouriteTherapists, key = { it.id }) { therapist ->
                             TherapistListItem(
@@ -116,7 +120,8 @@ fun TherapistListScreen(
                                     )
                                 },
                                 isFavoriteTherapist = true,
-                                onEvent = onEvent
+                                onEvent = onEvent,
+                                isFavoriteTherapistScreen = true
                             )
                         }
                     }

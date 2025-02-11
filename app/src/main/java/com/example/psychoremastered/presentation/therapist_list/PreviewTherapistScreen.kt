@@ -231,11 +231,6 @@ fun PreviewTherapistScreen(
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 modifier = Modifier
-                    .sharedBounds(
-                        rememberSharedContentState(key = "price/${therapist.id}"),
-                        animatedVisibilityScope = animatedVisibilityScope,
-                        resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
-                    )
                     .padding(horizontal = 20.dp),
                 text = therapist.price + "$",
                 style = MaterialTheme.typography.bodyLarge,
