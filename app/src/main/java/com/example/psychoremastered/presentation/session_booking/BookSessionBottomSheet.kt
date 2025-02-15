@@ -35,6 +35,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.example.psychoremastered.domain.model.Therapist
 import com.example.psychoremastered.presentation.google_pay.GooglePaymentButton
+import com.example.psychoremastered.presentation.session_booking.component.PaymentCompletedSheet
 import com.example.psychoremastered.presentation.session_booking.component.Calendar
 import com.example.psychoremstered.R
 
@@ -133,9 +134,23 @@ fun BookSessionBottomSheet(
                         .copy(fontWeight = FontWeight.Bold)
                 )
                 Calendar(
-                    therapistId = therapist.id,
-                    state = state,
-                    onEvent = onEvent
+                    unavailableTimes = state.unavailableTimes,
+                    fetchUnavailableTime = { selectedDate ->
+                        onEvent(
+                            BookSessionEvent.GetUnavailableTime(
+                                therapistId = therapist.id,
+                                date = selectedDate
+                            )
+                        )
+                    },
+                    setChosenTime = { chosenDay, chosenTime ->
+                        onEvent(
+                            BookSessionEvent.SetChosenTime(
+                                chosenDay = chosenDay,
+                                chosenTime = chosenTime
+                            )
+                        )
+                    }
                 )
             }
             Spacer(modifier = Modifier.height(15.dp))
@@ -214,11 +229,25 @@ fun BookSessionBottomSheet(
             Spacer(modifier = Modifier.height(15.dp))
             GooglePaymentButton(
                 price = state.totalPay,
-                payButtonEnabled = state.chosenTime.isNotBlank(),
-                therapistProfileUri = therapist.avatarUri,
-                therapistDisplayName = therapist.displayName,
-                therapistSpecialization = therapist.specializations.joinToString(", "),
-                sessionDate = state.chosenTime
+                payButtonEnabled = state.sessionDate.isNotBlank(),
+                onCompletePayment = {
+                    onEvent(
+                        BookSessionEvent.SaveChosenTime(
+                            therapistId = therapist.id
+                        )
+                    )
+                },
+                paymentCompletedSheet = { setPaymentCompleted ->
+                    PaymentCompletedSheet(
+                        therapistProfileUri = therapist.avatarUri,
+                        therapistDisplayName = therapist.displayName,
+                        therapistSpecialization = therapist.specializations.joinToString(", "),
+                        sessionDate = state.sessionDate,
+                        onDismiss = {
+                            setPaymentCompleted()
+                        }
+                    )
+                }
             )
         }
     }

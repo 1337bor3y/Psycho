@@ -26,6 +26,7 @@ import com.example.psychoremastered.presentation.client.ClientUI
 import com.example.psychoremastered.presentation.client.ClientViewModel
 import com.example.psychoremastered.presentation.password_auth.AuthViewModel
 import com.example.psychoremastered.presentation.password_auth.PasswordAuthUI
+import com.example.psychoremastered.presentation.therapist_list.TherapistListViewModel
 import com.example.psychoremastered.presentation.therapist_registration.RegistrationEvent
 import com.example.psychoremastered.presentation.therapist_registration.RegistrationUI
 import com.example.psychoremastered.presentation.therapist_registration.RegistrationViewModel
@@ -108,9 +109,13 @@ class MainActivity : ComponentActivity() {
                     composable<MainScreenRoutes.ClientScreen> {
                         val clientViewModel = hiltViewModel<ClientViewModel>()
                         val clientState by clientViewModel.state.collectAsStateWithLifecycle()
+                        val listViewModel = hiltViewModel<TherapistListViewModel>()
+                        val listState by listViewModel.state.collectAsStateWithLifecycle()
                         ClientUI(
-                            state = clientState,
-                            onEvent = clientViewModel::onEvent,
+                            clientState = clientState,
+                            onClientEvent = clientViewModel::onEvent,
+                            listState = listState,
+                            onListEvent = listViewModel::onEvent,
                             navController = navController
                         )
                     }

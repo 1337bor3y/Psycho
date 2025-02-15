@@ -36,19 +36,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.psychoremastered.presentation.session_booking.BookSessionEvent
-import com.example.psychoremastered.presentation.session_booking.BookSessionState
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.Year
-import java.time.format.DateTimeFormatter
 
 @Composable
 fun Calendar(
-    therapistId: String,
-    state: BookSessionState,
-    onEvent: (BookSessionEvent) -> Unit
+    unavailableTimes: List<LocalTime>,
+    fetchUnavailableTime: (selectedDate: String) -> Unit,
+    setChosenTime: (chosenDay: LocalDate, chosenTime: LocalTime) -> Unit
 ) {
     var currentDate by rememberSaveable { mutableStateOf(LocalDate.now()) }
     var selectedTime by rememberSaveable { mutableStateOf<LocalTime?>(null) }
@@ -56,11 +52,8 @@ fun Calendar(
     var daysOfWeek by rememberSaveable { mutableStateOf(generateDaysOfWeek(currentDate)) }
 
     LaunchedEffect(selectedDay) {
-        onEvent(
-            BookSessionEvent.GetUnavailableTime(
-                date = selectedDay.toString(),
-                therapistId = therapistId
-            )
+        fetchUnavailableTime(
+            selectedDay.toString()
         )
     }
     Column(
@@ -148,17 +141,10 @@ fun Calendar(
                 8
             },
             selectedTime = selectedTime,
-            unavailableTimes = state.unavailableTimes,
+            unavailableTimes = unavailableTimes,
             onTimeSelected = {
                 selectedTime = it
-                val chosenDateTime = LocalDateTime.of(selectedDay, it)
-                val formattedChosenDateTime =
-                    chosenDateTime.format(DateTimeFormatter.ofPattern("EEEE, MMMM dd, yyyy HH:mm"))
-                onEvent(
-                    BookSessionEvent.SetChosenTime(
-                        "$formattedChosenDateTime - " + it.plusMinutes(30)
-                    )
-                )
+                setChosenTime(selectedDay, it)
             })
         Spacer(modifier = Modifier.height(16.dp))
         Text(
@@ -167,7 +153,7 @@ fun Calendar(
                 withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
                     append("Selected time:")
                 }
-                append("\n${state.chosenTime}")
+                append("\n$selectedDay ${selectedTime ?: ""}")
             },
             style = MaterialTheme.typography.bodyLarge
         )

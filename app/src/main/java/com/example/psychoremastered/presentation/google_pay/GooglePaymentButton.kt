@@ -19,10 +19,8 @@ fun GooglePaymentButton(
     googlePaymentViewModel: GooglePaymentViewModel = hiltViewModel(),
     price: String,
     payButtonEnabled: Boolean,
-    therapistProfileUri: String,
-    therapistDisplayName: String,
-    therapistSpecialization: String,
-    sessionDate: String
+    onCompletePayment: () -> Unit,
+    paymentCompletedSheet: @Composable (setPaymentCompleted: () -> Unit) -> Unit
 ) {
     val state by googlePaymentViewModel.state.collectAsStateWithLifecycle()
     val onEvent = googlePaymentViewModel::onEvent
@@ -32,9 +30,9 @@ fun GooglePaymentButton(
     ) { taskResult ->
         when (taskResult.status.statusCode) {
             CommonStatusCodes.SUCCESS -> {
-                taskResult.result?.let {
+                taskResult.result?.let { paymentData ->
                     onEvent(
-                        GooglePaymentEvent.SetPaymentData(it)
+                        GooglePaymentEvent.SetPaymentData(paymentData, onCompletePayment)
                     )
                 }
             }
@@ -63,16 +61,10 @@ fun GooglePaymentButton(
         )
     }
     if (state.paymentCompleted) {
-        PaymentCompletedSheet(
-            therapistProfileUri = therapistProfileUri,
-            therapistDisplayName = therapistDisplayName,
-            therapistSpecialization = therapistSpecialization,
-            sessionDate = sessionDate,
-            onDismiss = {
-                onEvent(
-                    GooglePaymentEvent.SetPaymentCompleted(false)
-                )
-            }
-        )
+        paymentCompletedSheet {
+            onEvent(
+                GooglePaymentEvent.SetPaymentCompleted(false)
+            )
+        }
     }
 }
