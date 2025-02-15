@@ -134,4 +134,10 @@ dependencies {
     // Google Pay
     implementation(libs.play.services.wallet)
     implementation(libs.compose.pay.button)
+
+    // Window size
+    implementation(libs.androidx.material3.window.size)
+
+    // Animation
+    implementation(libs.androidx.compose.animation)
 }

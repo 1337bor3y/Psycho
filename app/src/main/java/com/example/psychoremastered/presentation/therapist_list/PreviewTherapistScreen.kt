@@ -1,5 +1,8 @@
 package com.example.psychoremastered.presentation.therapist_list
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -44,8 +47,11 @@ import com.example.psychoremastered.presentation.therapist_list.component.Degree
 import com.example.psychoremastered.presentation.therapist_list.component.DegreeItem
 import com.example.psychoremstered.R
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun PreviewTherapistScreen(
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     therapist: Therapist
 ) {
     val scrollState = rememberScrollState()
@@ -66,175 +72,208 @@ fun PreviewTherapistScreen(
             showDegreeImage = null
         }
     }
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .verticalScroll(scrollState)
-            .padding(
-                start = windowPadding.calculateStartPadding(LayoutDirection.Ltr),
-                end = windowPadding.calculateEndPadding(LayoutDirection.Ltr)
-            ),
-        horizontalAlignment = Alignment.Start
-    ) {
-        Spacer(modifier = Modifier.height(10.dp))
-        Image(
-            painter = rememberAsyncImagePainter(
-                model = therapist.avatarUri,
-                placeholder = painterResource(id = R.drawable.placeholder)
-            ),
-            contentDescription = "Profile image",
-            contentScale = ContentScale.Crop,
+    with(sharedTransitionScope) {
+        Column(
             modifier = Modifier
-                .size(150.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .align(Alignment.CenterHorizontally)
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            text = therapist.displayName,
-            style = MaterialTheme.typography.titleLarge.copy(
-                fontWeight = FontWeight.Bold
-            ),
-            overflow = TextOverflow.Ellipsis
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        HorizontalDivider(thickness = 2.dp)
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(
-            modifier = Modifier
-                .padding(horizontal = 20.dp),
-            text = "My specialization",
-            style = MaterialTheme.typography.bodyLarge.copy(
-                fontWeight = FontWeight.Bold
-            ),
-            overflow = TextOverflow.Ellipsis
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            modifier = Modifier
-                .padding(horizontal = 20.dp),
-            text = therapist.specializations.joinToString(", "),
-            style = MaterialTheme.typography.bodyLarge,
-            overflow = TextOverflow.Ellipsis
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        HorizontalDivider(thickness = 2.dp)
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(
-            modifier = Modifier
-                .padding(horizontal = 20.dp),
-            text = "About me",
-            style = MaterialTheme.typography.bodyLarge.copy(
-                fontWeight = FontWeight.Bold
-            ),
-            overflow = TextOverflow.Ellipsis
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            modifier = Modifier
-                .padding(horizontal = 20.dp),
-            text = therapist.description,
-            style = MaterialTheme.typography.bodyLarge,
-            overflow = TextOverflow.Ellipsis
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        HorizontalDivider(thickness = 2.dp)
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(
-            modifier = Modifier
-                .padding(horizontal = 20.dp),
-            text = "I work in",
-            style = MaterialTheme.typography.bodyLarge.copy(
-                fontWeight = FontWeight.Bold
-            ),
-            overflow = TextOverflow.Ellipsis
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            modifier = Modifier
-                .padding(horizontal = 20.dp),
-            text = therapist.languages.joinToString(", "),
-            style = MaterialTheme.typography.bodyLarge,
-            overflow = TextOverflow.Ellipsis
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        HorizontalDivider(thickness = 2.dp)
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(
-            modifier = Modifier
-                .padding(horizontal = 20.dp),
-            text = "My work fields",
-            style = MaterialTheme.typography.bodyLarge.copy(
-                fontWeight = FontWeight.Bold
-            ),
-            overflow = TextOverflow.Ellipsis
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            modifier = Modifier
-                .padding(horizontal = 20.dp),
-            text = therapist.workFields.joinToString(", "),
-            style = MaterialTheme.typography.bodyLarge,
-            overflow = TextOverflow.Ellipsis
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        HorizontalDivider(thickness = 2.dp)
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(
-            modifier = Modifier
-                .padding(horizontal = 20.dp),
-            text = "The price for one session",
-            style = MaterialTheme.typography.bodyLarge.copy(
-                fontWeight = FontWeight.Bold
-            ),
-            overflow = TextOverflow.Ellipsis
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            modifier = Modifier
-                .padding(horizontal = 20.dp),
-            text = therapist.price + "$",
-            style = MaterialTheme.typography.bodyLarge,
-            overflow = TextOverflow.Ellipsis
-        )
-        Spacer(modifier = Modifier.height(20.dp))
-        HorizontalDivider(thickness = 2.dp)
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(
-            modifier = Modifier
-                .padding(horizontal = 20.dp),
-            text = "My degree",
-            style = MaterialTheme.typography.bodyLarge.copy(
-                fontWeight = FontWeight.Bold
-            ),
-            overflow = TextOverflow.Ellipsis
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-                .height(100.dp)
-        ) {
-            items(therapist.degrees) { degree ->
-                DegreeItem(
-                    degree = degree,
-                    onItemClick = {
-                        showDegreeImage = degree.documentImage
-                    }
+                .sharedBounds(
+                    rememberSharedContentState(key = "layout/${therapist.id}"),
+                    animatedVisibilityScope = animatedVisibilityScope,
+                    resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
                 )
-            }
-        }
-        Button(
-            onClick = { showBookSession = true },
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            shape = RoundedCornerShape(20.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Blue)
+                .fillMaxWidth()
+                .verticalScroll(scrollState)
+                .padding(
+                    start = windowPadding.calculateStartPadding(LayoutDirection.Ltr),
+                    end = windowPadding.calculateEndPadding(LayoutDirection.Ltr)
+                ),
+            horizontalAlignment = Alignment.Start
         ) {
-            Text(text = "Book a Session")
+            Spacer(modifier = Modifier.height(10.dp))
+            Image(
+                painter = rememberAsyncImagePainter(
+                    model = therapist.avatarUri,
+                    placeholder = painterResource(id = R.drawable.placeholder)
+                ),
+                contentDescription = "Profile image",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .sharedBounds(
+                        rememberSharedContentState(key = "image/${therapist.id}"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                    )
+                    .size(150.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .align(Alignment.CenterHorizontally)
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                modifier = Modifier
+                    .sharedBounds(
+                        rememberSharedContentState(key = "displayName/${therapist.id}"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                    )
+                    .align(Alignment.CenterHorizontally),
+                text = therapist.displayName,
+                style = MaterialTheme.typography.titleLarge.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            HorizontalDivider(thickness = 2.dp)
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                modifier = Modifier
+                    .padding(horizontal = 20.dp),
+                text = "My specialization",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                modifier = Modifier
+                    .sharedBounds(
+                        rememberSharedContentState(key = "specializations/${therapist.id}"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                    )
+                    .padding(horizontal = 20.dp),
+                text = therapist.specializations.joinToString(", "),
+                style = MaterialTheme.typography.bodyLarge,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            HorizontalDivider(thickness = 2.dp)
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                modifier = Modifier
+                    .padding(horizontal = 20.dp),
+                text = "About me",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                modifier = Modifier
+                    .sharedBounds(
+                        rememberSharedContentState(key = "description/${therapist.id}"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                    )
+                    .padding(horizontal = 20.dp),
+                text = therapist.description,
+                style = MaterialTheme.typography.bodyLarge,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            HorizontalDivider(thickness = 2.dp)
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                modifier = Modifier
+                    .padding(horizontal = 20.dp),
+                text = "I work in",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                modifier = Modifier
+                    .sharedBounds(
+                        rememberSharedContentState(key = "languages/${therapist.id}"),
+                        animatedVisibilityScope = animatedVisibilityScope,
+                        resizeMode = SharedTransitionScope.ResizeMode.ScaleToBounds()
+                    )
+                    .padding(horizontal = 20.dp),
+                text = therapist.languages.joinToString(", "),
+                style = MaterialTheme.typography.bodyLarge,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            HorizontalDivider(thickness = 2.dp)
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                modifier = Modifier
+                    .padding(horizontal = 20.dp),
+                text = "My work fields",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                modifier = Modifier
+                    .padding(horizontal = 20.dp),
+                text = therapist.workFields.joinToString(", "),
+                style = MaterialTheme.typography.bodyLarge,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            HorizontalDivider(thickness = 2.dp)
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                modifier = Modifier
+                    .padding(horizontal = 20.dp),
+                text = "The price for one session",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                modifier = Modifier
+                    .padding(horizontal = 20.dp),
+                text = therapist.price + "$",
+                style = MaterialTheme.typography.bodyLarge,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            HorizontalDivider(thickness = 2.dp)
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                modifier = Modifier
+                    .padding(horizontal = 20.dp),
+                text = "My degree",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+                    .height(100.dp)
+            ) {
+                items(therapist.degrees) { degree ->
+                    DegreeItem(
+                        degree = degree,
+                        onItemClick = {
+                            showDegreeImage = degree.documentImage
+                        }
+                    )
+                }
+            }
+            Button(
+                onClick = { showBookSession = true },
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(20.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color.Blue)
+            ) {
+                Text(text = "Book a Session")
+            }
         }
     }
 }

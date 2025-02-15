@@ -45,7 +45,10 @@ class GooglePaymentViewModel @Inject constructor(
                 onCompleteListener = event.onCompleteListener
             )
 
-            is GooglePaymentEvent.SetPaymentData -> setPaymentData(event.paymentData)
+            is GooglePaymentEvent.SetPaymentData -> setPaymentData(
+                event.paymentData,
+                event.onCompletePayment
+            )
 
             is GooglePaymentEvent.SetPaymentCompleted -> _state.update {
                 it.copy(
@@ -89,7 +92,7 @@ class GooglePaymentViewModel @Inject constructor(
         )
     }
 
-    private fun setPaymentData(paymentData: PaymentData) {
+    private fun setPaymentData(paymentData: PaymentData, onCompletePayment: () -> Unit) {
         extractPaymentBillingName(paymentData)?.let {
             _state.update {
                 it.copy(
@@ -97,6 +100,7 @@ class GooglePaymentViewModel @Inject constructor(
                     error = null
                 )
             }
+            onCompletePayment()
         } ?: _state.update {
             it.copy(
                 paymentCompleted = false,
