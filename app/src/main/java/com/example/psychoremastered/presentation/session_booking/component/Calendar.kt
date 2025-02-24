@@ -236,14 +236,10 @@ fun TimeSlotItem(
 }
 
 fun generateTimeSlots(startHour: Int, endHour: Int, intervalMinutes: Int): List<LocalTime> {
-    val slots = mutableListOf<LocalTime>()
-    var currentTime = LocalTime.of(startHour, 0)
-    val endTime = LocalTime.of(endHour, 0)
+    val correctedEndHour = if (endHour == 24) 23 else endHour
+    val endTime = LocalTime.of(correctedEndHour, if (endHour == 24) 59 else 0)
 
-    while (currentTime.isBefore(endTime)) {
-        slots.add(currentTime)
-        currentTime = currentTime.plusMinutes(intervalMinutes.toLong())
-    }
-
-    return slots
+    return generateSequence(LocalTime.of(minOf(startHour, 23), 0)) { it.plusMinutes(intervalMinutes.toLong()) }
+        .takeWhile { it <= endTime }
+        .toList()
 }
