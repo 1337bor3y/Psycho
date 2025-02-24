@@ -109,13 +109,9 @@ class MainActivity : ComponentActivity() {
                     composable<MainScreenRoutes.ClientScreen> {
                         val clientViewModel = hiltViewModel<ClientViewModel>()
                         val clientState by clientViewModel.state.collectAsStateWithLifecycle()
-                        val listViewModel = hiltViewModel<TherapistListViewModel>()
-                        val listState by listViewModel.state.collectAsStateWithLifecycle()
                         ClientUI(
                             clientState = clientState,
                             onClientEvent = clientViewModel::onEvent,
-                            listState = listState,
-                            onListEvent = listViewModel::onEvent,
                             navController = navController
                         )
                     }

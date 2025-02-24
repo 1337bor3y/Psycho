@@ -45,6 +45,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -58,9 +60,8 @@ import com.example.psychoremastered.presentation.client.model.BottomNavigationIt
 import com.example.psychoremastered.presentation.client_chat.ClientChatsScreen
 import com.example.psychoremastered.presentation.client_profile.ClientProfileScreen
 import com.example.psychoremastered.presentation.therapist_list.PreviewTherapistScreen
-import com.example.psychoremastered.presentation.therapist_list.TherapistListEvent
 import com.example.psychoremastered.presentation.therapist_list.TherapistListScreen
-import com.example.psychoremastered.presentation.therapist_list.TherapistListState
+import com.example.psychoremastered.presentation.therapist_list.TherapistListViewModel
 import com.example.psychoremstered.R
 import kotlin.reflect.typeOf
 
@@ -72,8 +73,6 @@ import kotlin.reflect.typeOf
 fun ClientUI(
     clientState: ClientState,
     onClientEvent: (ClientEvent) -> Unit,
-    listState: TherapistListState,
-    onListEvent: (TherapistListEvent) -> Unit,
     navController: NavController
 ) {
     val clientNavController = rememberNavController()
@@ -159,9 +158,11 @@ fun ClientUI(
                     composable<ClientScreenRoutes.TherapistListScreen> {
                         navigationSelectedItem = 0
                         title = navItems[navigationSelectedItem].label
+                        val listViewModel = hiltViewModel<TherapistListViewModel>()
+                        val listState by listViewModel.state.collectAsStateWithLifecycle()
                         TherapistListScreen(
                             state = listState,
-                            onEvent = onListEvent,
+                            onEvent = listViewModel::onEvent,
                             navController = clientNavController,
                             showFavouriteTherapists = clientState.showFavouriteTherapists,
                             animatedVisibilityScope = this,
