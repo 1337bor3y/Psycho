@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -55,11 +54,7 @@ fun TherapistListScreen(
             )
     ) {
         when (therapists.loadState.refresh) {
-            is LoadState.Loading -> {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            }
+            is LoadState.Loading -> {}
 
             is LoadState.Error -> {
                 Text(
@@ -95,13 +90,6 @@ fun TherapistListScreen(
                                         isFavoriteTherapistScreen = false
                                     )
                                 }
-                            }
-                        }
-                        item {
-                            if (therapists.loadState.append is LoadState.Loading) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.align(Alignment.Center)
-                                )
                             }
                         }
                     } else {
